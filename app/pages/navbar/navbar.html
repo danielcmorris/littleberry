@@ -1,0 +1,83 @@
+﻿<nav class="navbar navbar-default" style="margin-bottom:0px !important">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header" style="margin-bottom:0px">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/library">PFSA</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catalog<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#/library/catalog/add" ng-show="vm.permission.AddTitle">Add Title</a></li>
+                        <li><a href="#/library/catalog">Search</a></li>
+                        <li><a href="#/library/catalog">Recent Additions</a></li>
+
+                    </ul>
+                </li>
+                <li class="dropdown" ng-show="vm.permission.Requests">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Requests<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#/library/requests">Add Request*</a></li>
+                        <li><a href="#/library/requests">Search*</a></li>
+                        <li><a href="#/library/requests">Open Requests*</a></li>
+
+                    </ul>
+                </li>
+                
+                <li class="dropdown" ng-show="vm.permission.Members">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#/library/accounts/add">Add Member*</a></li>
+                        <li><a href="#/library/accounts">Search*</a></li>
+                        <!--<li><a href="#/library/accounts">Staff*</a></li>-->
+                    </ul>
+                </li>
+                <li ng-show="vm.permission.Subjects">
+                    <a href="#/library/subjects">Subjects</a>
+                </li>
+
+
+            </ul>
+          
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" style="width:100px" class="form-control" ng-model="vm.callnumber" ng-keypress="vm.OpenByCallNumberKey($event);" placeholder="Callnumber">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" ng-click="vm.OpenByCallNumber();">Open</button>
+                                </span>
+                            </div><!-- /input-group -->
+                        </div>
+                    </form>
+                </li>
+                <li class="dropdown" ng-show="vm.permission.LoggedIn">
+                    <a   class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{vm.username}}  <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-href="#/library/accounts/{{vm.AccountId}}" >Edit Profile*</a></li>
+                        <li><a href ng-click="vm.LogOut()">Log Out</a></li>
+                        
+                        <!--<li role="separator" class="divider"></li>
+                        <li><a href="#">Manage Users</a></li>-->
+                    </ul>
+                </li>
+                <li class="dropdown" ng-hide="vm.permission.LoggedIn">
+                     <a href="#/">Login</a>
+                </li>
+
+
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

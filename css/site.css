@@ -1,0 +1,30 @@
+﻿.title-bar {
+  background-color: gray;
+  color: white;
+  font-family: Segoe UI;
+  font-size: 10pt;
+  padding: 5px;
+  border: solid 1px black;
+  vertical-align: central;
+  border: solid black 1px;
+  font-weight: bold; }
+
+.data-bar {
+  padding: 5px;
+  vertical-align: central;
+  border-left: solid black 1px;
+  border-right: solid black 1px; }
+
+.header-bar {
+  background-color: #336799;
+  color: white;
+  font-family: Segoe UI;
+  font-size: 10pt;
+  padding: 5px;
+  border: solid 1px black;
+  vertical-align: central;
+  border: solid black 1px; }
+
+.capitalize {
+  text-transform: capitalize; }
+

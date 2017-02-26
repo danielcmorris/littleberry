@@ -1,0 +1,23 @@
+﻿<div class="row bookRow">
+    <div class="col-sm-3">
+        <div class="bookBox">
+            <div class="bookBoxCenter">
+                <img ng-src="{{vm.book.thumbUrl}}" />
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div>
+            <h3> <span class="bookTitle" ng-bind="vm.book.title"></span></h3>
+        </div>
+        <div style="padding:10px;">
+            <span class="bookDescription" ng-bind="vm.book.description"></span>
+        </div>
+        <ul>
+            <li>By <span class="author" ng-bind="vm.book.author"> Álamo de Oliveira</span></li>
+            <li>Subject:<span class="bookSubject" ng-bind="vm.book.subject"> Literature</span></li>
+            <li>Barcode: <span class="bookBarcode" ng-bind="vm.book.barcode"></span></li>
+            <li>Availability: <i>Can be requested</i> </li>
+        </ul>
+    </div>
+</div>

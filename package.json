@@ -1,0 +1,19 @@
+{
+   "name": "Library",
+   "version": "1.0.0",
+   "description": "An online library management system.",
+   "scripts": {
+        "tsc": "tsc",
+        "tsc:w": "tsc -w",
+        "lite": "lite-server",
+        "start": "concurrently \"npm run tsc:w\" \"npm run lite\" "
+    },
+  
+   "author": "Morris Development",
+   "license": "ISC",
+   "devDependencies": {
+     "concurrently": "^1.0.0",
+    "lite-server": "^1.3.1",
+    "typescript": "^1.7.3"
+   }
+}

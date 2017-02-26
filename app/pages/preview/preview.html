@@ -1,0 +1,42 @@
+﻿<!--Books:
+<div ng-repeat="doc in vm.books" style="float:left;padding:30px;width:280px;height:370px;">test
+    <b><a href="{{doc.thumburl}}" target="_blank">{{doc.title}}</a></b>
+    <div  style="border:solid 1px black">
+       Title: {{doc.title}}<br />
+    </div>
+    <div tyle="width:100%;height:100%;background-color:gray;">
+    </div>
+ </div>-->
+<div class="row">
+    <div class="col-sm-offset-3 col-sm-5">
+        <label>
+            Patient Name
+        </label>
+        <input class="form-control" style="width:100%" ng-model="vm.patient.name" ng-blur="vm.BuildChart()" />
+    </div>
+</div>
+<div style="height:50px;"><hr /></div>
+<div class="row">
+    <div class="col-sm-offset-2 col-sm-8">
+        <table class="table table-condensed">
+            <tr>
+                 <th></th><td>Admission</td><td>Discharge</td> <td>Totals</td>
+            </tr>
+            <tr>
+                <td>Cognitive FIM:</td>
+                <td><input class="form-control" ng-model="vm.patient.cogAdmission" type="number" ng-blur="vm.BuildChart()" /></td>
+                <td><input class="form-control"  ng-model="vm.patient.cogDischarge" type="number" ng-blur="vm.BuildChart()" /></td>
+                <td style="text-align:center">{{vm.patient.cogAdmission+vm.patient.cogDischarge}}</td>
+            </tr>
+            <tr>
+                <td>Motor FIM:</td>
+                <td><input class="form-control"  ng-model="vm.patient.motAdmission" type="number" ng-blur="vm.BuildChart()" /></td>
+                <td><input class="form-control"  ng-model="vm.patient.motDischarge" type="number" ng-blur="vm.BuildChart()" /></td>
+                <td style="text-align:center">{{vm.patient.cogAdmission+vm.patient.cogDischarge}}</td>
+            </tr>
+            
+        </table>
+        <div style="height:100px;"></div>
+        <div google-chart chart="vm.myChart"></div>
+        </div> 
+</div>

@@ -1,0 +1,70 @@
+﻿<h2>SUBJECTS</h2>
+ <div class="row" ng-if="vm.hidelist"> 
+    <div class="col-md-offset-3 col-md-3">
+        <label for="Name">Prefix</label>
+        <input type="text" ng-model="vm.mysubject.Prefix" ng-if="vm.mysubject.SubjectId==0"  class="form-control" />
+        <input type="text" ng-model="vm.mysubject.Prefix" ng-if="vm.mysubject.SubjectId>0"  class="form-control" readonly />
+        <label for="Name">Subject</label>
+        <input type="text" ng-model="vm.mysubject.Name" class="form-control" />
+        <label for="Name">Last ID</label>
+        <input type="number" ng-model="vm.mysubject.LastId" class="form-control" />
+        <label for="Name">Status</label>
+        <select class="form-control" ng-model="vm.mysubject.Status"><option>Active</option><option>Deleted</option></select>        
+        <br />
+        <button type="button" class="btn btn-default" ng-click="vm.CancelEdit()">Cancel</button>
+        <button  ng-if="vm.mysubject.SubjectId>0" type="button" ng-click="vm.Save(1)" class="btn btn-primary">Save Changes</button> 
+        <button   ng-if="vm.mysubject.SubjectId==0 && vm.mysubject.Prefix!=''"  type="button" ng-click="vm.Save(2)" class="btn btn-primary">Add New</button> 
+
+    </div>
+</div> 
+<div class="row" ng-hide="vm.hidelist">
+    <div class="col-md-12">
+        <table class="table table-striped" style="cursor:pointer">
+            <tr>
+                <th>
+                      
+                    <a ng-hide="col=='Prefix'" href ng-click="col='Prefix'">Prefix</a>
+                    <a ng-show="col=='Prefix'" href ng-click="col='-Prefix'">Prefix</a>
+
+                    <span ng-click="col='Prefix'" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    <span ng-click="col='-Prefix'"  class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                   
+
+
+                </th>
+                <th>
+                    
+                    <a ng-hide="col=='Name'" href ng-click="col='Name'">Subject</a>
+                    <a ng-show="col=='Name'" href ng-click="col='-Name'">Subject</a>
+
+                    <span ng-click="col='Name'" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    <span ng-click="col='-Name'" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+
+                </th>
+                <th>
+                    <a ng-hide="col=='Status'" href ng-click="col='Status'">Status</a>
+                    <a ng-show="col=='Status'" href ng-click="col='-Status'">Status</a>
+                    <span ng-click="col='Status'" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    <span ng-click="col='-Status'" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+
+                </th>
+                <th>
+                 
+                    <a ng-hide="col=='LastId'" href ng-click="col='LastId'">Last #</a>
+                    <a ng-show="col=='LastId'" href ng-click="col='-LastId'">Last #</a>
+                    <span ng-click="col='LastId'" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                    <span ng-click="col='-LastId'" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                </th>
+                <th><button type="button" class="btn btn-sm btn-primary" style="width:120px" ng-click="vm.Edit()">Add New</button></th>
+            </tr>
+            <tr ng-repeat="subject in vm.subjects | orderBy: [col]">
+                <td>{{subject.Prefix}}</td>
+                <td>{{subject.Name}}</td>
+                <td>{{subject.Status}}</td>
+                <td>{{subject.LastId}}</td>
+                <td><button type="button" class="btn btn-sm btn-default" style="width:120px!important" ng-click="vm.Edit(subject)">Edit</button></td>
+            </tr>
+        </table>
+
+    </div>
+</div>

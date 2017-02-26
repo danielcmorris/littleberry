@@ -1,0 +1,221 @@
+﻿
+
+<div class="row" ng-if="vm.mode=='edit'">
+    <div class="col-sm-offset-2 col-md-offset-1 col-xs-12 col-lg-12">
+
+        <h2>Account Editor</h2>
+    </div>
+</div>
+<div class="row" ng-if="vm.mode=='edit'">
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-1 col-sm-10 col-md-12">
+                <div>
+                    <div class="form-group row">
+                        <div class="col-sm-8">
+
+                            <label for="firstname" class="form-label">First Name</label>
+                            <input id="firstname" class="form-control" type="text"
+                                   placeholder="first name"
+                                   ng-model="vm.account.FirstName">
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-8">
+                            <label for="lastname" class="form-label">Last Name</label>
+                            <input id="lastname" class="form-control" type="text" ng-model="vm.account.LastName"
+                                   placeholder="last name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-8">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input id="phone" class="form-control" type="text" ng-model="vm.account.Phone"
+                                   placeholder="phone">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-8">
+                            <label for="email" class="form-label">Email (Also the Username)</label>
+                            <input id="email" class="form-control" type="email" ng-model="vm.account.Email"
+                                   placeholder="email">
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="!vm.account.AccountId">
+                        <div class="col-sm-8">
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" class="form-control" type="password" ng-model="vm.account.Password">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-8">
+                            <label for="accountType" class="form-label">Account Type</label>
+                            <select id="accountType" class="form-control" ng-model="vm.account.AccountType">
+                                <option selected>Member</option>
+                                <option>Staff</option>
+                                <option>Librarian</option>
+                                <option>Admin</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="vm.account.AccountId>0">
+                        <div class="col-sm-8">
+                            <label for="example-color-input" class="form-label">Status</label>
+                            <select class="form-control" ng-model="vm.account.Status">
+                                <option>Active</option>
+
+                                <option>Inactive</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-10">
+
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <label for="example-color-input" class="form-label">Address Title</label>
+                        <input type="text" class="form-control" placeholder="eg. Mr. John Doe" ng-model="vm.account.AddressTitle" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <label for="example-color-input" class="form-label">Street Address</label>
+                        <input type="text" class="form-control" placeholder="street address" ng-model="vm.account.Address1" />
+                        <input type="text" class="form-control" placeholder="unit or apt#" ng-model="vm.account.Address2" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <label for="example-color-input" class="form-label">City</label>
+                        <input type="text" class="form-control" placeholder="city name" ng-model="vm.account.City" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <label for="example-color-input" class="form-label">State</label>
+                        <input type="text" class="form-control" placeholder="state (if applicable to country)" ng-model="vm.account.State" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-8">
+                        <label for="example-color-input" class="form-label">Country</label>
+                        <input type="text" class="form-control" placeholder="country" ng-model="vm.account.Country" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="myDialog">
+        <md-dialog layout-padding>
+            <form class="form-inline">
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <label for="example-color-input" class="form-label">New Password</label>
+                        <input class="form-control" type="password" ng-model="NewPassword"
+                               placeholder="password">
+
+                        <button type="button" class="btn btn-small btn-primary" ng-click="vm.UpdatePassword(NewPassword)">save</button>
+                        <button type="button" class="btn btn-small btn-default" ng-click="vm.CancelPassword()">cancel</button>
+                    </div>
+
+                </div>
+            </form>
+        </md-dialog>
+    </div>
+</div>
+
+
+<div class="row" ng-if="vm.mode=='edit'">
+    <div class="col-sm-offset-2 col-md-offset-1 col-xs-12 col-lg-12">
+
+        <div class="form-group row">
+
+            <div class="col-sm-5">
+                <button ng-click="vm.go('library/accounts')" class="btn btn-default" type="button">Close</button>
+                <button ng-click="vm.SaveUser(0)" class="btn btn-primary" type="button">Save</button>
+                <button ng-click="vm.SaveUser(1)" class="btn btn-primary" type="button">Save &amp; Close</button>
+                <button ng-click="vm.SaveUser(2)" class="btn btn-primary" type="button">Save &amp; New</button>
+
+
+            </div>
+            <div class="col-sm-2">
+                <button ng-if="vm.account.AccountId>0" ng-click="vm.ChangePassword()" class="btn btn-info" type="button">Change Password</button>
+            </div>
+            <div class="col-sm-1">
+                <button ng-if="vm.account.AccountId>0" ng-click="vm.Delete()" class="btn btn-danger" type="button">Delete Account</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="row" ng-if="vm.mode=='list'">
+    <div class="col-md-12">
+        <div style="margin-left:20px;"><h2>Accounts</h2></div>
+        <div style="padding-left:20px;">
+            <form class="form-inline">
+                <div class="form-group">
+
+                    <input type="text" style="width:250px" ng-model="vm.searchText"
+                           class="form-control"
+                           placeholder="Search Text" />
+
+                    <button type="button" class="btn btn-default">Search</button>
+                    <button type="button" class="btn btn-default" ng-click="vm.AddAccount();">Add Account</button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="row" ng-if="vm.mode=='list'">
+    <div class="col-md-12">
+
+        <table class="table table-striped table-hover;" style="cursor:pointer">
+            <tr>
+                <th>Account#</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Type</th>
+
+            </tr>
+            <tr ng-repeat="act in vm.accounts | filter: vm.searchText | filter: {Status: 'Active'}">
+                <td ng-click="vm.editAccount(act)">{{act.AccountId}}</td>
+                <td ng-click="vm.editAccount(act)">{{act.FirstName}}</td>
+                <td ng-click="vm.editAccount(act)">{{act.LastName}}</td>
+                <td ng-click="vm.editAccount(act)">{{act.Email}}</td>
+                <td ng-click="vm.editAccount(act)">{{act.Phone}}</td>
+                <td ng-click="vm.editAccount(act)">{{act.AccountType}}</td>
+
+
+
+
+        </table>
+    </div>
+</div>

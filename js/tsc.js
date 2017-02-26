@@ -1,0 +1,1687 @@
+var Application;
+(function (Application) {
+    var Controllers;
+    (function (Controllers) {
+        var MainCtrl = (function () {
+            function MainCtrl($route, $routeParams, $location) {
+                this.$route = $route;
+                this.$routeParams = $routeParams;
+                this.$location = $location;
+                this.$insert = ['$route', '$routeParams', '$location'];
+                var v = new Application.Config.version();
+                console.log(v);
+                this.Title = "PFSA Tools V" + v.number;
+            }
+            return MainCtrl;
+        }());
+        Controllers.MainCtrl = MainCtrl;
+        app.controller("MainCtrl", MainCtrl);
+    })(Controllers = Application.Controllers || (Application.Controllers = {}));
+})(Application || (Application = {}));
+app.factory('$localstorage', ['$window', function ($window) {
+        return {
+            set: function (key, value) {
+                $window.localStorage[key] = value;
+            },
+            get: function (key, defaultValue) {
+                return $window.localStorage[key] || false;
+            },
+            setObject: function (key, value) {
+                $window.localStorage[key] = JSON.stringify(value);
+            },
+            getObject: function (key) {
+                if ($window.localStorage[key] != undefined) {
+                    return JSON.parse($window.localStorage[key] || false);
+                }
+                return false;
+            },
+            remove: function (key) {
+                $window.localStorage.removeItem(key);
+            },
+            clear: function () {
+                $window.localStorage.clear();
+            }
+        };
+    }]);
+var Application;
+(function (Application) {
+    var Config;
+    (function (Config) {
+        var version = (function () {
+            function version() {
+                this.author = "Morris Development";
+                this.supportContact = "dmorris@morrisdev.com";
+                this.apiKey = "dswejkdfkui8yoihkjnlj98776tsad87sd9809fdijsnekjjdsoidjs";
+                this.apiServer = "http://localhost:53035/";
+                this.number = "1.4" + Math.random();
+                var path = window.location.host;
+                if (path.substring(0, 5) === "local") {
+                    this.apiServer = "http://localhost:53035";
+                }
+                else {
+                    this.apiServer = "http://api.pfsa.morrisdev.com";
+                }
+            }
+            return version;
+        }());
+        Config.version = version;
+        var routes = (function () {
+            function routes($routeProvider, $locationProvider) {
+                this.$routeProvider = $routeProvider;
+                this.$locationProvider = $locationProvider;
+                this.$insert = ['$routeProvider', '$locationProvider', '$location'];
+                this.$routeProvider
+                    .when('/', {
+                    template: '<login></login>'
+                })
+                    .when('/home', {
+                    template: '<index></index>'
+                })
+                    .when('/contact', {
+                    template: '<contact></contact>'
+                })
+                    .when('/contact-us', {
+                    template: '<contact-us></contact-us>'
+                })
+                    .when('/mailing-list', {
+                    template: '<mailing-list></mailing-list>'
+                })
+                    .when('/retirement', {
+                    template: '<retirement-planner></retirement-planner>'
+                })
+                    .when('/refer', {
+                    template: '<refer></refer>'
+                })
+                    .when('/survivor/:view?', {
+                    template: '<survivor-needs-planner></survivor-needs-planner>'
+                })
+                    .when('/cp/:view?', {
+                    template: '<college-planner></college-planner>'
+                })
+                    .when('/agents', {
+                    template: '<agent-list></agent-list>'
+                })
+                    .when('/linc', {
+                    template: '<needs></needs>'
+                })
+                    .when('/library/catalog', {
+                    template: '<navbar></navbar><library></library>'
+                })
+                    .when('/library/catalog/add', {
+                    template: '<navbar></navbar><book></book>'
+                })
+                    .when('/library/catalog/request/:prefix/:booknumber', {
+                    template: '<navbar></navbar><reservation></reservation>'
+                })
+                    .when('/library/catalog/:mode/:prefix/:booknumber', {
+                    template: '<navbar></navbar><book></book>'
+                })
+                    .when('/library/advanced', {
+                    template: '<navbar></navbar><reservation></reservation>'
+                })
+                    .when('/library/requests', {
+                    template: '<navbar></navbar><requests></requests>'
+                })
+                    .when('/library/requests/:mode/:prefix/:booknumber', {
+                    template: '<navbar></navbar><requests></requests>'
+                })
+                    .when('/library/subjects', {
+                    template: '<navbar></navbar><subjects></subjects>'
+                })
+                    .when('/library/accounts/add', {
+                    template: '<navbar></navbar><account></account>'
+                })
+                    .when('/library/accounts/:accountid', {
+                    template: '<navbar></navbar><account></account>'
+                })
+                    .when('/library/accounts', {
+                    template: '<navbar></navbar><account></account>'
+                })
+                    .when('/library/preview/:barcode', {
+                    template: '<book-preview></book-preview>'
+                })
+                    .when('/madlib', {
+                    template: '<madlib></madlib>'
+                }).when('/hang-man', {
+                    template: '<hang-man></hang-man>'
+                })
+                    .when('/request-quote', {
+                    template: '<request-quote email-to="it@morrisdev.com"></request-quote>'
+                })
+                    .when('/library/recent-additions', {
+                    template: '<recent-additions></recent-additions>'
+                })
+                    .otherwise({ redirectTo: '/' });
+                ;
+                this.$locationProvider.html5Mode(false);
+            }
+            return routes;
+        }());
+        Config.routes = routes;
+        app.config(routes);
+        var httpConfig = (function () {
+            function httpConfig($httpProvider) {
+                this.$httpProvider = $httpProvider;
+                this.$insert = ["$httpProvider"];
+                this.$httpProvider.defaults.useXDomain = true;
+                this.$httpProvider.defaults.withCredentials = false;
+                delete this.$httpProvider.defaults.headers.common["X-Requested-With"];
+            }
+            return httpConfig;
+        }());
+        Config.httpConfig = httpConfig;
+        app.config(httpConfig);
+        var templates = (function () {
+            function templates() {
+                this.index = ROOT_PATH + "app/pages/index/index.html";
+                this.library = ROOT_PATH + "app/pages/library.html";
+                this.book = ROOT_PATH + "app/pages/book/book.html";
+                this.subjects = ROOT_PATH + "app/pages/subjects/subjects.html";
+                this.account = ROOT_PATH + "app/pages/account/account.html";
+                this.navbar = ROOT_PATH + "app/pages/navbar/navbar.html";
+                this.reservation = ROOT_PATH + "app/pages/reservation/reservation.html";
+                this.requests = ROOT_PATH + "app/pages/requests/requests.html";
+                this.bookTile = ROOT_PATH + "app/pages/library/book/bookTile.html";
+                this.recentAdditions = ROOT_PATH + "app/pages/library/recentAdditions/recentAdditions.html";
+                this.address = ROOT_PATH + "app/components/address/address.html";
+                this.assets = ROOT_PATH + "app/components/assets/assets.html";
+                this.cashNeeds = ROOT_PATH + "app/components/cashNeeds/cashNeeds.html";
+                this.contact = ROOT_PATH + "app/components/contact/contact.html";
+                this.contactUs = ROOT_PATH + "app/components/contact-us/contact-us.html";
+                this.dependants = ROOT_PATH + "app/components/dependants/dependants.html";
+                this.income = ROOT_PATH + "app/components/income/income.html";
+                this.insurance = ROOT_PATH + "app/components/insurance/insurance.html";
+                this.liabilities = ROOT_PATH + "app/components/liabilities/liabilities.html";
+                this.librarySearch = ROOT_PATH + "app/components/library-search/library-search.html";
+                this.needs = ROOT_PATH + "app/components/needs/needs.html";
+                this.objectives = ROOT_PATH + "app/components/objectives/objectives.html";
+                this.pension = ROOT_PATH + "app/components/pension/pension.html";
+                this.primaryContact = ROOT_PATH + "app/components/primaryContact/primaryContact.html";
+                this.rateAssumptions = ROOT_PATH + "app/components/rateAssumptions/rateAssumptions.html";
+                this.receipts = ROOT_PATH + "app/components/receipts/receipts.html";
+                this.savings = ROOT_PATH + "app/components/savings/savings.html";
+                this.socialSecurityOverride = ROOT_PATH + "app/components/socialSecurityOverride/socialSecurityOverride.html";
+                this.spousalContact = ROOT_PATH + "app/components/spousalContact/spousalContact.html";
+                this.survivorNeeds = ROOT_PATH + "app/components/survivorNeeds/survivorNeeds.html";
+                this.mailingList = ROOT_PATH + "app/components/mailingList/mailingList.html";
+                this.madlibs = ROOT_PATH + "app/components/madlibs/madlibs.html";
+                this.hangMan = ROOT_PATH + "app/components/hangman/hangman.html";
+                this.requestQuote = ROOT_PATH + "app/components/request-quote/request-quote.html";
+                this.refer = ROOT_PATH + "app/components/refer/refer.html";
+                console.log(window.location.pathname);
+                var v = new version();
+                this.index += "?v=" + v.number;
+                this.library += "?v=" + v.number;
+                this.book += "?v=" + v.number;
+            }
+            templates.prototype.GetUrl = function (templateName) {
+                var s = this;
+                switch (templateName) {
+                    case 'address':
+                        return s.address;
+                    case 'mailingList':
+                        return s.mailingList + "?v=" + new Date();
+                    case 'requestQuote':
+                        return s.requestQuote + "?v=" + new Date();
+                    case 'refer':
+                        return s.refer + "?v=" + new Date();
+                    default:
+                        console.log("ERROR: TEMPLATE " + templateName + " NOT FOUND");
+                        return 'ERROR';
+                }
+            };
+            return templates;
+        }());
+        Config.templates = templates;
+        app.service("templates", templates);
+    })(Config = Application.Config || (Application.Config = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var Account = (function () {
+            function Account($location, libraryService, $routeParams, $mdDialog, $mdToast) {
+                this.$location = $location;
+                this.libraryService = libraryService;
+                this.$routeParams = $routeParams;
+                this.$mdDialog = $mdDialog;
+                this.$mdToast = $mdToast;
+                this.mode = 'empty';
+                this.setPassword = false;
+                this.$insert = ['$location', 'libraryService', '$routeParams', '$mdDialog', '$mdToast'];
+            }
+            Account.prototype.$onInit = function () {
+                var _this = this;
+                var l = this.libraryService;
+                var aid = this.$routeParams.accountid;
+                if (this.$location.url() == '/library/accounts/add') {
+                    this.mode = 'edit';
+                    aid = 0;
+                    this.account = {};
+                    this.account.Status = 'Active';
+                    this.account.AccountType = 'Member';
+                    this.setPassword = true;
+                }
+                else {
+                    if (!aid) {
+                        this.mode = 'list';
+                        l.getAccounts()
+                            .then(function (resp) { _this.accounts = resp; });
+                    }
+                    else {
+                        this.mode = 'edit';
+                        if (aid > 0) {
+                            l.getAccount(aid)
+                                .then(function (resp) {
+                                _this.account = resp.data;
+                            });
+                        }
+                    }
+                }
+            };
+            Account.prototype.editAccount = function (obj) {
+                this.go('/library/accounts/' + obj.AccountId);
+            };
+            Account.prototype.ChangePassword = function (ev) {
+                this.$mdDialog.show({
+                    contentElement: '#myDialog',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true
+                });
+            };
+            Account.prototype.CancelPassword = function () {
+                this.$mdDialog.hide();
+            };
+            Account.prototype.UpdatePassword = function (password) {
+                this.account.Password = password;
+                this.SaveUser(3);
+            };
+            Account.prototype.Toast = function (msg, secs) {
+                secs = secs * 1000;
+                this.$mdToast.show(this.$mdToast.simple()
+                    .capsule(true)
+                    .textContent(msg)
+                    .position('top right')
+                    .hideDelay(secs));
+            };
+            Account.prototype.Delete = function () {
+                var a = this.account;
+                var msg = 'Are you sure you want to delete ' + a.FirstName + ' ' + a.LastName + '\'s account?';
+                if (confirm(msg)) {
+                    this.account.Status = 'Deleted';
+                    this.Toast("Deleting Account...", 2);
+                    this.SaveUser(1);
+                }
+            };
+            Account.prototype.SaveUser = function (saveType) {
+                var _this = this;
+                var l = this.libraryService;
+                this.Toast("Saving...", 2);
+                l.SaveAccount(this.account)
+                    .then(function (resp) {
+                    if (saveType === 0) {
+                        _this.Toast("Saved", 2);
+                        _this.account = resp.data;
+                        return;
+                    }
+                    if (saveType === 1)
+                        _this.go('/library/accounts/');
+                    if (saveType === 2)
+                        _this.go('/library/accounts/add');
+                    if (saveType === 3)
+                        _this.$mdDialog.hide();
+                });
+            };
+            Account.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            Account.prototype.AddAccount = function () {
+                this.go('/library/accounts/add');
+            };
+            return Account;
+        }());
+        Components.Account = Account;
+        app.component("account", {
+            controller: Account,
+            bindings: { accountId: '<' },
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.account; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var BlankTemplate = (function () {
+            function BlankTemplate($location, $sessionStorage, libraryService) {
+                this.$location = $location;
+                this.$sessionStorage = $sessionStorage;
+                this.libraryService = libraryService;
+                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+            }
+            BlankTemplate.prototype.$onInit = function () {
+                console.log('Blank Startup');
+            };
+            BlankTemplate.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            return BlankTemplate;
+        }());
+        Components.BlankTemplate = BlankTemplate;
+        app.component("blankTemplate", {
+            controller: BlankTemplate,
+            bindings: { someVariable: '<' },
+            controllerAs: "vm",
+            template: "\n        <div style=\"width:500px;margin-left:100px;margin-right:auto;margin-top:40px;\" > <h2>New Feature</h2 > </div>\n        <div style=\"width:500px;margin-left:100px;margin-right:auto;margin-top:40px;\" ><hr>\n        <i>This is an advanced feature that may be included if PFSA finds it worth while.</i>\n\n</div>\n        \n        "
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Library;
+    (function (Library) {
+        var Components;
+        (function (Components) {
+            var BookView = (function () {
+                function BookView($location, $sessionStorage, libraryService) {
+                    this.$location = $location;
+                    this.$sessionStorage = $sessionStorage;
+                    this.libraryService = libraryService;
+                    this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                }
+                BookView.prototype.$onInit = function () {
+                    console.log('Book View Startup');
+                    console.log(this.book);
+                    var AccountType = this.$sessionStorage.myaccount.AccountType;
+                    permission = new NavigationPermissions(AccountType);
+                };
+                BookView.prototype.Edit = function () {
+                    var b = this.book;
+                    console.log(b);
+                    this.go('/library/catalog/edit/' + b.Prefix + '/' + b.BookNumber);
+                };
+                BookView.prototype.BookImage = function (b) {
+                    var imageServer = Application.Config.LibraryConfig.imageServer;
+                    if (!this.book.Url) {
+                        var img = Application.Config.LibraryConfig.defaultBookImage;
+                        return imageServer + '/' + img;
+                    }
+                    else {
+                        return imageServer + '/' + this.book.Url;
+                    }
+                };
+                BookView.prototype.go = function (url) {
+                    this.$location.url(url);
+                };
+                return BookView;
+            }());
+            Components.BookView = BookView;
+            app.component("bookView", {
+                controller: BookView,
+                bindings: { book: '<', history: '<' },
+                controllerAs: "vm",
+                templateUrl: '/app/pages/book/book-view.html'
+            });
+        })(Components = Library.Components || (Library.Components = {}));
+    })(Library = Application.Library || (Application.Library = {}));
+})(Application || (Application = {}));
+app.directive('fileModel', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var model = $parse(attrs.fileModel);
+                var modelSetter = model.assign;
+                element.bind('change', function () {
+                    scope.$apply(function () {
+                        var f = element[0].files[0];
+                        modelSetter(scope, f);
+                    });
+                });
+            }
+        };
+    }]);
+var Application;
+(function (Application) {
+    var Library;
+    (function (Library) {
+        var Components;
+        (function (Components) {
+            var book = (function () {
+                function book($location, $http, $routeParams, $httpParamSerializerJQLike, libraryService, $sessionStorage) {
+                    this.$location = $location;
+                    this.$http = $http;
+                    this.$routeParams = $routeParams;
+                    this.$httpParamSerializerJQLike = $httpParamSerializerJQLike;
+                    this.libraryService = libraryService;
+                    this.$sessionStorage = $sessionStorage;
+                    this.mode = "insert";
+                    this.subjects = [];
+                    this.loading = false;
+                    this.callnumber = '';
+                    this.image = {};
+                    this.editing = true;
+                    this.bookImage = '';
+                    this.book = {};
+                    this.imageChanged = false;
+                    this.$insert = ['$location', '$http', '$routeParams',
+                        '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
+                    this.image.uploading = false;
+                    this.book.Url = "";
+                    this.imageServer = Application.Config.LibraryConfig.imageServer;
+                }
+                book.prototype.uploadImage = function () {
+                    var _this = this;
+                    this.image.uploading = true;
+                    var fd = new FormData();
+                    var name = this.file.name;
+                    var cn = this.book.CallNumber;
+                    var path = cn + "/" + name;
+                    this.bookImage = Application.Config.LibraryConfig.imageServer + '/assets/wait.gif';
+                    fd.append('file', this.file);
+                    fd.append('callnumber', this.book.CallNumber);
+                    this.libraryService.uploadImage(fd)
+                        .then(function (resp) {
+                        console.log(resp);
+                        _this.bookImage = Application.Config.LibraryConfig.imageServer + '/' + resp.data;
+                        _this.image.uploading = false;
+                    });
+                };
+                book.prototype.LoadSubjects = function () {
+                    var _this = this;
+                    this.libraryService.getSubjects()
+                        .then(function (data) {
+                        _this.subjects = data;
+                        _this.updateSubject();
+                    });
+                };
+                book.prototype.updateSubject = function () {
+                    var _this = this;
+                    angular.forEach(this.subjects, function (v, key) {
+                        if (v.SubjectId == _this.book.SubjectId) {
+                            _this.SelectedSubject = v;
+                            console.log(_this.SelectedSubject);
+                            _this.book.Subject = v.Name;
+                            console.log(v.Name);
+                            console.log(_this.book.Subject);
+                        }
+                    });
+                };
+                book.prototype.ApplySubject = function () {
+                    var _this = this;
+                    var subj = this.SelectedSubject.SubjectId;
+                    angular.forEach(this.subjects, function (v, key) {
+                        if (v.SubjectId == subj) {
+                            _this.book.Prefix = v.Prefix;
+                            _this.book.BookNumber = v.LastId + 1;
+                            _this.book.CallNumber = _this.book.Prefix + _this.book.BookNumber;
+                            _this.book.SubjectId = v.SubjectId;
+                        }
+                    });
+                };
+                book.prototype.getBook = function (prefix, booknumber) {
+                    var _this = this;
+                    this.loading = true;
+                    this.libraryService.getBook(prefix, booknumber)
+                        .then(function (resp) {
+                        _this.book = resp.data;
+                        if (!_this.book.Url) {
+                            var img = Application.Config.LibraryConfig.defaultBookImage;
+                            _this.bookImage = _this.imageServer + '/' + img;
+                        }
+                        else {
+                            _this.bookImage = _this.imageServer + '/' + _this.book.Url;
+                        }
+                        _this.updateSubject();
+                        _this.libraryService.getBookHistory(prefix, booknumber)
+                            .then(function (resp) {
+                            _this.history = resp.data;
+                        });
+                        _this.loading = false;
+                    });
+                };
+                book.prototype.UpdateStatus = function () {
+                };
+                book.prototype.checkFile = function () {
+                    if (this.file) {
+                        alert('Load Image');
+                        this.uploadImage();
+                    }
+                    else {
+                        alert('nope');
+                    }
+                };
+                book.prototype.saveBook = function (option) {
+                    var _this = this;
+                    this.loading = true;
+                    this.checkFile();
+                    this.book.SubjectId = this.SelectedSubject.SubjectId;
+                    this.book.Subject = this.SelectedSubject.Subject;
+                    if (this.book.BookId) {
+                        if (this.$sessionStorage.searchResults) {
+                            var searchResults = this.$sessionStorage.searchResults;
+                            this.$sessionStorage.searchResults = {};
+                            angular.forEach(searchResults, function (v, k) {
+                                console.log(v.BookId);
+                                if (v.BookId.toString() == _this.book.BookId.toString()) {
+                                    angular.copy(_this.book, v);
+                                }
+                            });
+                            this.$sessionStorage.searchResults = searchResults;
+                        }
+                    }
+                    this.libraryService.saveBook(this.book)
+                        .then(function (resp) {
+                        console.log(resp.data);
+                        var b = _this.book;
+                        if (option == 1) {
+                            _this.$location.url('/library/catalog');
+                        }
+                        if (option == 2) {
+                            _this.$location.url('/library/catalog/add');
+                        }
+                        _this.loading = false;
+                    });
+                };
+                book.prototype.Request = function () {
+                    var b = this.book;
+                    var url = 'requests/add/' + b.Prefix + '/' + b.BookNumber;
+                    this.go(url);
+                };
+                book.prototype.go = function (url) {
+                    this.$location.url('/library/' + url);
+                };
+                book.prototype.$onInit = function () {
+                    this.LoadSubjects();
+                    var viewmode = this.$routeParams.mode;
+                    this.prefix = this.$routeParams.prefix;
+                    this.booknumber = this.$routeParams.booknumber;
+                    this.callnumber = this.prefix + this.booknumber;
+                    console.log(this.mode + ':' + this.callnumber);
+                    if (this.callnumber) {
+                        this.editing = false;
+                        this.mode = "update";
+                        this.getBook(this.prefix, this.booknumber);
+                    }
+                    else {
+                        this.mode = 'insert';
+                        this.editing = true;
+                        this.book.Subject = 'Azores';
+                        this.book.Status = 'Active';
+                    }
+                    if (viewmode == 'edit') {
+                        this.editing = true;
+                        this.mode = "update";
+                    }
+                };
+                return book;
+            }());
+            Components.book = book;
+            app.component("book", {
+                controller: book,
+                controllerAs: "vm",
+                templateUrl: function (templates) { return templates.book; },
+            });
+        })(Components = Library.Components || (Library.Components = {}));
+    })(Library = Application.Library || (Application.Library = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var BookPage = (function () {
+            function BookPage() {
+            }
+            BookPage.prototype.$onInit = function () {
+                console.log(this.book);
+            };
+            return BookPage;
+        }());
+        Components.BookPage = BookPage;
+        app.component("bookPage", {
+            controller: BookPage,
+            bindings: { book: '<' },
+            controllerAs: "vm",
+            template: "test<book></book><hr><book-tile></book-tile>"
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var bookTile = (function () {
+            function bookTile() {
+            }
+            bookTile.prototype.$onInit = function () {
+                console.log(this.book);
+            };
+            return bookTile;
+        }());
+        Components.bookTile = bookTile;
+        app.component("bookTile", {
+            controller: bookTile,
+            bindings: { book: '<' },
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.bookTile; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var index = (function () {
+            function index() {
+                this.primaryContact = {};
+                this.address = {};
+                this.dependants = {};
+            }
+            return index;
+        }());
+        Components.index = index;
+        app.component("index", {
+            controller: index,
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.index; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var Book = (function () {
+            function Book() {
+                this._tempThumbNail = 'http://pfsa.morrisdev.com/tools/app/pages/library/book/placeholder.jpg';
+                this._thumbUrl = this._tempThumbNail;
+            }
+            Object.defineProperty(Book.prototype, "thumbUrl", {
+                get: function () {
+                    var u = this._thumbUrl;
+                    var ext = this.getExt(u);
+                    if (ext != '') {
+                        return this._thumbUrl;
+                    }
+                    else {
+                        return this._tempThumbNail;
+                    }
+                },
+                set: function (val) {
+                    this._thumbUrl = val;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Book.prototype.getExt = function (filename) {
+                var ext = filename.split('.').pop();
+                if (ext == filename)
+                    return "";
+                return ext;
+            };
+            return Book;
+        }());
+        var library = (function () {
+            function library($location, $http, libraryService, $cookies, $sessionStorage) {
+                this.$location = $location;
+                this.$http = $http;
+                this.libraryService = libraryService;
+                this.$cookies = $cookies;
+                this.mydocs = [];
+                this.api = {};
+                this.searchResults = false;
+                this.callnumber = '';
+                this.$insert = ['$location', '$http', '$cookies', '$sessionStorage'];
+                var library = [];
+                this.sessionStorage = $sessionStorage;
+                this.version = new Application.Config.version();
+                this.SubjectList();
+            }
+            library.prototype.OpenByCallNumberKey = function (keyEvent) {
+                if (keyEvent.which === 13) {
+                    this.OpenByCallNumber();
+                }
+            };
+            library.prototype.OpenByCallNumber = function () {
+                var cn = this.callnumber;
+                var booknumber = cn.replace(/\D/g, '');
+                var prefix = cn.replace(/[0-9]/g, '');
+                var url = "/library/edit/" + prefix + "/" + booknumber;
+                this.go(url);
+            };
+            library.prototype.SubjectList = function () {
+                var s = this.version.apiServer;
+            };
+            library.prototype.SearchKey = function (keyEvent) {
+                if (keyEvent.which === 13) {
+                    this.Search();
+                }
+            };
+            library.prototype.Search = function (searchText) {
+                this.webSearch(this.searchText);
+                this.setCookie("titleSearch", this.searchText);
+            };
+            library.prototype.ClearSearch = function () {
+                this.searchText = '';
+            };
+            library.prototype.NewBook = function () {
+                this.$location.url('library/add');
+            };
+            library.prototype.webSearch = function (terms) {
+                var _this = this;
+                if (terms != 'recent additions') {
+                    this.sessionStorage.searchText = terms;
+                    this.libraryService.Search('', '', terms)
+                        .then(function (resp) {
+                        _this.books = resp.data;
+                        _this.sessionStorage.searchResults = _this.books;
+                        _this.searchResults = true;
+                    });
+                }
+                else {
+                    this.libraryService.Recent()
+                        .then(function (resp) {
+                        _this.books = resp.data;
+                        _this.sessionStorage.searchResults = _this.books;
+                        _this.searchResults = true;
+                    });
+                }
+            };
+            library.prototype.getBook = function (b) {
+                var url = "/library/catalog/view/" + b.Prefix + "/" + b.BookNumber;
+                this.go(url);
+            };
+            library.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            library.prototype.$onInit = function () {
+                var lastSearch;
+                this.searchText = this.sessionStorage.searchText;
+                if (this.sessionStorage) {
+                    lastSearch = this.sessionStorage.searchResults;
+                }
+                if (!lastSearch) {
+                    this.webSearch('recent additions');
+                }
+                else {
+                    this.books = lastSearch;
+                    this.searchResults = true;
+                }
+            };
+            library.prototype.submitForm = function () {
+            };
+            library.prototype.cleanForm = function () {
+                this.searchText = '';
+            };
+            library.prototype.setCookie = function (cookieName, obj) {
+                var expireDate = new Date();
+                expireDate.setDate(expireDate.getDate() + 100);
+                this.$cookies.putObject(cookieName, obj, { expires: expireDate });
+            };
+            library.prototype.getCookie = function (cookieName) {
+                var obj = this.$cookies.getObject(cookieName);
+                if (!obj) {
+                    obj = {};
+                }
+                return obj;
+            };
+            return library;
+        }());
+        Components.library = library;
+        app.component("library", {
+            controller: library,
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.library; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var login = (function () {
+            function login($location, $timeout, libraryService, $cookies, $sessionStorage) {
+                this.$location = $location;
+                this.$timeout = $timeout;
+                this.libraryService = libraryService;
+                this.$cookies = $cookies;
+                this.$sessionStorage = $sessionStorage;
+                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage'];
+                this.password = '';
+            }
+            login.prototype.LoginKey = function (keyEvent) {
+                if (keyEvent.which === 13) {
+                    this.Login();
+                }
+            };
+            login.prototype.Login = function () {
+                var _this = this;
+                if (this.password != '') {
+                    this.libraryService.Login(this.username, this.password)
+                        .then(function (resp) {
+                        _this.$sessionStorage.myaccount = resp.data;
+                        _this.$location.url('/library/catalog');
+                    }, function (resp) {
+                        _this.password = '';
+                        _this.errorMessage = 'Sorry, wrong username/password.';
+                        _this.$timeout(function () {
+                            _this.errorMessage = '';
+                        }, 2200);
+                    });
+                }
+            };
+            login.prototype.$onInit = function () {
+                var account = this.getCookie("account");
+                if (account.Email) {
+                    this.username = account.Email;
+                }
+            };
+            login.prototype.setCookie = function (cookieName, obj) {
+                var expireDate = new Date();
+                expireDate.setDate(expireDate.getDate() + 100);
+                this.$cookies.putObject(cookieName, obj, { expires: expireDate });
+            };
+            login.prototype.getCookie = function (cookieName) {
+                var obj = this.$cookies.getObject(cookieName);
+                if (!obj) {
+                    obj = {};
+                }
+                return obj;
+            };
+            return login;
+        }());
+        app.component("login", {
+            controller: login,
+            controllerAs: "vm",
+            templateUrl: "app/pages/login/login.html?v=" + new Date(),
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var NavigationPermissions = (function () {
+            function NavigationPermissions(AccountType) {
+                this.AddTitle = false;
+                this.EditTitle = false;
+                this.AddRequest = false;
+                this.Requests = false;
+                this.SearchRequest = false;
+                this.Members = false;
+                this.Subjects = false;
+                this.LoggedIn = false;
+                switch (AccountType) {
+                    case 'Admin':
+                        this.AddTitle = true;
+                        this.Subjects = true;
+                        this.LoggedIn = true;
+                        this.Members = true;
+                        this.Requests = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return NavigationPermissions;
+        }());
+        Components.NavigationPermissions = NavigationPermissions;
+        var Navbar = (function () {
+            function Navbar($location, $sessionStorage) {
+                this.$location = $location;
+                this.$sessionStorage = $sessionStorage;
+                this.$insert = ['$location', '$sessionStorage'];
+                this.permission = {};
+            }
+            Navbar.prototype.$onInit = function () {
+                if (this.$sessionStorage.myaccount) {
+                    var a = this.$sessionStorage.myaccount;
+                    this.username = a.FirstName + ' ' + a.LastName;
+                    this.AccountId = a.AccountId;
+                }
+                else {
+                }
+                this.permission = new NavigationPermissions(a.AccountType);
+            };
+            Navbar.prototype.LogOut = function () {
+                this.$sessionStorage.$reset();
+                var url = "/";
+                this.go(url);
+            };
+            Navbar.prototype.OpenByCallNumberKey = function (keyEvent) {
+                if (keyEvent.which === 13) {
+                    this.OpenByCallNumber();
+                }
+            };
+            Navbar.prototype.OpenByCallNumber = function () {
+                var cn = this.callnumber;
+                var booknumber = cn.replace(/\D/g, '');
+                var prefix = cn.replace(/[0-9]/g, '');
+                var url = "/library/catalog/edit/" + prefix + "/" + booknumber;
+                console.log(url);
+                this.go(url);
+            };
+            Navbar.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            return Navbar;
+        }());
+        Components.Navbar = Navbar;
+        app.component("navbar", {
+            controller: Navbar,
+            bindings: { book: '<' },
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.navbar + "?v=" + new Date(); }
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var BookPreview = (function () {
+            function BookPreview($location, $http) {
+                this.$location = $location;
+                this.$http = $http;
+                this.mydocs = [];
+                this.api = {};
+                this.books = [];
+                this.patient = {};
+                this.$insert = ['$location', '$http'];
+            }
+            BookPreview.prototype.$onInit = function () {
+                var b = {};
+            };
+            return BookPreview;
+        }());
+        Components.BookPreview = BookPreview;
+        app.component("bookPreview", {
+            controller: BookPreview,
+            controllerAs: "vm",
+            templateUrl: "app/pages/library/preview/preview.html?v=" + new Date(),
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var Book = (function () {
+            function Book() {
+                this._tempThumbNail = 'http://pfsa.morrisdev.com/tools/app/pages/library/book/placeholder.jpg';
+                this._thumbUrl = this._tempThumbNail;
+            }
+            Object.defineProperty(Book.prototype, "thumbUrl", {
+                get: function () {
+                    var u = this._thumbUrl;
+                    var ext = this.getExt(u);
+                    if (ext != '') {
+                        return this._thumbUrl;
+                    }
+                    else {
+                        return this._tempThumbNail;
+                    }
+                },
+                set: function (val) {
+                    this._thumbUrl = val;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Book.prototype.getExt = function (filename) {
+                var ext = filename.split('.').pop();
+                if (ext == filename)
+                    return "";
+                return ext;
+            };
+            return Book;
+        }());
+        var RecentAdditions = (function () {
+            function RecentAdditions($location, $http, md5) {
+                this.$location = $location;
+                this.$http = $http;
+                this.md5 = md5;
+                this.mydocs = [];
+                this.api = {};
+                this.$insert = ['$location', '$http', 'md5'];
+                var library = [];
+            }
+            RecentAdditions.prototype.search = function () {
+                if (this.searchText) {
+                    this.webSearch(this.searchText);
+                }
+            };
+            RecentAdditions.prototype.webSearch = function (terms) {
+                var _this = this;
+                var url = 'http://pfsa.morrisdev.com/api/books/?cmd=search&terms=' + terms;
+                this.$http.get(url)
+                    .then(function (resp) {
+                    _this.books = resp.data;
+                });
+            };
+            RecentAdditions.prototype.getRecent = function (count) {
+                var _this = this;
+                this.recent = [];
+                var r = this.recent;
+                var url = 'http://pfsa.morrisdev.com/api/books/?cmd=recent&count=' + count;
+                this.$http.get(url)
+                    .then(function (resp) {
+                    _this.books = resp.data;
+                    var b = _this.books;
+                    angular.forEach(b, function (i, k) {
+                        console.log(i.thumburl);
+                        var bk = new Book();
+                        bk.title = i.title;
+                        bk.barcode = i.barcode;
+                        bk.author = i.author;
+                        bk.thumbUrl = i.thumburl;
+                        bk.category = i.category;
+                        bk.description = i.description;
+                        bk.type = i.type;
+                        bk.subject = i.subject;
+                        console.log(i);
+                        r.push(bk);
+                    });
+                    console.log(r);
+                });
+            };
+            RecentAdditions.prototype.getBook = function (b) {
+                var url = "/library/edit/" + b.barcode;
+                this.go(url);
+            };
+            RecentAdditions.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            RecentAdditions.prototype.$onInit = function () {
+                this.getRecent(5);
+            };
+            RecentAdditions.prototype.submitForm = function () {
+            };
+            RecentAdditions.prototype.cleanForm = function () {
+                this.searchText = '';
+            };
+            return RecentAdditions;
+        }());
+        Components.RecentAdditions = RecentAdditions;
+        app.component("recentAdditions", {
+            controller: RecentAdditions,
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.recentAdditions; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var Requests = (function () {
+            function Requests($location, $sessionStorage, $routeParams, libraryService) {
+                this.$location = $location;
+                this.$sessionStorage = $sessionStorage;
+                this.$routeParams = $routeParams;
+                this.libraryService = libraryService;
+                this.$insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService'];
+                this.email = "dmorris@morrisdev.com";
+                this.ShipSelections = [];
+                this.showAddress = false;
+                this.showConfirm = false;
+                this.showSearch = false;
+                this.showList = false;
+            }
+            Requests.prototype.$onInit = function () {
+                console.log(this.$routeParams);
+                this.mode = this.$routeParams.mode;
+                this.Prefix = this.$routeParams.prefix;
+                this.BookNumber = this.$routeParams.booknumber;
+                this.CallNumber = this.Prefix + this.BookNumber;
+                if (this.mode)
+                    this.mode = this.mode.toLowerCase();
+                if (this.mode == 'edit' || this.mode == 'add') {
+                    this.getBook(this.Prefix, this.BookNumber);
+                    this.showSearch = true;
+                }
+                else {
+                    this.GetRequests();
+                    this.showList = true;
+                }
+                console.log(this.mode);
+            };
+            Requests.prototype.LookupAccount = function (searchType, q) {
+                var _this = this;
+                this.libraryService.LookupAccount(searchType, q)
+                    .then(function (resp) {
+                    console.log(resp);
+                    if (resp.data != 'No Accounts Found') {
+                        _this.Account = resp.data[0];
+                        _this.showAddress = true;
+                        _this.showSearch = false;
+                        _this.showConfirm = false;
+                    }
+                    else {
+                        var c = confirm("No account was found for " + q + ".  Would you like to make a new account for them?");
+                        if (c) {
+                            _this.showAddress = true;
+                            _this.showSearch = false;
+                            _this.showConfirm = false;
+                            _this.Account = {};
+                            _this.Account.Email = q;
+                        }
+                    }
+                });
+            };
+            Requests.prototype.getBook = function (prefix, booknumber) {
+                var _this = this;
+                this.libraryService.getBook(prefix, booknumber)
+                    .then(function (resp) {
+                    _this.book = resp.data;
+                    if (!_this.book.Url) {
+                        var img = Application.Config.LibraryConfig.defaultBookImage;
+                    }
+                    else {
+                    }
+                });
+            };
+            Requests.prototype.AddRequest = function (callnumber) {
+                var _this = this;
+                this.libraryService.AddRequest(callnumber, this.email)
+                    .then(function (resp) {
+                    if (!resp.data.BookId) {
+                        alert(resp.data);
+                    }
+                    else {
+                        _this.GetRequests();
+                    }
+                });
+            };
+            Requests.prototype.AddRequestByAccount = function (a, callnumber) {
+                var _this = this;
+                this.libraryService.SaveAccount(a)
+                    .then(function (resp) {
+                    _this.libraryService.AddRequest(_this.CallNumber, _this.Account.Email)
+                        .then(function (resp) {
+                        if (!resp.data.BookId) {
+                            alert(resp.data);
+                        }
+                        else {
+                            alert("DONE!");
+                            _this.showConfirm = true;
+                            _this.GetRequests();
+                        }
+                    });
+                });
+            };
+            Requests.prototype.UpdateRequest = function (type, res, status, dt) {
+                var _this = this;
+                var obj = {};
+                obj.ReservationSubId = res.ReservationSubId;
+                obj.ChangeType = type;
+                obj.OnOff = status;
+                obj.ChangeDate = dt;
+                this.libraryService.UpdateRequest(obj)
+                    .then(function (resp) {
+                    console.log(resp.data);
+                    _this.GetRequests();
+                });
+            };
+            Requests.prototype.GetRequests = function () {
+                var _this = this;
+                this.libraryService.getOpenRequests()
+                    .then(function (resp) {
+                    _this.requests = resp.data;
+                });
+            };
+            Requests.prototype.ShipItem = function (r) {
+                var found = false;
+                var temp = [];
+                angular.forEach(this.ShipSelections, function (i, k) {
+                    if (i.ReservationSubId == r.ReservationSubId) {
+                        found = true;
+                    }
+                    else {
+                        temp.push(i);
+                    }
+                });
+                if (!found) {
+                    temp.push(r);
+                }
+                this.ShipSelections = temp;
+            };
+            Requests.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            return Requests;
+        }());
+        Components.Requests = Requests;
+        app.component("requests", {
+            controller: Requests,
+            bindings: { someVariable: '<' },
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.requests; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var Reservation = (function () {
+            function Reservation($location, $sessionStorage, libraryService) {
+                this.$location = $location;
+                this.$sessionStorage = $sessionStorage;
+                this.libraryService = libraryService;
+                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.ShipSelections = [];
+            }
+            Reservation.prototype.$onInit = function () {
+                console.log('Request Book');
+                this.GetRequests();
+            };
+            Reservation.prototype.AddRequest = function (callnumber) {
+                var _this = this;
+                this.libraryService.AddRequest(callnumber)
+                    .then(function (resp) {
+                    if (!resp.data.BookId) {
+                        alert(resp.data);
+                    }
+                    else {
+                        _this.GetRequests();
+                    }
+                });
+            };
+            Reservation.prototype.GetRequests = function () {
+                var _this = this;
+                this.libraryService.getOpenRequests()
+                    .then(function (resp) {
+                    _this.requests = resp.data;
+                });
+            };
+            Reservation.prototype.ShipItem = function (r) {
+                var found = false;
+                var temp = [];
+                angular.forEach(this.ShipSelections, function (i, k) {
+                    if (i.ReservationSubId == r.ReservationSubId) {
+                        found = true;
+                    }
+                    else {
+                        temp.push(i);
+                    }
+                });
+                if (!found) {
+                    temp.push(r);
+                }
+                this.ShipSelections = temp;
+            };
+            Reservation.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            return Reservation;
+        }());
+        Components.Reservation = Reservation;
+        app.component("reservation", {
+            controller: Reservation,
+            bindings: { someVariable: '<' },
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.reservation; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var SubjectsPage = (function () {
+            function SubjectsPage() {
+            }
+            SubjectsPage.prototype.$onInit = function () {
+                console.log(this.book);
+            };
+            return SubjectsPage;
+        }());
+        Components.SubjectsPage = SubjectsPage;
+        app.component("subjectsPage", {
+            controller: SubjectsPage,
+            bindings: { book: '<' },
+            controllerAs: "vm",
+            template: '<navbar></navbar><subjects></subjects>'
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var Subjects = (function () {
+            function Subjects($location, $http, libraryService, $sessionStorage) {
+                this.$location = $location;
+                this.$http = $http;
+                this.libraryService = libraryService;
+                this.$sessionStorage = $sessionStorage;
+                this.subjects = [];
+                this.sortColumn = 'Name';
+                this.hidelist = false;
+                this.$insert = ['$location', 'libraryService', '$sessionStorage'];
+            }
+            Subjects.prototype.CancelEdit = function () {
+                var _this = this;
+                if (this.mysubject.SubjectId > 0) {
+                    this.mysubject = JSON.parse(JSON.stringify(this.tmpSubject));
+                    console.log(this.mysubject);
+                    angular.forEach(this.subjects, function (i, k) {
+                        if (i.SubjectId == _this.mysubject.SubjectId) {
+                            angular.copy(_this.mysubject, i);
+                        }
+                    });
+                }
+                this.hidelist = false;
+            };
+            Subjects.prototype.NewSubject = function () {
+                console.log("New Subject");
+                this.hidelist = true;
+            };
+            Subjects.prototype.Save = function (o) {
+                var _this = this;
+                this.tmpSubject = {};
+                if (o == 1) {
+                    this.libraryService.saveSubject(this.mysubject)
+                        .then(function (resp) {
+                        _this.hidelist = false;
+                    });
+                }
+                if (o == 2) {
+                    this.mysubject.SubjectId = null;
+                    this.libraryService.saveSubject(this.mysubject)
+                        .then(function (resp) {
+                        _this.subjects.unshift(resp.data);
+                        _this.hidelist = false;
+                    });
+                }
+            };
+            Subjects.prototype.Edit = function (subject) {
+                console.log(subject);
+                this.hidelist = true;
+                if (subject) {
+                    this.tmpSubject = JSON.parse(JSON.stringify(subject));
+                    console.log(this.tmpSubject);
+                    this.mysubject = subject;
+                }
+                else {
+                    this.mysubject = { "SubjectId": 0, "Name": "", "Prefix": "", "LastId": 0, "Status": "Active" };
+                }
+            };
+            Subjects.prototype.$onInit = function () {
+                var _this = this;
+                this.libraryService.getSubjects()
+                    .then(function (data) {
+                    _this.subjects = data;
+                });
+            };
+            return Subjects;
+        }());
+        Components.Subjects = Subjects;
+        app.component("subjects", {
+            controller: Subjects,
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.subjects; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Config;
+    (function (Config) {
+        var LibraryConfig = (function () {
+            function LibraryConfig() {
+            }
+            Object.defineProperty(LibraryConfig, "imageServer", {
+                get: function () { return 'https://d2rg9t5epa49og.cloudfront.net'; },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(LibraryConfig, "defaultBookImage", {
+                get: function () { return 'assets/book.png'; },
+                enumerable: true,
+                configurable: true
+            });
+            return LibraryConfig;
+        }());
+        Config.LibraryConfig = LibraryConfig;
+    })(Config = Application.Config || (Application.Config = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Services;
+    (function (Services) {
+        var libraryService = (function () {
+            function libraryService($http, $sessionStorage, $location, $q) {
+                this.$http = $http;
+                this.$sessionStorage = $sessionStorage;
+                this.$location = $location;
+                this.$q = $q;
+                this.sid = {};
+                this.$insert = ["$http", "$sessionStorage", "$location", "$q"];
+                var v = new Application.Config.version();
+                this.server = v.apiServer;
+                this.checkLogin();
+            }
+            libraryService.prototype.checkLogin = function () {
+                if (this.$sessionStorage.myaccount) {
+                    this.sid = this.$sessionStorage.myaccount.SessionId;
+                }
+                else {
+                    if (this.$location.path != '/') {
+                        this.$location.url('/');
+                    }
+                    ;
+                }
+            };
+            libraryService.prototype.getAccounts = function () {
+                this.checkLogin();
+                var deferred = this.$q.defer();
+                var url = this.server + "/library/account?sid=" + this.sid;
+                this.$http.get(url)
+                    .then(function (resp) {
+                    deferred.resolve(resp.data);
+                });
+                return deferred.promise;
+            };
+            libraryService.prototype.getSubjects = function () {
+                var _this = this;
+                var deferred;
+                deferred = this.$q.defer();
+                if (this.$sessionStorage.subjects) {
+                    var s = this.$sessionStorage.subjects;
+                    deferred.resolve(s);
+                }
+                else {
+                    var url = this.server + "/api/subject";
+                    return this.$http.get(url)
+                        .then(function (resp) {
+                        _this.$sessionStorage.subjects = resp.data;
+                        deferred.resolve(resp.data);
+                    });
+                }
+                return deferred.promise;
+            };
+            libraryService.prototype.saveSubject = function (subject) {
+                this.checkLogin();
+                var url = this.server + "/api/subject?" + this.sid;
+                if (subject.SubjectId > 0) {
+                    console.log("PUT");
+                    return this.$http.put(url, subject);
+                }
+                else {
+                    console.log("POSTED");
+                    return this.$http.post(url, subject);
+                }
+            };
+            libraryService.prototype.Login = function (email, password) {
+                var creds = { "email": email, "password": password };
+                var url = this.server + "/api/Account/";
+                return this.$http.post(url, creds);
+            };
+            libraryService.prototype.uploadImage = function (fd) {
+                this.checkLogin();
+                var url = this.server + "/api/image/";
+                return this.$http.post(url, fd, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined }
+                });
+            };
+            libraryService.prototype.getBook = function (Prefix, BookNumber) {
+                var url = this.server + "/api/library/catalog/" + Prefix + "/" + BookNumber;
+                return this.$http.get(url);
+            };
+            libraryService.prototype.getBookHistory = function (Prefix, BookNumber) {
+                var url = this.server + "/library/catalog/" + Prefix + "/" + BookNumber + "/history";
+                return this.$http.get(url);
+            };
+            libraryService.prototype.getAccount = function (id) {
+                this.checkLogin();
+                var url = this.server + "/library/account/" + id + "?sid=" + this.sid;
+                return this.$http.get(url);
+            };
+            libraryService.prototype.AddRequest = function (callnumber, email) {
+                var obj = { "CallNumber": callnumber, "RequestByEmail": email };
+                var url = this.server + "/api/library/request";
+                return this.$http.post(url, obj);
+            };
+            libraryService.prototype.getOpenRequests = function () {
+                this.checkLogin();
+                var url = this.server + "/library/request?sid=" + this.sid;
+                return this.$http.get(url);
+            };
+            libraryService.prototype.UpdateRequest = function (obj) {
+                this.checkLogin();
+                var url = this.server + "/api/library/request?sid=" + this.sid;
+                return this.$http.put(url, obj);
+            };
+            libraryService.prototype.saveBook = function (book) {
+                this.checkLogin();
+                var url = this.server + "/api/catalog?sid=" + this.sid;
+                if (book.BookId > 0) {
+                    return this.$http.put(url, book);
+                }
+                else {
+                    return this.$http.post(url, book);
+                }
+            };
+            libraryService.prototype.Search = function (subject, author, title) {
+                var url = this.server + "/api/library/search?prefix=" + subject + "&author=" + author + "&title=" + title;
+                return this.$http.get(url);
+            };
+            libraryService.prototype.LookupAccount = function (searchType, q) {
+                var deferred;
+                deferred = this.$q.defer();
+                var url = this.server + "/library/accounts/search/email?q=" + q + "&sid=" + this.sid;
+                this.$http.get(url)
+                    .then(function (resp) {
+                    deferred.resolve(resp);
+                });
+                return deferred.promise;
+            };
+            libraryService.prototype.SaveAccount = function (account) {
+                var deferred;
+                deferred = this.$q.defer();
+                var url = this.server + "/library/account?sid=" + this.sid;
+                if (account.AccountId > 0) {
+                    this.$http.put(url, account)
+                        .then(function (resp) {
+                        deferred.resolve(resp);
+                    });
+                }
+                else {
+                    this.$http.post(url, account)
+                        .then(function (resp) {
+                        deferred.resolve(resp);
+                    });
+                }
+                return deferred.promise;
+            };
+            libraryService.prototype.UpdateAccountPassword = function (id, password) {
+                var deferred;
+                deferred = this.$q.defer();
+                var obj = {};
+                obj.AccountId = id;
+                obj.NewPassword = password;
+                var url = this.server + "/library/account?sid=" + this.sid;
+                this.$http.put(url, obj)
+                    .then(function (resp) {
+                    deferred.resolve(resp);
+                });
+                return deferred.promise;
+            };
+            libraryService.prototype.Recent = function () {
+                var url = this.server + "/api/library/search";
+                return this.$http.get(url);
+            };
+            return libraryService;
+        }());
+        Services.libraryService = libraryService;
+        app.service('libraryService', libraryService);
+    })(Services = Application.Services || (Application.Services = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Services;
+    (function (Services) {
+        var MailService = (function () {
+            function MailService($http, $location) {
+                this.$http = $http;
+                this.$insert = ["$http", "$location"];
+                this.mydomain = $location.protocol() + "://" + $location.host();
+            }
+            MailService.prototype.SendMail = function (obj) {
+                this.mydomain = "http://pfsa.morrisdev.com";
+                var url = this.mydomain + "/wp-content/themes/aspire/custom/widgets/emailer.php";
+                return this.$http.post(url, obj);
+            };
+            return MailService;
+        }());
+        Services.MailService = MailService;
+        app.service("mailService", MailService);
+    })(Services = Application.Services || (Application.Services = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Services;
+    (function (Services) {
+        var mailChimp = (function () {
+            function mailChimp($http) {
+                this.$http = $http;
+                this.$insert = ["$http"];
+                this.lists = {
+                    WebSubscription: "699a73df35",
+                    NewsLetter: "e6d3f77f33"
+                };
+            }
+            mailChimp.prototype.CreateMember = function (data, list_id) {
+                if (!list_id) {
+                    data.list_id = this.lists.NewsLetter;
+                }
+                else {
+                    data.list_id = list_id;
+                }
+                var key = "iub2398sd9823jkh2309sd0213joq3sd9f9890uo123jkkpodfoiojkqw";
+                var url = "/wp-content/themes/aspire/custom/mail-chimp.php";
+                url = "http://pfsa.morrisdev.com" + url;
+                var qs = '?api=' + key;
+                qs += '&fname=' + data.firstName;
+                qs += '&lname=' + data.lastName;
+                qs += '&email=' + data.email;
+                qs += '&interest=' + data.interest;
+                qs += '&phone=' + data.phone;
+                qs += '&age=' + data.age;
+                qs += '&gender=' + data.gender;
+                qs += '&amount=' + data.amount;
+                qs += '&list_id=' + data.list_id;
+                return this.$http.get(url + qs);
+            };
+            return mailChimp;
+        }());
+        Services.mailChimp = mailChimp;
+        app.service("mailChimp", mailChimp);
+    })(Services = Application.Services || (Application.Services = {}));
+})(Application || (Application = {}));
+//# sourceMappingURL=tsc.js.map

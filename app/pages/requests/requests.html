@@ -1,0 +1,264 @@
+﻿<form autocomplete="on">
+    <div class="row" ng-if="vm.mode=='add'">
+        <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-6">
+            <div style="margin-left:20px;"><h2>Book Request</h2></div>
+
+            <fieldset>
+                <legend>{{vm.book.Title}}</legend>
+
+                <div class="form-group row" ng-show="vm.showSearch" style="margin-top:40px;">
+                    <div class="col-sm-8">
+                        <div class="form-group form-inline">
+                            <label style="width:230px" for="email" class="form-label">Search for Account by Email</label>
+                            <input type="text" id="email" class="form-control" ng-model="vm.email" autocomplete="shipping email" />
+                            <button type="button" class="btn btn-sm btn-info" ng-click="vm.LookupAccount('email',vm.email)">Search!</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="vm.showAddress" style="padding:20px;border:solid 1px gray;">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-inline">
+                                <label style="width:80px" class="form-label">First Name</label>
+                                <input type="text" name="firstname" class="form-control" ng-model="vm.Account.FirstName" />
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">Last Name</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.LastName" />
+
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">Phone</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.Phone" />
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">Email</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.Email" />
+                            </div>
+                            <div class="form-group  ">
+                                <label for="example-color-input" class="form-label">Note</label>
+                                <textarea class="form-control" style="width:98%" type="text" ng-model="vm.Note"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">Street 1</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.Address1" />
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">Street 2</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.Address2" />
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">City</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.City" />
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">State</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.State" />
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">Zip Code</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.Zip" />
+                            </div>
+                            <div class="form-group form-inline">
+                                <label style="width:80px" for="lastname" class="form-label">Country</label>
+                                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.Country" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-8">
+                            <button type="button" class="btn btn-primary" ng-click="vm.AddRequestByAccount(vm.Account, vm.callNumber);">Add Request</button>
+                            <button type="button" class="btn btn-default" ng-click="vm.showAddress=false;vm.email=''">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONFIRMATION -->
+                <div ng-if="vm.showConfirm==true" style="padding:20px;border:solid 1px gray;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            Congratulation!  Your request for {{vm.book.Title}} has been submitted.  You will receive an email confirmation
+                            of your request.  Simply click the "Confirm Request" on the email and your book will be sent out.
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary" ng-click="vm.go('library/catalog')">Return to Catalog</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+
+</form>
+
+<div class="row" style="display:none">
+    <div class="col-md-12">
+        <div style="border:solid 1px gray;width:350px;padding:20px;height:350px;">
+            <div class="form-group form-inline">
+                <label style="width:80px" for="lastname" class="form-label">Password</label>
+                <input type="text" id="lastname" class="form-control" ng-model="vm.Account.Password" />
+            </div>
+            <div class="form-group form-inline">
+                <label style="width:80px" for="lastname" class="form-label">Confirm</label>
+                <input type="text" id="lastname" class="form-control" ng-model="vm.ConfirmPassword" />
+            </div>
+            <div class="form-group form-inline">
+                <button type="button" class="btn btn-default">Update Password</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-show="vm.showList">
+    <div class="col-md-12">
+        <div style="margin-left:20px;"><h2>Open Requests</h2></div>
+        <div style="padding-left:20px;">
+            <form class="form-inline">
+                <div class="form-group">
+
+                    <input type="text" style="width:150px" ng-model="vm.email"
+                           class="form-control"
+                           placeholder="Requester Email" />
+                    <input type="text" style="width:130px" ng-model="vm.callNumber"
+                           ng-keypress="vm.AddTitle($event);" class="form-control"
+                           placeholder="Call Number" />
+                    <button type="button" class="btn btn-default" ng-click="vm.AddRequest(vm.callNumber);">Add Request</button>
+                    <button type="button" class="btn btn-default" ng-click="vm.AddEditRequest(vm.callNumber);">Add &amp; Edit Request</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="row" ng-show="vm.showList">
+    <div class="col-md-12">
+        <div style="display:none">
+            NOT READY FOR THIS YET
+            <button type="button" ng-if="vm.ShipSelections.length==0">Ship Selected</button>
+            <button type="button" ng-if="vm.ShipSelections.length>1" ng-click="Ship()">Ship {{vm.ShipSelections.length}} Books</button>
+            <button type="button" ng-if="vm.ShipSelections.length==1" ng-click="Ship()">Ship {{vm.ShipSelections.length}} Book</button>
+
+            <!--<td ng-click="vm.EditReservation(obj)" style="text-align:center">
+                <div ng-if="res.ReservationId==0" style="margin-left:20px;width:20px;"><input ng-click="vm.ShipItem(res)" type="checkbox" class="form-control" /></div>
+                <a ng-if="res.ReservationId!=0"  ng-href="/library/reservation/{{res.ReservationId}}">{{res.ReservationId}}</a>
+            </td>-->
+
+        </div>
+        <style>
+            .dateBox{width:150px !important;}
+        </style>
+        <table class="table table-striped table-hover;" style="cursor:pointer">
+            <tr>
+
+                <th>
+
+                    Request#
+                </th>
+
+                <th>Request&nbsp;By</th>
+                <th>Callnumber</th>
+                <th style="display:none">Title</th>
+                <th>Requested  </th>
+                <th>Packed</th>
+                <th>Shipped</th>
+                <th>Due</th>
+                <th>Received</th>
+                <th>Reshelved</th>
+            </tr>
+            <tr ng-repeat="res in vm.requests | filter:{RequestByEmail:vm.email} | filter: {CallNumber: vm.callNumber}">
+
+                <td>{{res.ReservationSubId}}</td>
+                <td ng-click="vm.EditRequest(obj)">{{res.RequestByEmail}}</td>
+                <td><a ng-href="#/library/catalog/edit/{{res.Prefix}}/{{res.BookNumber}}">{{res.CallNumber}}</a></td>
+
+                <td style="display:none">{{res.Title}}</td>
+                <td >{{res.RequestDate | date:'MM/dd/yyyy'}}</td>
+                <td >
+
+                    <div class="input-group dateBox" ng-if="res.PackDate">
+                        <input type="text" value="{{res.PackDate | date: 'shortDate'}}" readonly=true class="form-control" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Pack',res,false)">X</button>
+                        </span>
+                    </div>
+                    <div class=" " ng-if="!res.PackDate" style="width:150px">
+                        <input type="date" class="form-control" ng-model="packDate" style="width:9vw" />
+                        
+                        <button type="button"  style="width:150px" class="btn btn-default" ng-click="vm.UpdateRequest('Pack',res,true,packDate)">Pack</button>
+                    </div>
+                </td>
+                <td>
+
+                    <div class="input-group dateBox" ng-if="res.ShipDate">
+                        <input type="text" value="{{res.ShipDate | date: 'shortDate'}}" readonly=true class="form-control" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Ship',res,false)">X</button>
+                        </span>
+                    </div>
+                    <div class="input-group" ng-if="!res.ShipDate && res.PackDate">
+                        <input type="date" class="form-control" ng-model="shipDate" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Ship',res,true,shipDate)">Ship</button>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group dateBox" ng-if="res.DueDate">
+                        <input type="text" value="{{res.DueDate | date: 'shortDate'}}" readonly=true class="form-control" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Due',res,false)">X</button>
+                        </span>
+                    </div>
+                    <div class="input-group" ng-if="!res.DueDate && res.ShipDate">
+                        <input type="date" class="form-control" ng-model="dueDate" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Due',res,true,dueDate)">Set</button>
+                        </span>
+                    </div>
+
+
+                </td>
+                <td>
+                    <div class="input-group dateBox" ng-if="res.ReceivedDate">
+                        <input type="text" value="{{res.ReceivedDate | date: 'shortDate'}}" readonly=true class="form-control" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,false)">X</button>
+                        </span>
+                    </div>
+                    <div class="input-group" ng-if="!res.ReceivedDate && res.DueDate">
+                        <input type="date" class="form-control" ng-model="receivedDate" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,true,DueDate)">Receive</button>
+                        </span>
+                    </div>
+
+                </td>
+                <td>
+                    <div class="input-group dateBox" ng-if="res.ReshelveDate">
+                        <input type="text" value="{{res.ReshelveDate | date: 'shortDate'}}" readonly=true class="form-control" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,false)">X</button>
+                        </span>
+                    </div>
+                    <div class="input-group" ng-if="!res.ReshelveDate && res.ReceivedDate">
+                        <input type="date" class="form-control" ng-model="reshelveDate" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,true,reshelveDate)">Reshelve</button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+

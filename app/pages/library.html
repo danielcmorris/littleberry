@@ -1,0 +1,101 @@
+﻿<div class="row"  style="margin-top:0px">
+    <div class="col-md-6">
+        <div style="padding-left:20px;font-family:Arial, Helvetica, sans-serif;font-size:20pt;font-weight:bold">Catalog</div>
+
+    </div>
+</div>
+
+
+<!--<div class="row">
+    <div class="col-md-6">
+        <form class="form-inline">
+            <div class="form-group">
+                <input type="text"  ng-model="vm.callnumber" ng-keypress="vm.OpenByCallNumberKey($event);" class="form-control" placeholder="Call Number" />
+            </div>
+            <button type="button" class="btn btn-default" ng-click="vm.OpenByCallNumber();">Open</button>
+        </form>
+    </div>
+
+</div>-->
+
+<div class="row">
+    <div class="col-md-6">
+        <div style="padding-left:20px;">
+            <form class="form-inline">
+                <div class="form-group">
+
+                    <input type="text" name="search" style="width:350px" ng-model="vm.searchText" ng-keypress="vm.SearchKey($event);" class="form-control"
+                           placeholder="search text..." />
+
+                </div>
+                <button type="button" class="btn btn-default" ng-click="vm.Search(vm.searchText);">Search</button>
+                <button type="button" class="btn btn-default" ng-if="vm.searchText" ng-click="vm.ClearSearch();">Clear</button>
+                <button type="button" class="btn btn-default" ng-click="vm.webSearch('recent additions');">Recent</button>
+
+                <button type="button" class="btn btn-default" ng-click="vm.NewBook();">New</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row" ng-show="vm.searchResults">
+    <div class="col-md-12">
+        <table class="table table-striped table-hover;" style="cursor:pointer">
+
+            <tr>
+                <th>Bar Code</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Create Date</th>
+             </tr>
+
+            <tr ng-repeat="book in vm.books track by $index"  ng-click="vm.getBook(book)">
+                <td >
+                    <img style="display:block" ng-if="book.Url!=''" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}" width="100" />
+                    <div style="padding-left:20px" ><a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.CallNumber}}</a></div>
+                </td>
+                <td>{{book.Title}}</td>
+                <td>{{book.Author}}</td>
+                <td>{{book.Subject}}</td>
+                <td class="capitalize">{{book.Status.toLowerCase()}}</td>
+                <td>{{book.CreateDate| date:'MM/dd/yyyy'}}</td>
+            
+           
+
+            </tr>
+
+        </table>
+
+    </div>
+</div>
+
+
+<style>
+    .bookRow {
+        font-family: 'Open Sans', sans-serif;
+        padding: 20px;
+        margin-bottom: 10px;
+        border: solid 1px #CCCCCC;
+        background-color: #FFFFFF;
+        margin-bottom: 10px;
+        border: solid 1px #CCCCCC;
+        background-color: #FFFFFF;
+    }
+    .bookBox {padding:10px;width:180px;height:180px;border:black 1px solid;
+    }
+    .bookBoxCenter{margin-left:auto;margin-right:auto;
+                width:160px;height:160px;overflow:hidden}
+    .bookBoxCenter img{max-width:160px;max-height:160px;   display: block;margin: 0 auto;}
+</style>
+
+
+
+<div   ng-repeat="b in vm.recent track by $index">
+    <book-tile book="b"></book-tile>
+</div>
+
+  
