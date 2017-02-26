@@ -1,4 +1,4 @@
-/// <reference path="td/types.d.ts" />
+/// <reference path="../../type-definitions/types.d.ts" />
 declare var ROOT_PATH: string;
 
 

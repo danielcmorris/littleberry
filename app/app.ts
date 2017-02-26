@@ -1,4 +1,4 @@
-/// <reference path="../type-definitions/types.d.ts" />
+/// <reference path="../../type-definitions/types.d.ts" />
  
  
 module Application.Controllers{
@@ -12,7 +12,7 @@ module Application.Controllers{
             //console.log(this.$routeParams);
              var v=new Application.Config.version()
             console.log(v)
-            this.Title="PFSA Tools V"+v.number;
+            this.Title="PFSA Library Version "+v.number;
 
 
             
