@@ -13,7 +13,9 @@ A short description of the motivation behind the creation and maintenance of the
 
 ## Installation
 
-Provide code examples and explanations of how to get the project.
+Simply copy the files to the root of an public directory.  It's excusively client-side, so it can be on just about any service. 
+The configiuration file /app/config.ts   will have all the codes necessary to access the server.  If you have no account, you'll have to contact 
+LittleBerryLibrary and get one.
 
 ## API Reference
 
