@@ -224,11 +224,7 @@ module Application.Library.Components {
             
         }
 
-        Request() {
-            let b = this.book;
-            let url = 'requests/add/' + b.Prefix + '/' + b.BookNumber;
-            this.go(url);
-        }
+       
         go(url: string) {
 
             this.$location.url('/library/' + url);

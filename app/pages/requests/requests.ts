@@ -107,9 +107,10 @@ module Application.Components {
                              if (!resp.data.BookId) {
                                  alert(resp.data)
                              } else {
-                                 alert("DONE!");
+                                
 
                                  this.showConfirm = true;
+                                 this.showAddress = false;
                                  this.GetRequests();
                              }
                          })

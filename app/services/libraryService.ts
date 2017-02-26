@@ -115,7 +115,7 @@ module Application.Services {
         }
         AddRequest(callnumber: string, email: string): Application.Library.Types.IBook {
             let obj: any = { "CallNumber": callnumber, "RequestByEmail": email };
-            let url = this.server + "/api/library/request"
+            let url = this.server + "/library/request?sid=" + this.sid;
             return this.$http.post(url, obj);
         }
         getOpenRequests() {
@@ -128,7 +128,7 @@ module Application.Services {
 
             this.checkLogin()
 
-            let url = this.server + "/api/library/request?sid=" + this.sid;
+            let url = this.server + "/library/request?sid=" + this.sid;
             return this.$http.put(url, obj);
 
         }

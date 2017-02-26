@@ -445,6 +445,11 @@ var Application;
                         return imageServer + '/' + this.book.Url;
                     }
                 };
+                BookView.prototype.Request = function () {
+                    var b = this.book;
+                    var url = 'library/requests/add/' + b.Prefix + '/' + b.BookNumber;
+                    this.go(url);
+                };
                 BookView.prototype.go = function (url) {
                     this.$location.url(url);
                 };
@@ -610,11 +615,6 @@ var Application;
                         }
                         _this.loading = false;
                     });
-                };
-                book.prototype.Request = function () {
-                    var b = this.book;
-                    var url = 'requests/add/' + b.Prefix + '/' + b.BookNumber;
-                    this.go(url);
                 };
                 book.prototype.go = function (url) {
                     this.$location.url('/library/' + url);
@@ -1206,8 +1206,8 @@ var Application;
                             alert(resp.data);
                         }
                         else {
-                            alert("DONE!");
                             _this.showConfirm = true;
+                            _this.showAddress = false;
                             _this.GetRequests();
                         }
                     });
@@ -1545,7 +1545,7 @@ var Application;
             };
             libraryService.prototype.AddRequest = function (callnumber, email) {
                 var obj = { "CallNumber": callnumber, "RequestByEmail": email };
-                var url = this.server + "/api/library/request";
+                var url = this.server + "/library/request?sid=" + this.sid;
                 return this.$http.post(url, obj);
             };
             libraryService.prototype.getOpenRequests = function () {
@@ -1555,7 +1555,7 @@ var Application;
             };
             libraryService.prototype.UpdateRequest = function (obj) {
                 this.checkLogin();
-                var url = this.server + "/api/library/request?sid=" + this.sid;
+                var url = this.server + "/library/request?sid=" + this.sid;
                 return this.$http.put(url, obj);
             };
             libraryService.prototype.saveBook = function (book) {
