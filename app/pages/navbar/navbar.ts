@@ -25,6 +25,9 @@ module Application.Components {
                 let a = this.$sessionStorage.myaccount
                 this.username = a.FirstName + ' ' + a.LastName;
                 this.AccountId = a.AccountId;
+
+            this.permission = new Application.Context.NavigationPermissions(a.AccountType);
+
             }
             else {
 
@@ -32,7 +35,6 @@ module Application.Components {
                
             }
           
-            this.permission = new Application.Context.NavigationPermissions(a.AccountType);
 
 
            

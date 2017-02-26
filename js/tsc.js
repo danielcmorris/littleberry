@@ -941,10 +941,10 @@ var Application;
                     var a = this.$sessionStorage.myaccount;
                     this.username = a.FirstName + ' ' + a.LastName;
                     this.AccountId = a.AccountId;
+                    this.permission = new Application.Context.NavigationPermissions(a.AccountType);
                 }
                 else {
                 }
-                this.permission = new Application.Context.NavigationPermissions(a.AccountType);
             };
             Navbar.prototype.LogOut = function () {
                 this.$sessionStorage.$reset();
