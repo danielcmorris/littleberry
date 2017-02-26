@@ -1,4 +1,4 @@
-﻿/// <reference path="../../../td/types.d.ts" />
+﻿/// <reference path="../../../../type-definitions/types.d.ts" />
 
  
 
@@ -163,25 +163,28 @@ module Application.Library.Components {
 
         }
         checkFile(){
-            if( this.file){
-                alert('Load Image')
-                this.uploadImage();
-                
-            }else{
-                alert('nope')
-            }
-            
-
+         
        
         }
         saveBook(option:number) {
             this.loading = true;
 
-               
-            this.checkFile();
-           // if we've changed data, it's probably in the search results from the previous page, so we need top update it
+        /* if the file selector has changed, then upload the image */       
+            if( this.file){                
+                this.uploadImage();                
+            }
+          // if we've changed data, it's probably in the search results from the previous page, so we need top update it
             this.book.SubjectId = this.SelectedSubject.SubjectId;
             this.book.Subject = this.SelectedSubject.Subject;
+
+            /* 
+            
+            if this is a prexisting book, then go through the cache and make sure to update the
+            cached value with the new values so when the user returns to the search page they see the updated 
+            results 
+
+            */
+
             if (this.book.BookId) {
             if (this.$sessionStorage.searchResults) {
                 let searchResults = this.$sessionStorage.searchResults
@@ -204,11 +207,8 @@ module Application.Library.Components {
 
             this.libraryService.saveBook(this.book)
                 .then((resp: any) => {
-                    console.log(resp.data);
-                    let b = this.book;
-                //    let url = "edit/" + b.prefix + "/" + b.booknumber;
-                    
-               //     this.go(url);
+                     let b = this.book;
+               
                   
                     if (option == 1) {
                         this.$location.url('/library/catalog');

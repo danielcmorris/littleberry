@@ -1,4 +1,5 @@
-﻿/// <reference path="../../../td/types.d.ts" />
+﻿/// <reference path="../../../../type-definitions/types.d.ts" />
+
 
 
 
@@ -9,12 +10,12 @@ module Application.Library.Components {
         constructor(public $location: ng.ILocationService, public $sessionStorage: any, public libraryService: any) { }
         public book: Types.IBook;
         public history: any;
-public permission:any;
+        public permission:any;
         $onInit() {
             console.log('Book View Startup');
             console.log(this.book);
             let AccountType =this.$sessionStorage.myaccount.AccountType;
-            permission = new NavigationPermissions(AccountType)
+            this.permission = new Application.Context.NavigationPermissions(AccountType)
             
              
         }

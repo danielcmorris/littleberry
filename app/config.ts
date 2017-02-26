@@ -16,7 +16,7 @@ module Application.Config {
       //  public apiServer: string = "http://api.pfsa.morrisdev.com";
           
         constructor() {
-            this.number = "1.4" + Math.random();
+            this.number = "1.7";// + Math.random();
             let path = window.location.host;
          
             if (path.substring(0, 5) === "local") {

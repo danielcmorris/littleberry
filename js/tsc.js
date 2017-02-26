@@ -10,7 +10,7 @@ var Application;
                 this.$insert = ['$route', '$routeParams', '$location'];
                 var v = new Application.Config.version();
                 console.log(v);
-                this.Title = "PFSA Tools V" + v.number;
+                this.Title = "PFSA Library Version " + v.number;
             }
             return MainCtrl;
         }());
@@ -45,6 +45,38 @@ app.factory('$localstorage', ['$window', function ($window) {
     }]);
 var Application;
 (function (Application) {
+    var Context;
+    (function (Context) {
+        var NavigationPermissions = (function () {
+            function NavigationPermissions(AccountType) {
+                this.AddTitle = false;
+                this.EditTitle = false;
+                this.AddRequest = false;
+                this.Requests = false;
+                this.SearchRequest = false;
+                this.Members = false;
+                this.Subjects = false;
+                this.LoggedIn = false;
+                switch (AccountType) {
+                    case 'Admin':
+                        this.AddTitle = true;
+                        this.EditTitle = true;
+                        this.Subjects = true;
+                        this.LoggedIn = true;
+                        this.Members = true;
+                        this.Requests = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return NavigationPermissions;
+        }());
+        Context.NavigationPermissions = NavigationPermissions;
+    })(Context = Application.Context || (Application.Context = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
     var Config;
     (function (Config) {
         var version = (function () {
@@ -53,7 +85,7 @@ var Application;
                 this.supportContact = "dmorris@morrisdev.com";
                 this.apiKey = "dswejkdfkui8yoihkjnlj98776tsad87sd9809fdijsnekjjdsoidjs";
                 this.apiServer = "http://localhost:53035/";
-                this.number = "1.4" + Math.random();
+                this.number = "1.7";
                 var path = window.location.host;
                 if (path.substring(0, 5) === "local") {
                     this.apiServer = "http://localhost:53035";
@@ -396,7 +428,7 @@ var Application;
                     console.log('Book View Startup');
                     console.log(this.book);
                     var AccountType = this.$sessionStorage.myaccount.AccountType;
-                    permission = new NavigationPermissions(AccountType);
+                    this.permission = new Application.Context.NavigationPermissions(AccountType);
                 };
                 BookView.prototype.Edit = function () {
                     var b = this.book;
@@ -545,18 +577,13 @@ var Application;
                 book.prototype.UpdateStatus = function () {
                 };
                 book.prototype.checkFile = function () {
-                    if (this.file) {
-                        alert('Load Image');
-                        this.uploadImage();
-                    }
-                    else {
-                        alert('nope');
-                    }
                 };
                 book.prototype.saveBook = function (option) {
                     var _this = this;
                     this.loading = true;
-                    this.checkFile();
+                    if (this.file) {
+                        this.uploadImage();
+                    }
                     this.book.SubjectId = this.SelectedSubject.SubjectId;
                     this.book.Subject = this.SelectedSubject.Subject;
                     if (this.book.BookId) {
@@ -574,7 +601,6 @@ var Application;
                     }
                     this.libraryService.saveBook(this.book)
                         .then(function (resp) {
-                        console.log(resp.data);
                         var b = _this.book;
                         if (option == 1) {
                             _this.$location.url('/library/catalog');
@@ -903,31 +929,6 @@ var Application;
 (function (Application) {
     var Components;
     (function (Components) {
-        var NavigationPermissions = (function () {
-            function NavigationPermissions(AccountType) {
-                this.AddTitle = false;
-                this.EditTitle = false;
-                this.AddRequest = false;
-                this.Requests = false;
-                this.SearchRequest = false;
-                this.Members = false;
-                this.Subjects = false;
-                this.LoggedIn = false;
-                switch (AccountType) {
-                    case 'Admin':
-                        this.AddTitle = true;
-                        this.Subjects = true;
-                        this.LoggedIn = true;
-                        this.Members = true;
-                        this.Requests = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return NavigationPermissions;
-        }());
-        Components.NavigationPermissions = NavigationPermissions;
         var Navbar = (function () {
             function Navbar($location, $sessionStorage) {
                 this.$location = $location;
@@ -943,7 +944,7 @@ var Application;
                 }
                 else {
                 }
-                this.permission = new NavigationPermissions(a.AccountType);
+                this.permission = new Application.Context.NavigationPermissions(a.AccountType);
             };
             Navbar.prototype.LogOut = function () {
                 this.$sessionStorage.$reset();

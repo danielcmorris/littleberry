@@ -1,39 +1,16 @@
 ﻿/// <reference path="../../../../type-definitions/types.d.ts" />
+/// <reference path="../../classes/NavigationPermissions.ts" />
 
 
 
 
 module Application.Components {
 
-   export class NavigationPermissions{
-        AddTitle:boolean = false;
-        EditTitle:boolean = false;
-        AddRequest:boolean=false;
-        Requests:boolean=false;
-        SearchRequest:boolean=false;
-        Members:boolean=false;
-        Subjects:boolean=false;
-        LoggedIn:boolean=false
-        
-        constructor(AccountType:string){
-            switch (AccountType) {
-                case 'Admin':
-                    this.AddTitle = true;
-                    this.Subjects = true;
-                    this.LoggedIn = true;
-                    this.Members = true;
-                    this.Requests=true;
-                    break;
-            
-                default:
-                    break;
-            }
-        }
-    }
+  
 
     export class Navbar {
         $insert = ['$location','$sessionStorage'];
-        constructor(public $location: ng.ILocationService, public $sessionStorage:any) { }
+        constructor(public $location: ng.ILocationService, public $sessionStorage:any ) { }
         public callnumber: any
         public username: string;
         public AccountId: number;
@@ -55,7 +32,7 @@ module Application.Components {
                
             }
           
-            this.permission = new NavigationPermissions(a.AccountType);
+            this.permission = new Application.Context.NavigationPermissions(a.AccountType);
 
 
            

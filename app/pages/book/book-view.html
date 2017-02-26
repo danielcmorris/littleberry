@@ -1,4 +1,5 @@
-﻿<div class="row bookRow">
+﻿
+<div class="row bookRow">
             <div class="col-sm-3">
                 <div class="bookBox">
                     <div class="bookBoxCenter">
@@ -23,7 +24,8 @@
                 <div class="form-group row">
                     <div class="col-sm-8" style="padding-left:30px">
                         <button ng-click="vm.go('library/catalog')" class="btn btn-default" type="button">Close</button>
-                        <button ng-click="vm.Edit(vm.book)" class="btn btn-primary" type="button" ng-show="vm.permission.EditBook">Edit</button>
+                        <button ng-click="vm.Edit(vm.book)" class="btn btn-primary" type="button" 
+                        ng-show="vm.permission.EditTitle">Edit</button>
                         <button ng-click="vm.Request(vm.book)" class="btn btn-primary" type="button">Request</button>
                     </div>
                 </div>
