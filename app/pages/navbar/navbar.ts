@@ -9,8 +9,8 @@ module Application.Components {
   
 
     export class Navbar {
-        $insert = ['$location','$sessionStorage'];
-        constructor(public $location: ng.ILocationService, public $sessionStorage:any ) { }
+        $insert = ['$location','$sessionStorage', 'libraryService'];
+        constructor(public $location: ng.ILocationService, public $sessionStorage:any , private libraryService:Application.Services.libraryService) { }
         public callnumber: any
         public username: string;
         public AccountId: number;
@@ -55,10 +55,22 @@ module Application.Components {
             let cn = this.callnumber;
             let booknumber = cn.replace(/\D/g, '');
             let prefix = cn.replace(/[0-9]/g, '');
-            let url = "/library/catalog/edit/" + prefix + "/" + booknumber;
-           
-            console.log(url);
-            this.go(url);
+            let url = "/library/catalog/view/" + prefix + "/" + booknumber;
+            let ls = this.libraryService;
+            ls.getBook(prefix,booknumber)
+                .then((resp:any)=>{
+                     
+                    if(resp.data.CallNumber){
+                        if(resp.data.Status='Deleted'){
+                            alert('This title was deleted.');
+                        }else{
+                            this.go(url);
+                        }                        
+                    }else{
+                        alert('No title found for call number '+ cn);
+                    }
+                })
+            
         }
         go(url: string) {
             this.$location.url(url);

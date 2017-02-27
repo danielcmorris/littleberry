@@ -205,8 +205,7 @@ var Application;
         app.config(httpConfig);
         var templates = (function () {
             function templates() {
-                this.index = ROOT_PATH + "app/pages/index/index.html";
-                this.library = ROOT_PATH + "app/pages/library.html";
+                this.library = ROOT_PATH + "app/pages/index/library.html";
                 this.book = ROOT_PATH + "app/pages/book/book.html";
                 this.subjects = ROOT_PATH + "app/pages/subjects/subjects.html";
                 this.account = ROOT_PATH + "app/pages/account/account.html";
@@ -699,26 +698,6 @@ var Application;
 (function (Application) {
     var Components;
     (function (Components) {
-        var index = (function () {
-            function index() {
-                this.primaryContact = {};
-                this.address = {};
-                this.dependants = {};
-            }
-            return index;
-        }());
-        Components.index = index;
-        app.component("index", {
-            controller: index,
-            controllerAs: "vm",
-            templateUrl: function (templates) { return templates.index; },
-        });
-    })(Components = Application.Components || (Application.Components = {}));
-})(Application || (Application = {}));
-var Application;
-(function (Application) {
-    var Components;
-    (function (Components) {
         var Book = (function () {
             function Book() {
                 this._tempThumbNail = 'http://pfsa.morrisdev.com/tools/app/pages/library/book/placeholder.jpg';
@@ -930,10 +909,11 @@ var Application;
     var Components;
     (function (Components) {
         var Navbar = (function () {
-            function Navbar($location, $sessionStorage) {
+            function Navbar($location, $sessionStorage, libraryService) {
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
-                this.$insert = ['$location', '$sessionStorage'];
+                this.libraryService = libraryService;
+                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
                 this.permission = {};
             }
             Navbar.prototype.$onInit = function () {
@@ -957,12 +937,26 @@ var Application;
                 }
             };
             Navbar.prototype.OpenByCallNumber = function () {
+                var _this = this;
                 var cn = this.callnumber;
                 var booknumber = cn.replace(/\D/g, '');
                 var prefix = cn.replace(/[0-9]/g, '');
-                var url = "/library/catalog/edit/" + prefix + "/" + booknumber;
-                console.log(url);
-                this.go(url);
+                var url = "/library/catalog/view/" + prefix + "/" + booknumber;
+                var ls = this.libraryService;
+                ls.getBook(prefix, booknumber)
+                    .then(function (resp) {
+                    if (resp.data.CallNumber) {
+                        if (resp.data.Status = 'Deleted') {
+                            alert('This title was deleted.');
+                        }
+                        else {
+                            _this.go(url);
+                        }
+                    }
+                    else {
+                        alert('No title found for call number ' + cn);
+                    }
+                });
             };
             Navbar.prototype.go = function (url) {
                 this.$location.url(url);

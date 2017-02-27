@@ -3,37 +3,7 @@
     <div ng-show="vm.editing" class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-10">
         <h2 ng-if="vm.book.Title==null">New Book</h2>
         <h2 ng-bind="vm.book.Title">Book Title</h2>
-        <div class="form-group row">
-            <div class="col-sm-7">
-                <label for="example-color-input" class="form-label">Subject</label>
-                <select class="form-control" ng-model="vm.SelectedSubject" 
-                        ng-change="vm.book.SubjectId=vm.SelectedSubject.SubjectId" 
-                        ng-options="subject.Name for subject in vm.subjects"></select>
-            </div>
-            <div class="col-sm-2" style="margin-top:25px">
-                <button class="btn btn-default" type="button" ng-click="vm.ApplySubject()">Generate CallNumber</button>
-            </div>
-        </div>
-
-        <div class="form-group form-inline row" ng-if="vm.book.CallNumber">
-            <div class="col-sm-8">
-                <div>
-                    <label for="example-color-input" class="form-label">CallNumber</label>
-                </div>
-                <input ng-if="vm.mode=='update'" class="form-control" type="text" ng-model="vm.book.CallNumber"
-                       disabled id="example-color-input">
-                <input ng-if="vm.mode=='insert'"
-                       class="form-control" type="text" disabled
-                       style="width:60px" ng-model="vm.book.Prefix" />
-                <input ng-if="vm.mode=='insert'" class="form-control"
-                       style="width:100px"
-                       type="number" ng-model="vm.book.BookNumber"
-                       id="example-color-input">
-            </div>
-        </div>
-
-        <div ng-if="vm.book.CallNumber">
-            <div class="form-group row">
+         <div class="form-group row">
                 <div class="col-sm-8">
                     <label for="example-color-input" class="form-label">Title</label>
                     <input class="form-control" type="text"
@@ -49,11 +19,38 @@
                            placeholder="last name, first name">
                 </div>
             </div>
+        <div class="form-group row">
+            
+            <div class="col-sm-6">
+                <label for="example-color-input" class="form-label">Subject</label>
+                <select class="form-control" ng-model="vm.SelectedSubject" 
+                        ng-change="vm.book.SubjectId=vm.SelectedSubject.SubjectId" 
+                        ng-options="subject.Name for subject in vm.subjects"></select>
+            </div>
+            <div class="col-sm-3" style="margin-top:25px" ng-if="!vm.book.CallNumber">
+                <button class="btn btn-default" type="button" ng-click="vm.ApplySubject()">Generate CallNumber</button>
+            </div>
+            <div class="col-sm-2"  ng-if="vm.book.CallNumber">
+                <label for="example-color-input" class="form-label">CallNumber</label>
+                 <input ng-if="vm.mode=='update'" class="form-control" type="text" ng-model="vm.book.CallNumber"
+                       disabled id="example-color-input">
+                <input ng-if="vm.mode=='insert'"
+                       class="form-control" type="text" disabled
+                       style="width:60px" ng-model="vm.book.Prefix" />
+                <input ng-if="vm.mode=='insert'" class="form-control"
+                       style="width:100px"
+                       type="number" ng-model="vm.book.BookNumber"
+                       id="example-color-input">
+            </div>    
+        </div>
 
+ 
             <div class="form-group row" ng-if="vm.bookImage!=''">
                 <div class="col-sm-3">
-
-                    <img ng-src="{{vm.bookImage}}" width="200" /><br />
+                    <label for="" class="form-label">Image </label><br />
+                    <div style="width:100%;padding:10px;">
+                    <img ng-src="{{vm.bookImage}}" width="100%" />
+                    </div>
                     <button class="btn btn-warn" type="button" ng-click="vm.bookImage=''">Clear</button>
                 </div>
                 <div class="col-sm-5">
@@ -62,8 +59,7 @@
                               id="Notes"></textarea>
                 </div>
             </div>
-            <button type="button" ng-click="vm.checkFile()">click me</button>
-            <img id="image">
+          
             <div class="form-group row" ng-if="vm.bookImage==''">
             
                 <div class="col-sm-2" ng-if="!vm.image.uploading">
@@ -80,8 +76,7 @@
                 </div>
                 <div class="col-sm-5">
                     <label for="example-color-input" class="form-label">Description</label>
-                    <textarea class="form-control" type="text" ng-model="vm.book.Notes"
-                              id="example-color-input"></textarea>
+                    <textarea class="form-control" type="text" ng-model="vm.book.Notes"  id="example-color-input"></textarea>
                 </div>
             </div>
 

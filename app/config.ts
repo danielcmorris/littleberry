@@ -160,10 +160,10 @@ module Application.Config {
     export class templates {
 
         /* PAGES */
-         public index: string = ROOT_PATH +"app/pages/index/index.html";       
-         public library: string = ROOT_PATH +"app/pages/library.html";
+             
          
         /* LIBRARY COMPONENTS */
+        public library: string = ROOT_PATH +"app/pages/index/library.html";
         public book: string = ROOT_PATH + "app/pages/book/book.html";
         public subjects: string = ROOT_PATH + "app/pages/subjects/subjects.html";
         public account: string = ROOT_PATH + "app/pages/account/account.html";
