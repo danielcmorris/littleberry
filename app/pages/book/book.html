@@ -31,16 +31,9 @@
                 <button class="btn btn-default" type="button" ng-click="vm.ApplySubject()">Generate CallNumber</button>
             </div>
             <div class="col-sm-2"  ng-if="vm.book.CallNumber">
-                <label for="example-color-input" class="form-label">CallNumber</label>
-                 <input ng-if="vm.mode=='update'" class="form-control" type="text" ng-model="vm.book.CallNumber"
-                       disabled id="example-color-input">
-                <input ng-if="vm.mode=='insert'"
-                       class="form-control" type="text" disabled
-                       style="width:60px" ng-model="vm.book.Prefix" />
-                <input ng-if="vm.mode=='insert'" class="form-control"
-                       style="width:100px"
-                       type="number" ng-model="vm.book.BookNumber"
-                       id="example-color-input">
+                <label for="example-color-input" class="form-label">Call Number</label>
+                 <input class="form-control" type="text" ng-model="vm.book.CallNumber"  disabled  >
+              
             </div>    
         </div>
 
