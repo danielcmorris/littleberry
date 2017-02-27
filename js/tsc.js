@@ -422,6 +422,7 @@ var Application;
                     this.$sessionStorage = $sessionStorage;
                     this.libraryService = libraryService;
                     this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                    this.showBookImage = false;
                 }
                 BookView.prototype.$onInit = function () {
                     console.log('Book View Startup');
@@ -431,7 +432,6 @@ var Application;
                 };
                 BookView.prototype.Edit = function () {
                     var b = this.book;
-                    console.log(b);
                     this.go('/library/catalog/edit/' + b.Prefix + '/' + b.BookNumber);
                 };
                 BookView.prototype.BookImage = function (b) {
@@ -588,8 +588,6 @@ var Application;
                     if (this.file) {
                         this.uploadImage();
                     }
-                    this.book.SubjectId = this.SelectedSubject.SubjectId;
-                    this.book.Subject = this.SelectedSubject.Subject;
                     if (this.book.BookId) {
                         if (this.$sessionStorage.searchResults) {
                             var searchResults = this.$sessionStorage.searchResults;

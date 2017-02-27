@@ -11,6 +11,7 @@ module Application.Library.Components {
         public book: Types.IBook;
         public history: any;
         public permission:any;
+        public showBookImage:boolean=false;
         $onInit() {
             console.log('Book View Startup');
             console.log(this.book);
@@ -21,7 +22,7 @@ module Application.Library.Components {
         }
         Edit() {
             let b = this.book;
-            console.log(b)
+       
             this.go('/library/catalog/edit/' +b.Prefix + '/' + b.BookNumber);
 
         }

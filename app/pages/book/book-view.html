@@ -2,8 +2,8 @@
 <div class="row bookRow">
             <div class="col-sm-3">
                 <div class="bookBox">
-                    <div class="bookBoxCenter" ng-cloak>
-                        <img ng-src="{{vm.BookImage(vm.book)}}" width="200" /><br />
+                    <div class="bookBoxCenter"   >
+                        <img ng-if="vm.book.BookId>0" ng-src="{{vm.BookImage(vm.book)}}" width="200" /><br />
                     </div>
                 </div>
             </div>

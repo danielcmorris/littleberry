@@ -174,8 +174,8 @@ module Application.Library.Components {
                 this.uploadImage();                
             }
           // if we've changed data, it's probably in the search results from the previous page, so we need top update it
-            this.book.SubjectId = this.SelectedSubject.SubjectId;
-            this.book.Subject = this.SelectedSubject.Subject;
+           // this.book.SubjectId = this.SelectedSubject;
+      //      this.book.Subject = this.SelectedSubject.Subject;
 
             /* 
             
