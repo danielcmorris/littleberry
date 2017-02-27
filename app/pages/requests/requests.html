@@ -192,9 +192,9 @@
                         </span>
                     </div>
                     <div class=" " ng-if="!res.PackDate" style="width:150px">
-                        <input type="date" class="form-control" ng-model="packDate" style="width:9vw" />
+                        <input type="date" class="form-control" ng-model="res.packDate" style="width:9vw" />
                         
-                        <button type="button"  style="width:150px" class="btn btn-default" ng-click="vm.UpdateRequest('Pack',res,true,packDate)">Pack</button>
+                        <button type="button"  style="width:150px" class="btn btn-default" ng-click="vm.UpdateRequest('Pack',res,true,res.packDate)">Pack</button>
                     </div>
                 </td>
                 <td>
@@ -236,7 +236,7 @@
                         </span>
                     </div>
                     <div class="input-group" ng-if="!res.ReceivedDate && res.DueDate">
-                        <input type="date" class="form-control" ng-model="receivedDate" />
+                        <input type="date" class="form-control" ng-model="res.receivedDate" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,true,DueDate)">Receive</button>
                         </span>
@@ -247,13 +247,13 @@
                     <div class="input-group dateBox" ng-if="res.ReshelveDate">
                         <input type="text" value="{{res.ReshelveDate | date: 'shortDate'}}" readonly=true class="form-control" />
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,false)">X</button>
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Shelve',res,false)">X</button>
                         </span>
                     </div>
                     <div class="input-group" ng-if="!res.ReshelveDate && res.ReceivedDate">
-                        <input type="date" class="form-control" ng-model="reshelveDate" />
+                        <input type="date" class="form-control" ng-model="res.reshelveDate" />
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,true,reshelveDate)">Reshelve</button>
+                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Shelve',res,true,res.reshelveDate)">Reshelve</button>
                         </span>
                     </div>
                 </td>
