@@ -184,15 +184,7 @@ module Application.Components {
         }
 
 
-        UpdatePermissions():Application.Context.NavigationPermissions{
-            if (this.$sessionStorage.myaccount) {
-                let a = this.$sessionStorage.myaccount        
-                return new Application.Context.NavigationPermissions(a.AccountType);
-                 
-            }else{
-                return new Application.Context.NavigationPermissions('Anon');
-            }
-        }
+       
     }
 
 

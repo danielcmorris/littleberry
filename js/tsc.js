@@ -828,15 +828,6 @@ var Application;
                 }
                 return obj;
             };
-            library.prototype.UpdatePermissions = function () {
-                if (this.$sessionStorage.myaccount) {
-                    var a = this.$sessionStorage.myaccount;
-                    return new Application.Context.NavigationPermissions(a.AccountType);
-                }
-                else {
-                    return new Application.Context.NavigationPermissions('Anon');
-                }
-            };
             return library;
         }());
         Components.library = library;
@@ -1639,6 +1630,15 @@ var Application;
             libraryService.prototype.Recent = function () {
                 var url = this.server + "/api/library/search";
                 return this.$http.get(url);
+            };
+            libraryService.prototype.UpdatePermissions = function () {
+                if (this.$sessionStorage.myaccount) {
+                    var a = this.$sessionStorage.myaccount;
+                    return new Application.Context.NavigationPermissions(a.AccountType);
+                }
+                else {
+                    return new Application.Context.NavigationPermissions('Anon');
+                }
             };
             return libraryService;
         }());
