@@ -38,41 +38,15 @@ module Application.Config {
         ) {
             
             this.$routeProvider
+                .when('/old-login-page', {
+                    template: '<navbar></navbar><login-page></login-page>'
+                })
                 .when('/', {
-                    template: '<login></login>'
-                })
-                .when('/home', {
-                    template: '<index></index>'
-                })
-                .when('/contact', {
-                    template: '<contact></contact>'
-                })
-                .when('/contact-us', {
-                    template: '<contact-us></contact-us>'
-                })
-                .when('/mailing-list', {
-                    template: '<mailing-list></mailing-list>'
-                })
-                .when('/retirement', {
-                    template: '<retirement-planner></retirement-planner>'
-                })
-                .when('/refer', {
-                    template: '<refer></refer>'
-                })
-                .when('/survivor/:view?', {
-                    template: '<survivor-needs-planner></survivor-needs-planner>'
-                })
-
-                .when('/cp/:view?', {
-                    template: '<college-planner></college-planner>'
-
-                })
-                .when('/agents', {
-                    template: '<agent-list></agent-list>'
-                })
-                .when('/linc', {
-                    template: '<needs></needs>'
-                })
+                    template: '<navbar></navbar><library></library>'
+                }) 
+                 .when('/home', {
+                    template: '<navbar></navbar><home></home>'
+                })                
                 .when('/library/catalog', {
                     template: '<navbar></navbar><library></library>'
                 })
@@ -223,10 +197,10 @@ module Application.Config {
 
         }
         constructor() {
-            console.log(window.location.pathname);
+             
             let v = new version()
             
-            this.index += "?v=" + v.number;
+             
             this.library += "?v=" + v.number;
             this.book += "?v=" + v.number;
 

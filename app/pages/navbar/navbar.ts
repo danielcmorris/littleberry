@@ -42,6 +42,7 @@ module Application.Components {
 
         LogOut() {
             this.$sessionStorage.$reset();
+            this.permission = new Application.Context.NavigationPermissions('Anon');
             let url = "/";
             this.go(url);
         }

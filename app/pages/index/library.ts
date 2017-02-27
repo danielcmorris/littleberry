@@ -1,7 +1,4 @@
-﻿/// <reference path="../../td/types.d.ts" />
-
-
-
+﻿ 
 
 module Application.Components {
 
@@ -64,7 +61,8 @@ module Application.Components {
         public callnumber: string = '';
         public sessionStorage: any;
         $insert = ['$location', '$http', '$cookies','$sessionStorage'];
-        constructor(private $location: ng.ILocationService, private $http: any, public libraryService: any, public $cookies: any, $sessionStorage:any) {
+        constructor(private $location: ng.ILocationService, private $http: any, 
+        public libraryService: any, public $cookies: any, private $sessionStorage:any) {
              
 
             let library: IBook[] = []
@@ -185,6 +183,16 @@ module Application.Components {
             return obj;
         }
 
+
+        UpdatePermissions():Application.Context.NavigationPermissions{
+            if (this.$sessionStorage.myaccount) {
+                let a = this.$sessionStorage.myaccount        
+                return new Application.Context.NavigationPermissions(a.AccountType);
+                 
+            }else{
+                return new Application.Context.NavigationPermissions('Anon');
+            }
+        }
     }
 
 

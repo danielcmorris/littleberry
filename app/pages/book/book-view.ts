@@ -13,11 +13,9 @@ module Application.Library.Components {
         public permission:any;
         public showBookImage:boolean=false;
         $onInit() {
-            console.log('Book View Startup');
-            console.log(this.book);
-            let AccountType =this.$sessionStorage.myaccount.AccountType;
-            this.permission = new Application.Context.NavigationPermissions(AccountType)
+          
             
+            this.permission= this.libraryService.UpdatePermissions()
              
         }
         Edit() {

@@ -1,7 +1,4 @@
-﻿/// <reference path="../../td/types.d.ts" />
-
- 
-
+﻿ 
 module Application.Components {
 
 
@@ -14,11 +11,13 @@ module Application.Components {
         public username: string;
         public password: string;
         public errorMessage: string;
-        $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage']
-        constructor(private $location: ng.ILocationService, public $timeout: ng.ITimeoutService
-            , public libraryService: any
-            , public $cookies: any
-            , public $sessionStorage: any ) {
+        public refreshStatus:Function;
+        public redirect:string;
+        $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage','$window']
+        constructor(private $location: ng.ILocationService, private $timeout: ng.ITimeoutService
+            , private libraryService: any
+            , private $cookies: any
+            , private $sessionStorage: any , private $window:ng.IWindowService) {
               this.password = '';
         
         }
@@ -33,7 +32,11 @@ module Application.Components {
                     .then((resp: any) => {
                       
                         this.$sessionStorage.myaccount = resp.data;
-                        this.$location.url('/library/catalog');
+                        console.log("SUCCESSFUL LOGIN")
+                        this.refreshStatus();
+                   //  this.$location.url(this.redirect);
+                     this.$window.location.href = this.redirect;
+
                     }, (resp: any) => {
                         this.password = '';
                         this.errorMessage = 'Sorry, wrong username/password.';
@@ -68,6 +71,7 @@ module Application.Components {
     } 
     app.component("login", {
         controller: login,
+        bindings: { refreshStatus: '&',redirect:'<' },
         controllerAs: "vm",
         templateUrl: "app/pages/login/login.html?v=" + new Date(),
     })

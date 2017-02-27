@@ -24,7 +24,9 @@ module Application.Services {
             let v = new Application.Config.version()
              
             this.server = v.apiServer;
-            this.checkLogin()
+            if (this.$sessionStorage.myaccount) {
+                    this.sid = this.$sessionStorage.myaccount.SessionId;
+                }
         }
         checkLogin() {
 

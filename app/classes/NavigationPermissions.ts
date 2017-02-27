@@ -15,6 +15,7 @@ module Application.Context {
                 case 'Admin':
                     this.AddTitle = true;
                     this.EditTitle = true;
+                    this.AddRequest = true;
                     this.Subjects = true;
                     this.LoggedIn = true;
                     this.Members = true;

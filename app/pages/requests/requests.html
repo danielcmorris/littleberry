@@ -1,10 +1,13 @@
-﻿<form autocomplete="on">
-    <div class="row" ng-if="vm.mode=='add'">
+﻿<div class="breadcrumb"><a href="/#/library">home</a> » <a href="/#/library/catalog">catalog</a>  » Request: {{vm.book.CallNumber}}</div>
+
+<login  redirect="vm.redirect" ng-if="!vm.permission.Requests"></login>
+<form autocomplete="on" ng-if="vm.permission.Requests">
+    <div class="row" ng-if="vm.mode=='add'" style="margin-top:40px">
         <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-6">
-            <div style="margin-left:20px;"><h2>Book Request</h2></div>
+           
 
             <fieldset>
-                <legend>{{vm.book.Title}}</legend>
+                <legend>Request: {{vm.book.Title}}</legend>
 
                 <div class="form-group row" ng-show="vm.showSearch" style="margin-top:40px;">
                     <div class="col-sm-8">

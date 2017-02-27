@@ -61,6 +61,7 @@ var Application;
                     case 'Admin':
                         this.AddTitle = true;
                         this.EditTitle = true;
+                        this.AddRequest = true;
                         this.Subjects = true;
                         this.LoggedIn = true;
                         this.Members = true;
@@ -103,38 +104,14 @@ var Application;
                 this.$locationProvider = $locationProvider;
                 this.$insert = ['$routeProvider', '$locationProvider', '$location'];
                 this.$routeProvider
+                    .when('/old-login-page', {
+                    template: '<navbar></navbar><login-page></login-page>'
+                })
                     .when('/', {
-                    template: '<login></login>'
+                    template: '<navbar></navbar><library></library>'
                 })
                     .when('/home', {
-                    template: '<index></index>'
-                })
-                    .when('/contact', {
-                    template: '<contact></contact>'
-                })
-                    .when('/contact-us', {
-                    template: '<contact-us></contact-us>'
-                })
-                    .when('/mailing-list', {
-                    template: '<mailing-list></mailing-list>'
-                })
-                    .when('/retirement', {
-                    template: '<retirement-planner></retirement-planner>'
-                })
-                    .when('/refer', {
-                    template: '<refer></refer>'
-                })
-                    .when('/survivor/:view?', {
-                    template: '<survivor-needs-planner></survivor-needs-planner>'
-                })
-                    .when('/cp/:view?', {
-                    template: '<college-planner></college-planner>'
-                })
-                    .when('/agents', {
-                    template: '<agent-list></agent-list>'
-                })
-                    .when('/linc', {
-                    template: '<needs></needs>'
+                    template: '<navbar></navbar><home></home>'
                 })
                     .when('/library/catalog', {
                     template: '<navbar></navbar><library></library>'
@@ -239,9 +216,7 @@ var Application;
                 this.hangMan = ROOT_PATH + "app/components/hangman/hangman.html";
                 this.requestQuote = ROOT_PATH + "app/components/request-quote/request-quote.html";
                 this.refer = ROOT_PATH + "app/components/refer/refer.html";
-                console.log(window.location.pathname);
                 var v = new version();
-                this.index += "?v=" + v.number;
                 this.library += "?v=" + v.number;
                 this.book += "?v=" + v.number;
             }
@@ -425,10 +400,7 @@ var Application;
                     this.showBookImage = false;
                 }
                 BookView.prototype.$onInit = function () {
-                    console.log('Book View Startup');
-                    console.log(this.book);
-                    var AccountType = this.$sessionStorage.myaccount.AccountType;
-                    this.permission = new Application.Context.NavigationPermissions(AccountType);
+                    this.permission = this.libraryService.UpdatePermissions();
                 };
                 BookView.prototype.Edit = function () {
                     var b = this.book;
@@ -696,6 +668,31 @@ var Application;
 (function (Application) {
     var Components;
     (function (Components) {
+        var Home = (function () {
+            function Home($location, $sessionStorage, libraryService) {
+                this.$location = $location;
+                this.$sessionStorage = $sessionStorage;
+                this.libraryService = libraryService;
+                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+            }
+            Home.prototype.$onInit = function () {
+                console.log('Home Page');
+            };
+            return Home;
+        }());
+        Components.Home = Home;
+        app.component("home", {
+            controller: Home,
+            bindings: { someVariable: '<' },
+            controllerAs: "vm",
+            template: "\n        <div style=\"width:500px;margin-left:100px;margin-right:auto;margin-top:40px;\" > <h2>PFSA Library</h2 > </div>\n        <div style=\"width:500px;margin-left:100px;margin-right:auto;margin-top:40px;\" ><hr>\n       <p>Welcome to the PFSA Library!</p>\n\n        </div>\n        \n        "
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
         var Book = (function () {
             function Book() {
                 this._tempThumbNail = 'http://pfsa.morrisdev.com/tools/app/pages/library/book/placeholder.jpg';
@@ -732,6 +729,7 @@ var Application;
                 this.$http = $http;
                 this.libraryService = libraryService;
                 this.$cookies = $cookies;
+                this.$sessionStorage = $sessionStorage;
                 this.mydocs = [];
                 this.api = {};
                 this.searchResults = false;
@@ -830,6 +828,15 @@ var Application;
                 }
                 return obj;
             };
+            library.prototype.UpdatePermissions = function () {
+                if (this.$sessionStorage.myaccount) {
+                    var a = this.$sessionStorage.myaccount;
+                    return new Application.Context.NavigationPermissions(a.AccountType);
+                }
+                else {
+                    return new Application.Context.NavigationPermissions('Anon');
+                }
+            };
             return library;
         }());
         Components.library = library;
@@ -844,14 +851,31 @@ var Application;
 (function (Application) {
     var Components;
     (function (Components) {
+        var LoginPage = (function () {
+            function LoginPage() {
+            }
+            return LoginPage;
+        }());
+        app.component("loginPage", {
+            controller: LoginPage,
+            controllerAs: "vm",
+            template: "\n        <style>\n    \n</style>\n<div class=\"container\">\n\n    <div class=\"row\">\n        <div class=\"col-md-12 login-cta\">\n        <login></login>\n        \n        </div>\n    </div>\n\n</div>\n        "
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
         var login = (function () {
-            function login($location, $timeout, libraryService, $cookies, $sessionStorage) {
+            function login($location, $timeout, libraryService, $cookies, $sessionStorage, $window) {
                 this.$location = $location;
                 this.$timeout = $timeout;
                 this.libraryService = libraryService;
                 this.$cookies = $cookies;
                 this.$sessionStorage = $sessionStorage;
-                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage'];
+                this.$window = $window;
+                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
                 this.password = '';
             }
             login.prototype.LoginKey = function (keyEvent) {
@@ -865,7 +889,9 @@ var Application;
                     this.libraryService.Login(this.username, this.password)
                         .then(function (resp) {
                         _this.$sessionStorage.myaccount = resp.data;
-                        _this.$location.url('/library/catalog');
+                        console.log("SUCCESSFUL LOGIN");
+                        _this.refreshStatus();
+                        _this.$window.location.href = _this.redirect;
                     }, function (resp) {
                         _this.password = '';
                         _this.errorMessage = 'Sorry, wrong username/password.';
@@ -897,6 +923,7 @@ var Application;
         }());
         app.component("login", {
             controller: login,
+            bindings: { refreshStatus: '&', redirect: '<' },
             controllerAs: "vm",
             templateUrl: "app/pages/login/login.html?v=" + new Date(),
         });
@@ -926,6 +953,7 @@ var Application;
             };
             Navbar.prototype.LogOut = function () {
                 this.$sessionStorage.$reset();
+                this.permission = new Application.Context.NavigationPermissions('Anon');
                 var url = "/";
                 this.go(url);
             };
@@ -1124,7 +1152,6 @@ var Application;
                 this.showList = false;
             }
             Requests.prototype.$onInit = function () {
-                console.log(this.$routeParams);
                 this.mode = this.$routeParams.mode;
                 this.Prefix = this.$routeParams.prefix;
                 this.BookNumber = this.$routeParams.booknumber;
@@ -1134,12 +1161,14 @@ var Application;
                 if (this.mode == 'edit' || this.mode == 'add') {
                     this.getBook(this.Prefix, this.BookNumber);
                     this.showSearch = true;
+                    this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
                 }
                 else {
                     this.GetRequests();
                     this.showList = true;
+                    this.redirect = "/#/library/requests/";
                 }
-                console.log(this.mode);
+                this.permission = this.libraryService.UpdatePermissions();
             };
             Requests.prototype.LookupAccount = function (searchType, q) {
                 var _this = this;
@@ -1456,7 +1485,9 @@ var Application;
                 this.$insert = ["$http", "$sessionStorage", "$location", "$q"];
                 var v = new Application.Config.version();
                 this.server = v.apiServer;
-                this.checkLogin();
+                if (this.$sessionStorage.myaccount) {
+                    this.sid = this.$sessionStorage.myaccount.SessionId;
+                }
             }
             libraryService.prototype.checkLogin = function () {
                 if (this.$sessionStorage.myaccount) {

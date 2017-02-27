@@ -39,7 +39,7 @@ app.factory('$localstorage', ['$window', function ($window:ng.IWindowService) {
         },
         getObject: function (key: any) {
             if ($window.localStorage[key] != undefined) {
-                return JSON.parse($window.localStorage[key] || false);
+                return JSON.parse(<any>$window.localStorage[key] || false);
             }
             return false;
         },

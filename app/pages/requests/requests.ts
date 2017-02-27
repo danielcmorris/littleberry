@@ -21,22 +21,30 @@ module Application.Components {
         public showConfirm: boolean=false;
         public showSearch: boolean = false;
         public showList: boolean = false;
+        public permission:Application.Context.NavigationPermissions;
+        public redirect:string;
+
+
          $onInit() {
-             console.log(this.$routeParams);
-             this.mode = this.$routeParams.mode;
+            
+              this.mode = this.$routeParams.mode;
              this.Prefix = this.$routeParams.prefix;
              this.BookNumber = this.$routeParams.booknumber;
              this.CallNumber = this.Prefix + this.BookNumber;
+             
              if(this.mode)
                 this.mode = this.mode.toLowerCase();
              if (this.mode == 'edit' || this.mode == 'add') {
                  this.getBook(this.Prefix, this.BookNumber);
                  this.showSearch = true;
+                 this.redirect="/#/library/requests/"+this.mode+"/"+this.Prefix+"/"+this.BookNumber;
              } else {
                  this.GetRequests();
                  this.showList = true;
+                 this.redirect="/#/library/requests/";
              }
-             console.log(this.mode);
+             this.permission= this.libraryService.UpdatePermissions()
+          //   console.log(this.mode);
         }
          LookupAccount(searchType: string, q: string) {
              this.libraryService.LookupAccount(searchType, q)
@@ -156,6 +164,7 @@ module Application.Components {
         go(url: string) {
             this.$location.url(url);
         }
+       
     }
 
     app.component("requests", {

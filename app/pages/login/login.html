@@ -1,245 +1,30 @@
-﻿<style>
-    BODY, .sign-up {
-        background-image: url(http://pfsa.s3.amazonaws.com/library/assets/green3.jpg);
-        background-position: center center;
-        background-attachment: fixed;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-        background-color: #FFF;
-        margin: 0;
-        padding: 0;
-    }
+﻿
 
-    .login-form, .sign-up-form {
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-       
-      
-        background-color: rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease-in-out;
-        border-top: 1px solid #f2f2f2;
-        border-left: 1px solid #f2f2f2;
-        padding: 20px 15px 15px;
-       
-        /* For IE 5.5 - 7*/
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
-    /* For IE 8*/
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
-
-    }
-    
-     
-    .creditly-wrapper {
-        background: rgba(255, 255, 255, 0.25);
-        -webkit-transition: all 0.2s ease-in-out;
-        transition: all 0.2s ease-in-out;
-        font-size: 14px;
-        color: white;
-    }
-
-    .login-form #map_container, .sign-up-form #map_container {
-        margin: -20px -15px 25px -15px;
-        border-bottom: 1px solid #d0d0d0;
-    }
-
-    .login-form h6, .sign-up-form h6 {
-        font-size: 14px;
-        color: #e6ffe6;
-        text-transform: lowercase;
-        text-align: center;
-        font-style: italic;
-    }
-
-    .login-form p, .sign-up-form p {
-        margin-bottom: 15px;
-        font-weight: bold;
-        text-align: center;
-    }
-
-    .login-form .error, .sign-up-form .error {
-        font-size: 13px;
-        margin-bottom: 3px;
-    }
-
-    .login-form .help-block, .sign-up-form .help-block, .login-form .help-block label, .sign-up-form .help-block label {
-        font-size: 13px;
-    }
-
-        .login-form .help-block i, .sign-up-form .help-block i, .login-form .help-block label i, .sign-up-form .help-block label i {
-            color: #9b9999;
-            margin-right: 3px;
-            vertical-align: middle;
-        }
-
-    .login-form .help-block, .sign-up-form .help-block {
-        margin-bottom: 0;
-        text-align: center;
-    }
-
-    .login-form button + .help-block, .sign-up-form button + .help-block {
-        margin: 20px 0 0;
-    }
-
-    .login-form form, .sign-up-form form {
-        margin-bottom: 0;
-    }
-
-        .login-form form label, .sign-up-form form label {
-            white-space: nowrap;
-        }
-
-        .login-form form legend, .sign-up-form form legend {
-            border-bottom: none;
-            color: #1e1c1c;
-            font-size: 24px;
-            line-height: 100%;
-            margin-top: 0;
-            margin-bottom: 0;
-            padding-bottom: 20px;
-            text-align: center;
-        }
-
-            .login-form form legend + *, .sign-up-form form legend + * {
-                -webkit-margin-top-collapse: collapse;
-                margin-top: 0;
-            }
-
-            .login-form form legend + .error, .sign-up-form form legend + .error {
-                margin-top: 5px;
-            }
-
-        .login-form form select, .sign-up-form form select {
-            margin-bottom: 0;
-        }
-
-            .login-form form select#id_state, .sign-up-form form select#id_state {
-                margin-right: 10px;
-                float: left;
-            }
-
-        .login-form form #id_zipcode, .sign-up-form form #id_zipcode {
-            float: right;
-            width: 130px;
-        }
-
-        .login-form form .form-header, .sign-up-form form .form-header {
-            font-size: 20px;
-            line-height: 1;
-            font-weight: normal;
-            margin: 0 0 15px;
-        }
-
-        .login-form form #facebook_login_button, .sign-up-form form #facebook_login_button {
-            margin-top: 12px;
-            margin-bottom: 17px;
-        }
-
-        .login-form form .fb_login_spinner, .sign-up-form form .fb_login_spinner {
-            margin-top: 20px;
-        }
-
-        .login-form form.autofill-test #id_address, .sign-up-form form.autofill-test #id_address {
-            float: left;
-            width: 65%;
-        }
-
-        .login-form form.autofill-test #id_unit_number, .sign-up-form form.autofill-test #id_unit_number {
-            width: 20%;
-            float: right;
-        }
-
-        .login-form form.autofill-test #id_city, .sign-up-form form.autofill-test #id_city {
-            float: left;
-            width: 65%;
-        }
-
-        .login-form form.autofill-test #id_state, .sign-up-form form.autofill-test #id_state {
-            margin: 0px;
-            float: right;
-            width: 22%;
-            min-width: 66px;
-        }
-
-        .login-form form.autofill-test #id_zipcode, .sign-up-form form.autofill-test #id_zipcode {
-            float: left;
-            width: 90px;
-        }
-
-    .login-form.no-shadow, .sign-up-form.no-shadow {
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
-        border: 1px solid #d8d8d8;
-        border-bottom: 1px solid #cbcbcb;
-        border-right: 1px solid #cbcbcb;
-    }
-
-    .login .login-info, .sign-up .login-info, .login .sign-up-info, .sign-up .sign-up-info {
-        margin-top: 80px;
-        width: 620px;
-    }
-
-    .login .login-cta, .sign-up .login-cta, .login .sign-up-cta, .sign-up .sign-up-cta {
-        margin-top: 80px;
-        width: 300px;
-    }
-
-    .login .login-info, .sign-up .login-info, .login .login-cta, .sign-up .login-cta {
-        margin-top: 126px;
-    }
-    .required{
-        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QsPDhss3LcOZQAAAU5JREFUOMvdkzFLA0EQhd/bO7iIYmklaCUopLAQA6KNaawt9BeIgnUwLHPJRchfEBR7CyGWgiDY2SlIQBT/gDaCoGDudiy8SLwkBiwz1c7y+GZ25i0wnFEqlSZFZKGdi8iiiOR7aU32QkR2c7ncPcljAARAkgckb8IwrGf1fg/oJ8lRAHkR2VDVmOQ8AKjqY1bMHgCGYXhFchnAg6omJGcBXEZRtNoXYK2dMsaMt1qtD9/3p40x5yS9tHICYF1Vn0mOxXH8Uq/Xb389wff9PQDbQRB0t/QNOiPZ1h4B2MoO0fxnYz8dOOcOVbWhqq8kJzzPa3RAXZIkawCenHMjJN/+GiIqlcoFgKKq3pEMAMwAuCa5VK1W3SAfbAIopum+cy5KzwXn3M5AI6XVYlVt1mq1U8/zTlS1CeC9j2+6o1wuz1lrVzpWXLDWTg3pz/0CQnd2Jos49xUAAAAASUVORK5CYII=); background-attachment: scroll; background-position: 100% 50%; background-repeat: no-repeat;
-    }
-    .error{
-        margin-left:auto;margin-right:auto;width:200px;text-align:center;color:red;
-    }
-</style>
-<div class="container">
-    <p></p>
-    <div class="row">
-        <div class="col-md-6">
-            <div>
-                <a href="/">
-                    <img width="300" height="154" src="http://pfsa.s3.amazonaws.com/library/assets/pfsa.png" />
-
-                </a>
-            </div>
-
-
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 login-cta">
-           
             <form method="post" class="form-vertical" style="padding-top:100px;">
                 <div class="error">{{vm.errorMessage}}</div>
                 <br>
                 <div class="login-form" style="width:300px;margin-left:auto;margin-right:auto">
+
                     
-                    <div style="display:none">
-                        <h4>The Library is currently being updated.  </h4><h4>The new install will be done at 11:45 AM</h4>
-                    </div>
-                   
+
                     <fieldset style="display:block">
                         <input type="hidden" name="redirect" value="">
 
-                       
+
 
                         <div class="control-group">
                             <div class="controls">
                                 <input class="form-control required" ng-model="vm.username" placeholder="Username" type="text" autocomplete="on" />
-                                       
+
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
-                                <input class="form-control required" ng-model="vm.password" ng-keypress="vm.LoginKey($event);"  placeholder="Password" type="password" autocomplete="off" />
+                                <input class="form-control required" ng-model="vm.password" ng-keypress="vm.LoginKey($event);" placeholder="Password" type="password"
+                                    autocomplete="off" />
                                 <div class="help-block">
-                                   
- 
+
+
 
                                 </div>
                             </div>
@@ -257,7 +42,5 @@
 
                 </div>
             </form>
-        </div>
-    </div>
-
-</div>
+     
+     

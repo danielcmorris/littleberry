@@ -1,8 +1,4 @@
-﻿/// <reference path="../../../td/types.d.ts" />
-
-
-
-
+﻿
 module Application.Components {
     export class Reservation {
         $insert = ['$location','$sessionStorage','libraryService'];
