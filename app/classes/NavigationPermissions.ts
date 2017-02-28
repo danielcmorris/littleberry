@@ -4,7 +4,7 @@ module Application.Context {
         AddTitle:boolean = false;
         EditTitle:boolean = false;
         AddRequest:boolean=false;
-        Requests:boolean=false;
+        Requests:boolean=false;        
         SearchRequest:boolean=false;
         Members:boolean=false;
         Subjects:boolean=false;

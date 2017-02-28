@@ -38,7 +38,7 @@ module Application.Config {
         ) {
             
             this.$routeProvider
-                .when('/old-login-page', {
+                .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
                 })
                 .when('/', {
@@ -66,6 +66,9 @@ module Application.Config {
                     template: '<navbar></navbar><requests></requests>'
                 })
                 .when('/library/requests/:mode/:prefix/:booknumber', {
+                    template: '<navbar></navbar><requests></requests>'
+                })
+                .when('/library/requests/:mode', {
                     template: '<navbar></navbar><requests></requests>'
                 })
                 .when('/library/subjects', {

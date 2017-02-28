@@ -35,7 +35,11 @@ module Application.Components {
                         console.log("SUCCESSFUL LOGIN")
                         this.refreshStatus();
                    //  this.$location.url(this.redirect);
-                     this.$window.location.href = this.redirect;
+                   if(!this.redirect){
+                        this.$location.url('/catalog');
+                    }else{
+                     this.$window.location.href = this.redirect+"?redirect=true";
+                     }
 
                     }, (resp: any) => {
                         this.password = '';

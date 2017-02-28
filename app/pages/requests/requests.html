@@ -1,6 +1,6 @@
 ﻿<div class="breadcrumb"><a href="/#/library">home</a> » <a href="/#/library/catalog">catalog</a>  » Request: {{vm.book.CallNumber}}</div>
 
-<login  redirect="vm.redirect" ng-if="!vm.permission.Requests"></login>
+<login redirect="vm.redirect" ng-if="!vm.permission.Requests"></login>
 <form autocomplete="on" ng-if="vm.permission.Requests">
     <div class="row" ng-if="vm.mode=='add'" style="margin-top:40px">
         <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-6">
@@ -8,8 +8,8 @@
 
             <fieldset>
                 <legend>Request: {{vm.book.Title}}</legend>
-
-                <div class="form-group row" ng-show="vm.showSearch" style="margin-top:40px;">
+ 
+                <div class="form-group row" style="margin-top:40px;"  ng-show="vm.showSearch" >
                     <div class="col-sm-8">
                         <div class="form-group form-inline">
                             <label style="width:230px" for="email" class="form-label">Search for Account by Email</label>
@@ -85,8 +85,7 @@
                 <div ng-if="vm.showConfirm==true" style="padding:20px;border:solid 1px gray;">
                     <div class="row">
                         <div class="col-md-6">
-                            Congratulation!  Your request for {{vm.book.Title}} has been submitted.  You will receive an email confirmation
-                            of your request.  Simply click the "Confirm Request" on the email and your book will be sent out.
+                            Congratulations!  A request for {{vm.book.Title}} has been submitted.   
                         </div>
 
                     </div>

@@ -82,6 +82,6 @@ module Application.Components {
         controller: Navbar,
         bindings: { book: '<' },
         controllerAs: "vm",
-        templateUrl: function (templates: any) { return templates.navbar+"?v="+new Date() }
+        templateUrl: function (templates: any) { return templates.navbar }
     })
 }

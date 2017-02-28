@@ -1,4 +1,4 @@
- 
+
 module Application.Config {
     export class LibraryConfig {
 
@@ -22,11 +22,11 @@ module Application.Services {
         constructor(private $http: any, private $sessionStorage: any, private $location: any, private $q: any) {
 
             let v = new Application.Config.version()
-             
+
             this.server = v.apiServer;
             if (this.$sessionStorage.myaccount) {
-                    this.sid = this.$sessionStorage.myaccount.SessionId;
-                }
+                this.sid = this.$sessionStorage.myaccount.SessionId;
+            }
         }
         checkLogin() {
 
@@ -43,8 +43,8 @@ module Application.Services {
         }
         getAccounts(): ng.IHttpPromise<any> {
             this.checkLogin();
-            let deferred: any = this.$q.defer();            
-            let url: string = this.server + "/library/account?sid="+this.sid
+            let deferred: any = this.$q.defer();
+            let url: string = this.server + "/library/account?sid=" + this.sid
             this.$http.get(url)
                 .then((resp: any) => {
                     deferred.resolve(resp.data);
@@ -180,7 +180,7 @@ module Application.Services {
             }
             return deferred.promise;
         }
-        UpdateAccountPassword(id: number, password:string) {
+        UpdateAccountPassword(id: number, password: string) {
             var deferred: any;
             deferred = this.$q.defer();
             let obj: any = {};
@@ -188,12 +188,12 @@ module Application.Services {
             obj.NewPassword = password;
 
             let url: string = this.server + "/library/account?sid=" + this.sid;
-            
-                this.$http.put(url, obj)
-                    .then((resp: any) => {
-                        deferred.resolve(resp);
-                    });
-            
+
+            this.$http.put(url, obj)
+                .then((resp: any) => {
+                    deferred.resolve(resp);
+                });
+
             return deferred.promise;
         }
         Recent() {
@@ -202,12 +202,12 @@ module Application.Services {
             return this.$http.get(url);
 
         }
- UpdatePermissions():Application.Context.NavigationPermissions{
+        UpdatePermissions(): Application.Context.NavigationPermissions {
             if (this.$sessionStorage.myaccount) {
-                let a = this.$sessionStorage.myaccount        
+                let a = this.$sessionStorage.myaccount
                 return new Application.Context.NavigationPermissions(a.AccountType);
-                 
-            }else{
+
+            } else {
                 return new Application.Context.NavigationPermissions('Anon');
             }
         }

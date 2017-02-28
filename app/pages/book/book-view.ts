@@ -12,11 +12,8 @@ module Application.Library.Components {
         public history: any;
         public permission:any;
         public showBookImage:boolean=false;
-        $onInit() {
-          
-            
-            this.permission= this.libraryService.UpdatePermissions()
-             
+        $onInit() {                      
+            this.permission= this.libraryService.UpdatePermissions()             
         }
         Edit() {
             let b = this.book;

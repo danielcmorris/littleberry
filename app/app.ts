@@ -26,28 +26,40 @@ module Application.Controllers{
 
 }
 
-app.factory('$localstorage', ['$window', function ($window:ng.IWindowService) {
-    return {
-        set: function (key: any, value: any) {
-            $window.localStorage[key] = value;
-        },
-        get: function (key: any, defaultValue: any) {
-            return $window.localStorage[key] || false;
-        },
-        setObject: function (key: any, value: any) {
-            $window.localStorage[key] = JSON.stringify(value);
-        },
-        getObject: function (key: any) {
-            if ($window.localStorage[key] != undefined) {
-                return JSON.parse(<any>$window.localStorage[key] || false);
-            }
-            return false;
-        },
-        remove: function (key: any) {
-            $window.localStorage.removeItem(key);
-        },
-        clear: function () {
-            $window.localStorage.clear();
-        }
-    }
-}]);
+// module Application.Services{
+    
+//     class LocalStorage{
+//         $inject = "$window";
+//         constructor(private $window:ng.IWindowService){
+            
+//         }
+        
+        
+//     }
+// }
+// app.factory('$localstorage', ['$window', function ($window:ng.IWindowService) {
+    
+//     return {
+//         set: function (key: any, value: any) {
+//             $window.localStorage[key] = value;
+//         },
+//         get: function (key: any, defaultValue: any) {
+//             return $window.localStorage[key] || false;
+//         },
+//         setObject: function (key: any, value: any) {
+//             $window.localStorage[key] = JSON.stringify(value);
+//         },
+//         getObject: function (key: any) {
+//             if ($window.localStorage[key] != undefined) {
+//                 return JSON.parse(<any>$window.localStorage[key] || false);
+//             }
+//             return false;
+//         },
+//         remove: function (key: any) {
+//             $window.localStorage.removeItem(key);
+//         },
+//         clear: function () {
+//             $window.localStorage.clear();
+//         }
+//     }
+// }]);

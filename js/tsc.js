@@ -18,31 +18,18 @@ var Application;
         app.controller("MainCtrl", MainCtrl);
     })(Controllers = Application.Controllers || (Application.Controllers = {}));
 })(Application || (Application = {}));
-app.factory('$localstorage', ['$window', function ($window) {
-        return {
-            set: function (key, value) {
-                $window.localStorage[key] = value;
-            },
-            get: function (key, defaultValue) {
-                return $window.localStorage[key] || false;
-            },
-            setObject: function (key, value) {
-                $window.localStorage[key] = JSON.stringify(value);
-            },
-            getObject: function (key) {
-                if ($window.localStorage[key] != undefined) {
-                    return JSON.parse($window.localStorage[key] || false);
-                }
-                return false;
-            },
-            remove: function (key) {
-                $window.localStorage.removeItem(key);
-            },
-            clear: function () {
-                $window.localStorage.clear();
+var Application;
+(function (Application) {
+    var Models;
+    (function (Models) {
+        var Account = (function () {
+            function Account() {
             }
-        };
-    }]);
+            return Account;
+        }());
+        Models.Account = Account;
+    })(Models = Application.Models || (Application.Models = {}));
+})(Application || (Application = {}));
 var Application;
 (function (Application) {
     var Context;
@@ -104,7 +91,7 @@ var Application;
                 this.$locationProvider = $locationProvider;
                 this.$insert = ['$routeProvider', '$locationProvider', '$location'];
                 this.$routeProvider
-                    .when('/old-login-page', {
+                    .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
                 })
                     .when('/', {
@@ -132,6 +119,9 @@ var Application;
                     template: '<navbar></navbar><requests></requests>'
                 })
                     .when('/library/requests/:mode/:prefix/:booknumber', {
+                    template: '<navbar></navbar><requests></requests>'
+                })
+                    .when('/library/requests/:mode', {
                     template: '<navbar></navbar><requests></requests>'
                 })
                     .when('/library/subjects', {
@@ -476,6 +466,8 @@ var Application;
                     this.imageChanged = false;
                     this.$insert = ['$location', '$http', '$routeParams',
                         '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
+                    this.permissions = libraryService.UpdatePermissions();
+                    this.redirect = $location.path.toString();
                     this.image.uploading = false;
                     this.book.Url = "";
                     this.imageServer = Application.Config.LibraryConfig.imageServer;
@@ -519,7 +511,7 @@ var Application;
                 };
                 book.prototype.ApplySubject = function () {
                     var _this = this;
-                    var subj = this.SelectedSubject.SubjectId;
+                    var subj = this.book.SubjectId.toString();
                     angular.forEach(this.subjects, function (v, key) {
                         if (v.SubjectId == subj) {
                             _this.book.Prefix = v.Prefix;
@@ -882,7 +874,12 @@ var Application;
                         _this.$sessionStorage.myaccount = resp.data;
                         console.log("SUCCESSFUL LOGIN");
                         _this.refreshStatus();
-                        _this.$window.location.href = _this.redirect;
+                        if (!_this.redirect) {
+                            _this.$location.url('/catalog');
+                        }
+                        else {
+                            _this.$window.location.href = _this.redirect + "?redirect=true";
+                        }
                     }, function (resp) {
                         _this.password = '';
                         _this.errorMessage = 'Sorry, wrong username/password.';
@@ -985,7 +982,7 @@ var Application;
             controller: Navbar,
             bindings: { book: '<' },
             controllerAs: "vm",
-            templateUrl: function (templates) { return templates.navbar + "?v=" + new Date(); }
+            templateUrl: function (templates) { return templates.navbar; }
         });
     })(Components = Application.Components || (Application.Components = {}));
 })(Application || (Application = {}));
@@ -1153,6 +1150,7 @@ var Application;
                     this.getBook(this.Prefix, this.BookNumber);
                     this.showSearch = true;
                     this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
+                    this.LookupAccount('email', this.email);
                 }
                 else {
                     this.GetRequests();
@@ -1160,6 +1158,21 @@ var Application;
                     this.redirect = "/#/library/requests/";
                 }
                 this.permission = this.libraryService.UpdatePermissions();
+                if (this.$sessionStorage.myaccount) {
+                    this.Account = this.$sessionStorage.myaccount;
+                    var s = this.Account.AccountType;
+                    console.log(s);
+                    if (this.mode = "mine") {
+                        this.email = this.Account.Email;
+                    }
+                    if (s === "Admin" || s === "Librarian" || s === "Staff") {
+                        this.showSearch = true;
+                        console.log("SHOW SEARCH");
+                    }
+                    else {
+                        this.showSearch = false;
+                    }
+                }
             };
             Requests.prototype.LookupAccount = function (searchType, q) {
                 var _this = this;
@@ -1169,17 +1182,16 @@ var Application;
                     if (resp.data != 'No Accounts Found') {
                         _this.Account = resp.data[0];
                         _this.showAddress = true;
-                        _this.showSearch = false;
                         _this.showConfirm = false;
                     }
                     else {
                         var c = confirm("No account was found for " + q + ".  Would you like to make a new account for them?");
                         if (c) {
                             _this.showAddress = true;
-                            _this.showSearch = false;
                             _this.showConfirm = false;
-                            _this.Account = {};
+                            _this.Account = new Application.Models.Account();
                             _this.Account.Email = q;
+                            _this.Account.Password = "";
                         }
                     }
                 });
@@ -1644,68 +1656,6 @@ var Application;
         }());
         Services.libraryService = libraryService;
         app.service('libraryService', libraryService);
-    })(Services = Application.Services || (Application.Services = {}));
-})(Application || (Application = {}));
-var Application;
-(function (Application) {
-    var Services;
-    (function (Services) {
-        var MailService = (function () {
-            function MailService($http, $location) {
-                this.$http = $http;
-                this.$insert = ["$http", "$location"];
-                this.mydomain = $location.protocol() + "://" + $location.host();
-            }
-            MailService.prototype.SendMail = function (obj) {
-                this.mydomain = "http://pfsa.morrisdev.com";
-                var url = this.mydomain + "/wp-content/themes/aspire/custom/widgets/emailer.php";
-                return this.$http.post(url, obj);
-            };
-            return MailService;
-        }());
-        Services.MailService = MailService;
-        app.service("mailService", MailService);
-    })(Services = Application.Services || (Application.Services = {}));
-})(Application || (Application = {}));
-var Application;
-(function (Application) {
-    var Services;
-    (function (Services) {
-        var mailChimp = (function () {
-            function mailChimp($http) {
-                this.$http = $http;
-                this.$insert = ["$http"];
-                this.lists = {
-                    WebSubscription: "699a73df35",
-                    NewsLetter: "e6d3f77f33"
-                };
-            }
-            mailChimp.prototype.CreateMember = function (data, list_id) {
-                if (!list_id) {
-                    data.list_id = this.lists.NewsLetter;
-                }
-                else {
-                    data.list_id = list_id;
-                }
-                var key = "iub2398sd9823jkh2309sd0213joq3sd9f9890uo123jkkpodfoiojkqw";
-                var url = "/wp-content/themes/aspire/custom/mail-chimp.php";
-                url = "http://pfsa.morrisdev.com" + url;
-                var qs = '?api=' + key;
-                qs += '&fname=' + data.firstName;
-                qs += '&lname=' + data.lastName;
-                qs += '&email=' + data.email;
-                qs += '&interest=' + data.interest;
-                qs += '&phone=' + data.phone;
-                qs += '&age=' + data.age;
-                qs += '&gender=' + data.gender;
-                qs += '&amount=' + data.amount;
-                qs += '&list_id=' + data.list_id;
-                return this.$http.get(url + qs);
-            };
-            return mailChimp;
-        }());
-        Services.mailChimp = mailChimp;
-        app.service("mailChimp", mailChimp);
     })(Services = Application.Services || (Application.Services = {}));
 })(Application || (Application = {}));
 //# sourceMappingURL=tsc.js.map

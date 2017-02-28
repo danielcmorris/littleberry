@@ -29,18 +29,18 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catalog<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#/library/catalog/add" ng-show="vm.permission.AddTitle">Add Title</a></li>
-                        <li><a href="#/library/catalog">Search</a></li>
-                        <li><a href="#/library/catalog">Recent Additions</a></li>
+                        <li><a href="/#/library/catalog/add" ng-show="vm.permission.AddTitle">Add Title</a></li>
+                        <li><a href="/#/library/catalog">Search</a></li>
+                        <li><a href="/#/library/catalog">Recent Additions</a></li>
 
                     </ul>
                 </li>
                 <li class="dropdown" ng-show="vm.permission.Requests">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Requests<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#/library/requests">Add Request*</a></li>
-                        <li><a href="#/library/requests">Search*</a></li>
-                        <li><a href="#/library/requests">Open Requests*</a></li>
+                        <li><a href="/#/library/requests">Add Request</a></li>
+                        <li><a href="/#/library/requests">Search</a></li>
+                        <li><a href="/#/library/requests">My Requests*</a></li>
 
                     </ul>
                 </li>
@@ -48,13 +48,13 @@
                 <li class="dropdown" ng-show="vm.permission.Members">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#/library/accounts/add">Add Member*</a></li>
-                        <li><a href="#/library/accounts">Search*</a></li>
+                        <li><a href="/#/library/accounts/add">Add Member</a></li>
+                        <li><a href="/#/library/accounts">Search</a></li>
                         <!--<li><a href="#/library/accounts">Staff*</a></li>-->
                     </ul>
                 </li>
                 <li ng-show="vm.permission.Subjects">
-                    <a href="#/library/subjects">Subjects</a>
+                    <a href="/#/library/subjects">Subjects</a>
                 </li>
 
 
@@ -76,7 +76,7 @@
                 <li class="dropdown" ng-show="vm.permission.LoggedIn">
                     <a   class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{vm.username}}  <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a ng-href="#/library/accounts/{{vm.AccountId}}" >Edit Profile*</a></li>
+                        <li><a ng-href="/#/library/accounts/{{vm.AccountId}}" >Edit Profile*</a></li>
                         <li><a href ng-click="vm.LogOut()">Log Out</a></li>
                         
                         <!--<li role="separator" class="divider"></li>
@@ -84,7 +84,7 @@
                     </ul>
                 </li>
                 <li class="dropdown" ng-hide="vm.permission.LoggedIn">
-                     <a href="#/">Login</a>
+                     <a href="/#/login">Login</a>
                 </li>
 
 

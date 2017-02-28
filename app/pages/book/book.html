@@ -1,6 +1,8 @@
 ﻿<p></p>
- 
-<div ng-hide="!vm.editing">
+ {{vm.redirect}}
+<div ng-show="vm.editing">
+    <login ng-hide="vm.permissions.EditTitle" redirect="vm.redirect"></login>
+    <div ng-show="vm.permissions.EditTitle">
     <div layout="row" layout-xs="column" layout-align="center" style="background-color: white">
         <div flex="10" hide-sm>&nbsp;</div>
         <div flex  ng-hide="vm.loading">
@@ -135,7 +137,7 @@
     </div>
 
 
-
+    </div>
 
 </div>
 
