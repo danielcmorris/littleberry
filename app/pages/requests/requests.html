@@ -1,27 +1,39 @@
 ﻿
 <crumbs links="vm.links"></crumbs>
-<login redirect="vm.redirect" ng-if="!vm.permission.Requests"></login>
+<div ng-if="!vm.permission.Requests" >
+    <div  class="row" >
+    <div class="col-12" style="text-align: center">
+        
+        If you have an account, you can log in now and reserve a book.  If you are new to the library, simply sign up for an account <a href="#">here</a>.
+    </div>
+    </div>
+<login redirect="vm.redirect"></login>
+</div>
+
 <form autocomplete="on" ng-if="vm.permission.Requests">
     <div class="row" ng-if="vm.mode=='add'" style="margin-top:40px">
         <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-6">
-           
+          
 
             <fieldset>
                 <legend>Request: {{vm.book.Title}}</legend>
- 
-                <div class="form-group row" style="margin-top:40px;"  ng-show="vm.showSearch" >
+                <div style="height: 30px"   ng-hide="vm.showSearch">
+                <button style="float:right;" class="btn btn-sm btn-info" ng-click="vm.showSearch=true">Book for someone else</button>
+                </div>
+                <div class="form-group row" style="margin-top:20px;"  ng-show="vm.showSearch" >
                     <div class="col-sm-12">
                         <div class="form-group form-inline">
                             <label for="email" class="form-label">You can book a reservations for someone else by searching for their email here:</label>
                             <div>
                             <input type="text" id="email" class="form-control" ng-model="vm.email" autocomplete="shipping email" />
                             <button type="button" class="btn btn-sm btn-info" ng-click="vm.LookupAccount('email',vm.email)">Search!</button>
+                            <button type="button" class="btn btn-sm" ng-click="vm.showSearch=false">Cancel</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div ng-show="vm.showAddress" style="padding:20px;border:solid 1px gray;">
+                <div ng-show="vm.showAddress && !vm.showSearch" style="padding:20px;border:solid 1px gray;">
 
                     <div class="row">
                         <div class="col-md-6">
@@ -129,102 +141,116 @@
 <div class="row" ng-show="vm.showList">
      
         <style>
-            .dateBox{width:150px !important;}
+            
+            .dc{width:150px !important;}
+             
         </style>
-        <table class="table table-striped table-hover;" style="cursor:pointer">
+       
+        <table class="table table-striped table-hover;" border=1 style="cursor:pointer">
             <tr>
 
                 <th> Request#</th>
                 <th>Request&nbsp;By</th>
                 <th>Callnumber</th>
                 <th style="display:none">Title</th>
-                <th>Requested  </th>
-                <th>Packed</th>
-                <th>Shipped</th>
-                <th>Due</th>
-                <th>Received</th>
-                <th>Reshelved</th>
+                <th class="dc">Requested  </th>
+                <th class="dc">Packed</th>
+                <th class="dc">Shipped</th>
+                <th class="dc">Due</th>
+                <th class="dc">Received</th>
+                <th class="dc">Reshelved</th>
             </tr>
             <tr ng-repeat="res in vm.requests | filter:{RequestByEmail:vm.email} | filter: {CallNumber: vm.callNumber}">
 
                 <td>{{res.ReservationSubId}}</td>
-                <td ng-click="vm.EditRequest(obj)">{{res.RequestByEmail}}</td>
+                <td ng-click="vm.ViewRequest(res)">{{res.RequestByEmail}}
+                     <md-button class="animation-target md-primary md-raised" ng-click="vm.ViewRequest(res,$event)">
+                    Details
+                    </md-button>
+                </td>
                 <td><a ng-href="#/library/catalog/edit/{{res.Prefix}}/{{res.BookNumber}}">{{res.CallNumber}}</a></td>
 
                 <td style="display:none">{{res.Title}}</td>
                 <td >{{res.RequestDate | date:'MM/dd/yyyy'}}</td>
-                <td >
+                <td class="dc" >
 
-                    <div class="input-group dateBox" ng-if="res.PackDate">
+                    <div class="input-group" ng-if="res.PackDate">
                         <input type="text" value="{{res.PackDate | date: 'shortDate'}}" readonly=true class="form-control" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Pack',res,false)">X</button>
                         </span>
                     </div>
-                    <div class=" " ng-if="!res.PackDate" style="width:150px">
-                        <input type="date" class="form-control" ng-model="res.packDate" style="width:9vw" />
-                        
-                        <button type="button"  style="width:150px" class="btn btn-default" ng-click="vm.UpdateRequest('Pack',res,true,res.packDate)">Pack</button>
+                    <div  ng-if="!res.PackDate">                                                 
+                        <md-datepicker  
+                            ng-change="vm.UpdateRequest('Pack',res,true,res.packDate)"  
+                            ng-model="res.packDate" 
+                             md-placeholder="pack date"
+                            md-hide-icons="calendar"></md-datepicker>                         
                     </div>
                 </td>
-                <td>
+                <td class="dc" >
 
-                    <div class="input-group dateBox" ng-if="res.ShipDate">
+                    <div class="input-group" ng-if="res.ShipDate">
                         <input type="text" value="{{res.ShipDate | date: 'shortDate'}}" readonly=true class="form-control" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Ship',res,false)">X</button>
                         </span>
                     </div>
-                    <div class="input-group" ng-if="!res.ShipDate && res.PackDate">
-                        <input type="date" class="form-control" ng-model="shipDate" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Ship',res,true,shipDate)">Ship</button>
-                        </span>
+                    <div ng-if="!res.ShipDate && res.PackDate">                        
+                        <md-datepicker                             
+                            ng-change="vm.UpdateRequest('Ship',res,true,res.shipDate)"  
+                            ng-model="res.shipDate" 
+                            md-placeholder="ship date"
+                            md-hide-icons="calendar"></md-datepicker>   
                     </div>
                 </td>
-                <td>
-                    <div class="input-group dateBox" ng-if="res.DueDate">
+                <td class="dc" >
+                    <div class="input-group" ng-if="res.DueDate">
                         <input type="text" value="{{res.DueDate | date: 'shortDate'}}" readonly=true class="form-control" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Due',res,false)">X</button>
                         </span>
                     </div>
-                    <div class="input-group" ng-if="!res.DueDate && res.ShipDate">
-                        <input type="date" class="form-control" ng-model="dueDate" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Due',res,true,dueDate)">Set</button>
-                        </span>
+                    <div ng-if="!res.DueDate && res.ShipDate">
+                         
+                         <md-datepicker                             
+                            ng-change="vm.UpdateRequest('Due',res,true,res.dueDate)"  
+                            ng-model="res.dueDate" 
+                            md-placeholder="due date"
+                            md-hide-icons="calendar"></md-datepicker> 
                     </div>
 
 
                 </td>
-                <td>
+                <td class="dc" >
                     <div class="input-group dateBox" ng-if="res.ReceivedDate">
                         <input type="text" value="{{res.ReceivedDate | date: 'shortDate'}}" readonly=true class="form-control" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,false)">X</button>
                         </span>
                     </div>
-                    <div class="input-group" ng-if="!res.ReceivedDate && res.DueDate">
-                        <input type="date" class="form-control" ng-model="res.receivedDate" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Receive',res,true,DueDate)">Receive</button>
-                        </span>
+                    <div class="input-group" ng-if="!res.ReceivedDate && res.DueDate">                                                
+                         <md-datepicker                             
+                            ng-change="vm.UpdateRequest('Receive',res,true,res.ReceivedDate)"  
+                            ng-model="res.ReceivedDate" 
+                            md-placeholder="receive date"
+                            md-hide-icons="calendar"></md-datepicker> 
                     </div>
 
                 </td>
-                <td>
+                <td class="dc" >
                     <div class="input-group dateBox" ng-if="res.ReshelveDate">
                         <input type="text" value="{{res.ReshelveDate | date: 'shortDate'}}" readonly=true class="form-control" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Shelve',res,false)">X</button>
                         </span>
                     </div>
-                    <div class="input-group" ng-if="!res.ReshelveDate && res.ReceivedDate">
-                        <input type="date" class="form-control" ng-model="res.reshelveDate" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="vm.UpdateRequest('Shelve',res,true,res.reshelveDate)">Reshelve</button>
-                        </span>
+                    <div class="input-group" ng-if="!res.ReshelveDate && res.ReceivedDate">                        
+                          <md-datepicker                             
+                            ng-change="vm.UpdateRequest('Shelve',res,true,res.reshelveDate)"  
+                            ng-model="res.reshelveDate" 
+                            md-placeholder="reshelve date"
+                            md-hide-icons="calendar"></md-datepicker>
                     </div>
                 </td>
             </tr>

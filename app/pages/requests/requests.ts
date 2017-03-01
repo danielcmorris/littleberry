@@ -4,8 +4,8 @@
 module Application.Components {
     interface IBook extends Application.Library.Types.IBook { }
     export class Requests {
-        $insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService'];
-        constructor(public $location: ng.ILocationService, public $sessionStorage: any, public $routeParams: any, public libraryService: any) { }
+        $insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService','$mdDialog'];
+        constructor(public $location: ng.ILocationService, public $sessionStorage: any, public $routeParams: any, public libraryService: any,private $mdDialog:any) { }
         public requests: any
         public email: string = "dmorris@morrisdev.com";
         public ShipSelections: any = []
@@ -35,7 +35,7 @@ module Application.Components {
                 this.mode = this.mode.toLowerCase();
             if (this.mode == 'edit' || this.mode == 'add') {
                 this.getBook(this.Prefix, this.BookNumber);
-                this.showSearch = true;
+               // this.showSearch = true;
                 this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
                 this.LookupAccount('email', this.email)
                  this.links=[
@@ -60,7 +60,7 @@ module Application.Components {
                
                   if(this.mode === "mine"){this.email=this.Account.Email;}
                 if(s==="Admin" || s==="Librarian" || s==="Staff"){
-                    this.showSearch = true;
+                   // this.showSearch = true;
                     console.log("SHOW SEARCH")
                 }else{
                     this.showSearch=false;
@@ -71,17 +71,19 @@ module Application.Components {
  
         }
         LookupAccount(searchType: string, q: string) {
+             if (this.$sessionStorage.myaccount) {
             this.libraryService.LookupAccount(searchType, q)
                 .then((resp: any) => {
                     console.log(resp);
                     if (resp.data != 'No Accounts Found') {
                         this.Account = resp.data[0];
                         this.showAddress = true;
-                        
+                        this.showSearch=false;
                         this.showConfirm = false;
                     } else {
                         let c = confirm("No account was found for " + q + ".  Would you like to make a new account for them?");
                         if (c) {
+                            this.showSearch=false;
                             this.showAddress = true;
                              
                             this.showConfirm = false;
@@ -92,8 +94,40 @@ module Application.Components {
 
                     }
                 })
+             }
 
         }
+        ViewRequest(obj:any){
+           let id= obj.ReservationSubId
+             this.libraryService.getRequest( id)
+                .then((resp: any) => {
+                    console.log(resp);
+                    if (resp.data != 'No Accounts Found') {
+                        let a:Application.Models.Request =<Application.Models.Request>resp.data[0];
+                       var alert = this.$mdDialog.alert()
+                            .title("Request "+id)
+                            .content(a)
+                            .ok('Close');
+
+                        this.$mdDialog
+                            .show( alert )
+                            .finally(function() {
+                                alert = undefined;
+                            }); 
+                    } else {
+                        let c = confirm("No account was found");
+                        
+
+                    }
+                })
+         
+    }
+    // Necessary to pass locals to the dialog template.
+DialogCtrl(mdPanelRef:any) {
+ // this._mdPanelRef = mdPanelRef;
+}
+
+ 
         getBook(prefix: string, booknumber: string) {
             //   this.loading = true;
 
@@ -165,10 +199,12 @@ module Application.Components {
                 });
         }
         GetRequests() {
+             if (this.$sessionStorage.myaccount) {
             this.libraryService.getOpenRequests()
                 .then((resp: any) => {
                     this.requests = resp.data;
                 });
+             }
         }
         ShipItem(r: any) {
             let found = false;
@@ -191,8 +227,7 @@ module Application.Components {
         }
 
     }
-
-    app.component("requests", {
+     app.component("requests", {
         controller: Requests,
         bindings: { someVariable: '<' },
         controllerAs: "vm",

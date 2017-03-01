@@ -124,6 +124,10 @@ module Application.Services {
             let url = this.server + "/library/request?sid=" + this.sid;
             return this.$http.get(url);
         }
+        getRequest(id:number){
+            let url = this.server + "/library/request/"+id+"?sid=" + this.sid;
+            return this.$http.get(url);
+        }
         UpdateRequest(obj: any) {
 
             this.checkLogin()

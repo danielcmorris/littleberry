@@ -13,15 +13,14 @@ module Application.Config {
         public supportContact: string = "dmorris@morrisdev.com";
         public apiKey: string = "dswejkdfkui8yoihkjnlj98776tsad87sd9809fdijsnekjjdsoidjs";
         public apiServer: string = "http://localhost:53035/";
-      //  public apiServer: string = "http://api.pfsa.morrisdev.com";
-          
+            
         constructor() {
-            this.number = "1.7";// + Math.random();
+            this.number = "1.8";// + Math.random();
             let path = window.location.host;
          
             if (path.substring(0, 5) === "local") {
                 this.apiServer = "http://localhost:53035";
-              //  this.apiServer = "http://api.pfsa.morrisdev.com";
+             
             } else {
                 this.apiServer = "http://api.pfsa.morrisdev.com";
 
@@ -74,7 +73,6 @@ module Application.Config {
                 .when('/library/subjects', {
                     template: '<navbar></navbar><subjects></subjects>'
                 })
-
                 .when('/library/accounts/add', {
                     template: '<navbar></navbar><account></account>'
                 })
@@ -86,15 +84,7 @@ module Application.Config {
                 })
                 .when('/library/preview/:barcode', {
                     template: '<book-preview></book-preview>'
-                })
-                .when('/madlib', {
-                    template: '<madlib></madlib>'
-                }).when('/hang-man', {
-                    template: '<hang-man></hang-man>'
-                })
-                .when('/request-quote', {
-                    template: '<request-quote email-to="it@morrisdev.com"></request-quote>'
-                })
+                })                
                 .when('/library/recent-additions', {
                     template: '<recent-additions></recent-additions>'
                 })
@@ -141,6 +131,7 @@ module Application.Config {
          
         /* LIBRARY COMPONENTS */
         public library: string = ROOT_PATH +"app/pages/index/library.html";
+        public home: string = ROOT_PATH +"app/pages/home/home.html";
         public book: string = ROOT_PATH + "app/pages/book/book.html";
         public subjects: string = ROOT_PATH + "app/pages/subjects/subjects.html";
         public account: string = ROOT_PATH + "app/pages/account/account.html";

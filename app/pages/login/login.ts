@@ -13,6 +13,7 @@ module Application.Components {
         public errorMessage: string;
         public refreshStatus:Function;
         public redirect:string;
+        public loading:boolean = false;
         $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage','$window']
         constructor(private $location: ng.ILocationService, private $timeout: ng.ITimeoutService
             , private libraryService: any
@@ -28,6 +29,7 @@ module Application.Components {
         }
         Login() {
             if (this.password!='') {
+                this.loading = true
                 this.libraryService.Login(this.username, this.password)
                     .then((resp: any) => {
                       
@@ -44,10 +46,10 @@ module Application.Components {
                     }, (resp: any) => {
                         this.password = '';
                         this.errorMessage = 'Sorry, wrong username/password.';
-
+                        this.loading=false;
                         this.$timeout(() => {
                             this.errorMessage = '';
-                        }, 2200);
+                        }, 3200);
 
                     });
             }

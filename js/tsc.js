@@ -65,6 +65,18 @@ var Application;
 })(Application || (Application = {}));
 var Application;
 (function (Application) {
+    var Models;
+    (function (Models) {
+        var Request = (function () {
+            function Request() {
+            }
+            return Request;
+        }());
+        Models.Request = Request;
+    })(Models = Application.Models || (Application.Models = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
     var Components;
     (function (Components) {
         var Crumbs = (function () {
@@ -91,7 +103,7 @@ var Application;
                 this.supportContact = "dmorris@morrisdev.com";
                 this.apiKey = "dswejkdfkui8yoihkjnlj98776tsad87sd9809fdijsnekjjdsoidjs";
                 this.apiServer = "http://localhost:53035/";
-                this.number = "1.7";
+                this.number = "1.8";
                 var path = window.location.host;
                 if (path.substring(0, 5) === "local") {
                     this.apiServer = "http://localhost:53035";
@@ -157,14 +169,6 @@ var Application;
                     .when('/library/preview/:barcode', {
                     template: '<book-preview></book-preview>'
                 })
-                    .when('/madlib', {
-                    template: '<madlib></madlib>'
-                }).when('/hang-man', {
-                    template: '<hang-man></hang-man>'
-                })
-                    .when('/request-quote', {
-                    template: '<request-quote email-to="it@morrisdev.com"></request-quote>'
-                })
                     .when('/library/recent-additions', {
                     template: '<recent-additions></recent-additions>'
                 })
@@ -191,6 +195,7 @@ var Application;
         var templates = (function () {
             function templates() {
                 this.library = ROOT_PATH + "app/pages/index/library.html";
+                this.home = ROOT_PATH + "app/pages/home/home.html";
                 this.book = ROOT_PATH + "app/pages/book/book.html";
                 this.subjects = ROOT_PATH + "app/pages/subjects/subjects.html";
                 this.account = ROOT_PATH + "app/pages/account/account.html";
@@ -692,6 +697,18 @@ var Application;
             }
             Home.prototype.$onInit = function () {
                 console.log('Home Page');
+                this.webSearch('recent additions');
+            };
+            Home.prototype.webSearch = function (terms) {
+                var _this = this;
+                this.libraryService.Recent()
+                    .then(function (resp) {
+                    _this.books = resp.data;
+                });
+            };
+            Home.prototype.GetBook = function (book) {
+                var url = "/library/catalog/view/" + book.Prefix + "/" + book.BookNumber;
+                this.$location.url(url);
             };
             return Home;
         }());
@@ -700,7 +717,7 @@ var Application;
             controller: Home,
             bindings: { someVariable: '<' },
             controllerAs: "vm",
-            template: "\n        <div style=\"width:500px;margin-left:100px;margin-right:auto;margin-top:40px;\" > <h2>PFSA Library</h2 > </div>\n        <div style=\"width:500px;margin-left:100px;margin-right:auto;margin-top:40px;\" ><hr>\n       <p>Welcome to the PFSA Library!</p>\n\n        </div>\n        \n        "
+            templateUrl: function (templates) { return templates.home; }
         });
     })(Components = Application.Components || (Application.Components = {}));
 })(Application || (Application = {}));
@@ -882,6 +899,7 @@ var Application;
                 this.$cookies = $cookies;
                 this.$sessionStorage = $sessionStorage;
                 this.$window = $window;
+                this.loading = false;
                 this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
                 this.password = '';
             }
@@ -893,6 +911,7 @@ var Application;
             login.prototype.Login = function () {
                 var _this = this;
                 if (this.password != '') {
+                    this.loading = true;
                     this.libraryService.Login(this.username, this.password)
                         .then(function (resp) {
                         _this.$sessionStorage.myaccount = resp.data;
@@ -907,9 +926,10 @@ var Application;
                     }, function (resp) {
                         _this.password = '';
                         _this.errorMessage = 'Sorry, wrong username/password.';
+                        _this.loading = false;
                         _this.$timeout(function () {
                             _this.errorMessage = '';
-                        }, 2200);
+                        }, 3200);
                     });
                 }
             };
@@ -1150,12 +1170,13 @@ var Application;
     var Components;
     (function (Components) {
         var Requests = (function () {
-            function Requests($location, $sessionStorage, $routeParams, libraryService) {
+            function Requests($location, $sessionStorage, $routeParams, libraryService, $mdDialog) {
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.$routeParams = $routeParams;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService'];
+                this.$mdDialog = $mdDialog;
+                this.$insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService', '$mdDialog'];
                 this.email = "dmorris@morrisdev.com";
                 this.ShipSelections = [];
                 this.showAddress = false;
@@ -1172,7 +1193,6 @@ var Application;
                     this.mode = this.mode.toLowerCase();
                 if (this.mode == 'edit' || this.mode == 'add') {
                     this.getBook(this.Prefix, this.BookNumber);
-                    this.showSearch = true;
                     this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
                     this.LookupAccount('email', this.email);
                     this.links = [
@@ -1199,7 +1219,6 @@ var Application;
                         this.email = this.Account.Email;
                     }
                     if (s === "Admin" || s === "Librarian" || s === "Staff") {
-                        this.showSearch = true;
                         console.log("SHOW SEARCH");
                     }
                     else {
@@ -1209,25 +1228,54 @@ var Application;
             };
             Requests.prototype.LookupAccount = function (searchType, q) {
                 var _this = this;
-                this.libraryService.LookupAccount(searchType, q)
+                if (this.$sessionStorage.myaccount) {
+                    this.libraryService.LookupAccount(searchType, q)
+                        .then(function (resp) {
+                        console.log(resp);
+                        if (resp.data != 'No Accounts Found') {
+                            _this.Account = resp.data[0];
+                            _this.showAddress = true;
+                            _this.showSearch = false;
+                            _this.showConfirm = false;
+                        }
+                        else {
+                            var c = confirm("No account was found for " + q + ".  Would you like to make a new account for them?");
+                            if (c) {
+                                _this.showSearch = false;
+                                _this.showAddress = true;
+                                _this.showConfirm = false;
+                                _this.Account = new Application.Models.Account();
+                                _this.Account.Email = q;
+                                _this.Account.Password = "";
+                            }
+                        }
+                    });
+                }
+            };
+            Requests.prototype.ViewRequest = function (obj) {
+                var _this = this;
+                var id = obj.ReservationSubId;
+                this.libraryService.getRequest(id)
                     .then(function (resp) {
                     console.log(resp);
                     if (resp.data != 'No Accounts Found') {
-                        _this.Account = resp.data[0];
-                        _this.showAddress = true;
-                        _this.showConfirm = false;
+                        var a = resp.data[0];
+                        var alert = _this.$mdDialog.alert()
+                            .title("Request " + id)
+                            .content(a)
+                            .ok('Close');
+                        _this.$mdDialog
+                            .show(alert)
+                            .finally(function () {
+                            alert = undefined;
+                        });
                     }
                     else {
-                        var c = confirm("No account was found for " + q + ".  Would you like to make a new account for them?");
-                        if (c) {
-                            _this.showAddress = true;
-                            _this.showConfirm = false;
-                            _this.Account = new Application.Models.Account();
-                            _this.Account.Email = q;
-                            _this.Account.Password = "";
-                        }
+                        var c = confirm("No account was found");
                     }
                 });
+            };
+            Requests.prototype.DialogCtrl = function (mdPanelRef) {
             };
             Requests.prototype.getBook = function (prefix, booknumber) {
                 var _this = this;
@@ -1285,10 +1333,12 @@ var Application;
             };
             Requests.prototype.GetRequests = function () {
                 var _this = this;
-                this.libraryService.getOpenRequests()
-                    .then(function (resp) {
-                    _this.requests = resp.data;
-                });
+                if (this.$sessionStorage.myaccount) {
+                    this.libraryService.getOpenRequests()
+                        .then(function (resp) {
+                        _this.requests = resp.data;
+                    });
+                }
             };
             Requests.prototype.ShipItem = function (r) {
                 var found = false;
@@ -1610,6 +1660,10 @@ var Application;
             libraryService.prototype.getOpenRequests = function () {
                 this.checkLogin();
                 var url = this.server + "/library/request?sid=" + this.sid;
+                return this.$http.get(url);
+            };
+            libraryService.prototype.getRequest = function (id) {
+                var url = this.server + "/library/request/" + id + "?sid=" + this.sid;
                 return this.$http.get(url);
             };
             libraryService.prototype.UpdateRequest = function (obj) {

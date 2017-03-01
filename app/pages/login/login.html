@@ -1,46 +1,35 @@
 ﻿
-
-            <form method="post" class="form-vertical" style="padding-top:100px;">
-                <div class="error">{{vm.errorMessage}}</div>
+            <form method="post" class="form-vertical" >
+                <p></p>
+                <div class="error"><p>{{vm.errorMessage}}</p></div>
                 <br>
-                <div class="login-form" style="width:300px;margin-left:auto;margin-right:auto">
-
-                    
-
-                    <fieldset style="display:block">
+                <div style="width:300px;height:150px;margin-left:auto;margin-right:auto">   
+                    <div ng-show="vm.loading">
+                        <h3>Logging in....</h3>
+                    </div>         
+                    <fieldset style="display:block" ng-hide="vm.loading">
                         <input type="hidden" name="redirect" value="">
-
-
-
                         <div class="control-group">
                             <div class="controls">
                                 <input class="form-control required" ng-model="vm.username" placeholder="Username" type="text" autocomplete="on" />
-
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                                 <input class="form-control required" ng-model="vm.password" ng-keypress="vm.LoginKey($event);" placeholder="Password" type="password"
                                     autocomplete="off" />
-                                <div class="help-block">
-
-
-
-                                </div>
+                                <div class="help-block"></div>
                             </div>
                         </div>
                         <div class="actions">
                             <button type="button" ng-click="vm.Login()" class="btn btn-default btn-large btn-block">Sign in</button>
-
-
-
-
                         </div>
-
                     </fieldset>
-
-
+                    <div style="text-align: center;padding:10px;">
+                         <a href="#">can't access your account?</a>
+                    </div>
                 </div>
+                   
             </form>
      
      

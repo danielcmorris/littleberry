@@ -1,4 +1,7 @@
-﻿.title-bar {
+﻿@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+
+.title-bar {
   background-color: gray;
   color: white;
   font-family: Segoe UI;
@@ -17,16 +20,18 @@
     background-color: #f5f5f5;
     border-radius: 4px;
 }
-.siteheader{
-  
-    background-image:url(/images/logo.png);
-    background-repeat: no-repeat;
+.siteheader{    
     background-color: #ecf0f3;
+    }
+.siteTitle{font-family: 'Open Sans', sans-serif;font-size:14pt;}
+P{font-family: 'Open Sans', sans-serif;font-size:12pt;}
+.siteLogo{
     height:120px;
     width: 100%;
-    
-    
+    background-image:url(/images/logo.png);
+    background-repeat: no-repeat;
     }
+
 .data-bar {
   padding: 5px;
   vertical-align: central;

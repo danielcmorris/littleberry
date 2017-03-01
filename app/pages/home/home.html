@@ -1,1 +1,38 @@
-﻿home
+﻿<div style="margin-left:auto;margin-right:auto;width:90%">
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Welcome to the PFSA Library!</h4>
+        </div>
+        <div class="col-md-4 hidden-sm"></div>
+        <div class="col-md-4">
+            <h4>Recent Additions</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="/images/library.jpg" style="float:right">
+            <p>
+                The library collection consists of over 12,000 works dealing with the Portuguese throughout the world. It holds a vast number
+                of books on the Azores and a fairly complete sample of periodicals published by the Portuguese in California,
+                some dating to the late 1880's. The library contains many historical materials on Portuguese from all over
+                the world. We provide our community with various magazines, periodicals, albums, videos, micro films, etc.
+                Most of the collection circulates for periods of two weeks each and books can be requested from anywhere
+                in California through interlibrary loan services provided by a network of public and academic libraries throughout
+                California.
+            </p>
+        </div>
+        <div class="col-md-6" style="padding:10px">
+            <div ng-repeat="book in vm.books track by $index">
+            
+                    <div ng-click="vm.GetBook(book)" ng-if="book.Url!=''" style="margin:10px;padding:5px;float:right;width:250px;height:260px;border:solid 1px gray;overflow: hidden">
+                        <a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.Title}}</a>
+                        <img style="margin-left:auto;margin-right:auto;margin-top:10px;margin-bottom:10px;display:block" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}"
+                            width="100" />
+
+                        <br>By {{book.Author}}
+                    </div>
+              
+            </div>
+
+        </div>
+    </div>
