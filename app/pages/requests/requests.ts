@@ -19,7 +19,7 @@ module Application.Components {
         public showConfirm: boolean = false;
         public showSearch: boolean = false;
         public showList: boolean = false;
-
+        public links:any;
         public permission: Application.Context.NavigationPermissions;
         public redirect: string;
 
@@ -48,8 +48,8 @@ module Application.Components {
             if (this.$sessionStorage.myaccount) {
                 this.Account = this.$sessionStorage.myaccount;
                 let s = this.Account.AccountType;
-                console.log(s)
-                  if(this.mode = "mine"){this.email=this.Account.Email;}
+               
+                  if(this.mode === "mine"){this.email=this.Account.Email;}
                 if(s==="Admin" || s==="Librarian" || s==="Staff"){
                     this.showSearch = true;
                     console.log("SHOW SEARCH")
@@ -57,6 +57,13 @@ module Application.Components {
                     this.showSearch=false;
                 }
             }
+
+            this.links=[
+                {"url":"/#/library","text":"home"},
+                {"url":"/#/library/catalog","text":"catalog"},
+                {"url":"/#/library/catalog/view/"+this.Prefix+"/"+this.BookNumber,"text":this.CallNumber},
+                {"url":"","text":"request "+this.CallNumber},
+            ];
  
         }
         LookupAccount(searchType: string, q: string) {

@@ -42,7 +42,7 @@ module Application.Config {
                     template: '<navbar></navbar><login-page></login-page>'
                 })
                 .when('/', {
-                    template: '<navbar></navbar><library></library>'
+                    template: '<navbar></navbar><home></home>'
                 }) 
                  .when('/home', {
                     template: '<navbar></navbar><home></home>'
@@ -68,7 +68,7 @@ module Application.Config {
                 .when('/library/requests/:mode/:prefix/:booknumber', {
                     template: '<navbar></navbar><requests></requests>'
                 })
-                .when('/library/requests/:mode', {
+                .when('/library/requests/:modem', {
                     template: '<navbar></navbar><requests></requests>'
                 })
                 .when('/library/subjects', {

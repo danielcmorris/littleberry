@@ -1,5 +1,6 @@
-﻿<p></p>
- {{vm.redirect}}
+﻿<crumbs links="vm.links"></crumbs>
+<p></p>
+ 
 <div ng-show="vm.editing">
     <login ng-hide="vm.permissions.EditTitle" redirect="vm.redirect"></login>
     <div ng-show="vm.permissions.EditTitle">

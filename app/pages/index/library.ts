@@ -24,8 +24,10 @@ module Application.Components {
         publisher: string;
         publocation: string;
         subject: string;
+       
         constructor() {
             this._thumbUrl = this._tempThumbNail;
+           
         }
         get thumbUrl(): string {
             let u = this._thumbUrl;
@@ -60,11 +62,14 @@ module Application.Components {
         public searchResults: boolean = false;
         public callnumber: string = '';
         public sessionStorage: any;
+        public links:any;
+
+        
         $insert = ['$location', '$http', '$cookies','$sessionStorage'];
         constructor(private $location: ng.ILocationService, private $http: any, 
         public libraryService: any, public $cookies: any, private $sessionStorage:any) {
              
-
+ this.links = [{"url":"/#/library","text":"home"},{ "url":"","text":"catalog"}]
             let library: IBook[] = []
             this.sessionStorage = $sessionStorage;
             

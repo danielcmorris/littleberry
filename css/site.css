@@ -17,7 +17,14 @@
     background-color: #f5f5f5;
     border-radius: 4px;
 }
-
+.siteheader{
+    background-image:url("/images/logo.png") no-repeat;
+    background-color: #ecf0f3;
+    height:110px;
+    width: 100%;
+    
+    
+    }
 .data-bar {
   padding: 5px;
   vertical-align: central;

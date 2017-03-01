@@ -60,6 +60,7 @@ module Application.Library.Components {
         public imageChanged: boolean = false;
         public permissions: Application.Context.NavigationPermissions;
         public redirect:string;
+        public links:any;
         $insert = ['$location', '$http', '$routeParams',
             '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
         constructor(private $location: ng.ILocationService,
@@ -68,13 +69,13 @@ module Application.Library.Components {
             private $httpParamSerializerJQLike: any,
             private libraryService: any, public $sessionStorage: any) {
             this.permissions = libraryService.UpdatePermissions();
-            this.redirect = $location.path.toString();
+            this.redirect = $location.path();
             this.image.uploading = false;
             this.book.Url = "";
             this.imageServer = Application.Config.LibraryConfig.imageServer;
 
 
-
+            
 
         }
         uploadImage() {
@@ -242,11 +243,15 @@ module Application.Library.Components {
             this.booknumber = this.$routeParams.booknumber
             this.callnumber = this.prefix + this.booknumber;
             console.log(this.mode + ':' + this.callnumber);
-
+            this.links=[
+                            {"url":"/#/library","text":"home"},
+                            {"url":"/#/library/catalog","text":"catalog"}];
+                           
             if (this.callnumber) {
                 this.editing = false;
                 this.mode = "update";
                 this.getBook(this.prefix, this.booknumber);
+
             } else {
                 this.mode = 'insert';
                 this.editing = true;
@@ -259,7 +264,8 @@ module Application.Library.Components {
                 this.mode = "update";
             }
 
-
+            console.log(viewmode);
+            this.links.push({"url":"","text":this.callnumber})
 
         }
 

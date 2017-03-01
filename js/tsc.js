@@ -65,6 +65,24 @@ var Application;
 })(Application || (Application = {}));
 var Application;
 (function (Application) {
+    var Components;
+    (function (Components) {
+        var Crumbs = (function () {
+            function Crumbs() {
+            }
+            return Crumbs;
+        }());
+        Components.Crumbs = Crumbs;
+        app.component("crumbs", {
+            controller: Crumbs,
+            bindings: { links: '<' },
+            controllerAs: "vm",
+            template: "\n        <ul class=\"breadcrumb\">\n            <li ng-repeat=\"bc in vm.links\">\n                <a ng-if=\"bc.url!=''\" ng-href=\"{{bc.url}}\">{{bc.text}}</a>\n                <span  ng-if=\"bc.url==''\">{{bc.text}}</span>\n            </li>\n        </ul>\n        \n   \n        "
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
     var Config;
     (function (Config) {
         var version = (function () {
@@ -95,7 +113,7 @@ var Application;
                     template: '<navbar></navbar><login-page></login-page>'
                 })
                     .when('/', {
-                    template: '<navbar></navbar><library></library>'
+                    template: '<navbar></navbar><home></home>'
                 })
                     .when('/home', {
                     template: '<navbar></navbar><home></home>'
@@ -121,7 +139,7 @@ var Application;
                     .when('/library/requests/:mode/:prefix/:booknumber', {
                     template: '<navbar></navbar><requests></requests>'
                 })
-                    .when('/library/requests/:mode', {
+                    .when('/library/requests/:modem', {
                     template: '<navbar></navbar><requests></requests>'
                 })
                     .when('/library/subjects', {
@@ -467,7 +485,7 @@ var Application;
                     this.$insert = ['$location', '$http', '$routeParams',
                         '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
                     this.permissions = libraryService.UpdatePermissions();
-                    this.redirect = $location.path.toString();
+                    this.redirect = $location.path();
                     this.image.uploading = false;
                     this.book.Url = "";
                     this.imageServer = Application.Config.LibraryConfig.imageServer;
@@ -587,6 +605,9 @@ var Application;
                     this.booknumber = this.$routeParams.booknumber;
                     this.callnumber = this.prefix + this.booknumber;
                     console.log(this.mode + ':' + this.callnumber);
+                    this.links = [
+                        { "url": "/#/library", "text": "home" },
+                        { "url": "/#/library/catalog", "text": "catalog" }];
                     if (this.callnumber) {
                         this.editing = false;
                         this.mode = "update";
@@ -602,6 +623,8 @@ var Application;
                         this.editing = true;
                         this.mode = "update";
                     }
+                    console.log(viewmode);
+                    this.links.push({ "url": "", "text": this.callnumber });
                 };
                 return book;
             }());
@@ -727,6 +750,7 @@ var Application;
                 this.searchResults = false;
                 this.callnumber = '';
                 this.$insert = ['$location', '$http', '$cookies', '$sessionStorage'];
+                this.links = [{ "url": "/#/library", "text": "home" }, { "url": "", "text": "catalog" }];
                 var library = [];
                 this.sessionStorage = $sessionStorage;
                 this.version = new Application.Config.version();
@@ -1161,8 +1185,7 @@ var Application;
                 if (this.$sessionStorage.myaccount) {
                     this.Account = this.$sessionStorage.myaccount;
                     var s = this.Account.AccountType;
-                    console.log(s);
-                    if (this.mode = "mine") {
+                    if (this.mode === "mine") {
                         this.email = this.Account.Email;
                     }
                     if (s === "Admin" || s === "Librarian" || s === "Staff") {
@@ -1173,6 +1196,12 @@ var Application;
                         this.showSearch = false;
                     }
                 }
+                this.links = [
+                    { "url": "/#/library", "text": "home" },
+                    { "url": "/#/library/catalog", "text": "catalog" },
+                    { "url": "/#/library/catalog/view/" + this.Prefix + "/" + this.BookNumber, "text": this.CallNumber },
+                    { "url": "", "text": "request " + this.CallNumber },
+                ];
             };
             Requests.prototype.LookupAccount = function (searchType, q) {
                 var _this = this;

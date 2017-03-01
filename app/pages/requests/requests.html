@@ -1,5 +1,5 @@
-﻿<div class="breadcrumb"><a href="/#/library">home</a> » <a href="/#/library/catalog">catalog</a>  » Request: {{vm.book.CallNumber}}</div>
-
+﻿
+<crumbs links="vm.links"></crumbs>
 <login redirect="vm.redirect" ng-if="!vm.permission.Requests"></login>
 <form autocomplete="on" ng-if="vm.permission.Requests">
     <div class="row" ng-if="vm.mode=='add'" style="margin-top:40px">
