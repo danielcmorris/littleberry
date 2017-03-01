@@ -361,7 +361,7 @@ var Application;
             controller: Account,
             bindings: { accountId: '<' },
             controllerAs: "vm",
-            templateUrl: function (templates) { return templates.account; },
+            templateUrl: function (templates) { return templates.account; }
         });
     })(Components = Application.Components || (Application.Components = {}));
 })(Application || (Application = {}));
@@ -1175,9 +1175,19 @@ var Application;
                     this.showSearch = true;
                     this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
                     this.LookupAccount('email', this.email);
+                    this.links = [
+                        { "url": "/#/library", "text": "home" },
+                        { "url": "/#/library/catalog", "text": "catalog" },
+                        { "url": "/#/library/catalog/view/" + this.Prefix + "/" + this.BookNumber, "text": this.CallNumber },
+                        { "url": "", "text": "request " + this.CallNumber },
+                    ];
                 }
                 else {
                     this.GetRequests();
+                    this.links = [
+                        { "url": "/#/library", "text": "home" },
+                        { "url": "", "text": "requests" },
+                    ];
                     this.showList = true;
                     this.redirect = "/#/library/requests/";
                 }
@@ -1196,12 +1206,6 @@ var Application;
                         this.showSearch = false;
                     }
                 }
-                this.links = [
-                    { "url": "/#/library", "text": "home" },
-                    { "url": "/#/library/catalog", "text": "catalog" },
-                    { "url": "/#/library/catalog/view/" + this.Prefix + "/" + this.BookNumber, "text": this.CallNumber },
-                    { "url": "", "text": "request " + this.CallNumber },
-                ];
             };
             Requests.prototype.LookupAccount = function (searchType, q) {
                 var _this = this;
@@ -1629,12 +1633,14 @@ var Application;
             };
             libraryService.prototype.LookupAccount = function (searchType, q) {
                 var deferred;
-                deferred = this.$q.defer();
-                var url = this.server + "/library/accounts/search/email?q=" + q + "&sid=" + this.sid;
-                this.$http.get(url)
-                    .then(function (resp) {
-                    deferred.resolve(resp);
-                });
+                if (this.sid) {
+                    deferred = this.$q.defer();
+                    var url = this.server + "/library/accounts/search/email?q=" + q + "&sid=" + this.sid;
+                    this.$http.get(url)
+                        .then(function (resp) {
+                        deferred.resolve(resp);
+                    });
+                }
                 return deferred.promise;
             };
             libraryService.prototype.SaveAccount = function (account) {

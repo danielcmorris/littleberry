@@ -151,15 +151,17 @@ module Application.Services {
         }
         LookupAccount(searchType: string, q: string) {
             var deferred: any;
-            deferred = this.$q.defer();
+            if (this.sid) {
 
-            let url: string = this.server + "/library/accounts/search/email?q=" + q + "&sid=" + this.sid;
-            this.$http.get(url)
-                .then((resp: any) => {
+                deferred = this.$q.defer();
 
-                    deferred.resolve(resp);
-                });
+                let url: string = this.server + "/library/accounts/search/email?q=" + q + "&sid=" + this.sid;
+                this.$http.get(url)
+                    .then((resp: any) => {
 
+                        deferred.resolve(resp);
+                    });
+            }
             return deferred.promise;
         }
         SaveAccount(account: any) {

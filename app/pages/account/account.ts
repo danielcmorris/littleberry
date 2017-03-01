@@ -1,6 +1,4 @@
-﻿/// <reference path="../../../td/types.d.ts" />
-
-
+﻿
 
 
 
@@ -80,7 +78,7 @@ module Application.Components {
 
         Delete() {
             let a = this.account;
-            let msg = 'Are you sure you want to delete ' + a.FirstName + ' ' + a.LastName + '\'s account?');
+            let msg = 'Are you sure you want to delete ' + a.FirstName + ' ' + a.LastName + '\'s account?';
             if (confirm(msg)) {
                 this.account.Status = 'Deleted';
                 this.Toast("Deleting Account...",2);
@@ -126,6 +124,6 @@ module Application.Components {
         controller: Account,
         bindings: { accountId: '<' },
         controllerAs: "vm",
-        templateUrl: function (templates: any) { return templates.account },
+        templateUrl: function (templates: any) { return templates.account }
     })
 }

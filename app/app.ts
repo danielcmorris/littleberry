@@ -1,6 +1,4 @@
-/// <reference path="../../type-definitions/types.d.ts" />
- 
- 
+
 module Application.Controllers{
     
     export class MainCtrl{

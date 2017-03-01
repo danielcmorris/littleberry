@@ -38,9 +38,18 @@ module Application.Components {
                 this.showSearch = true;
                 this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
                 this.LookupAccount('email', this.email)
+                 this.links=[
+                {"url":"/#/library","text":"home"},
+                {"url":"/#/library/catalog","text":"catalog"},
+                {"url":"/#/library/catalog/view/"+this.Prefix+"/"+this.BookNumber,"text":this.CallNumber},
+                {"url":"","text":"request "+this.CallNumber},
+            ];
             } else {
                 this.GetRequests();
-              
+                this.links=[
+                {"url":"/#/library","text":"home"}, 
+                {"url":"","text":"requests"},
+                ];
                 this.showList = true;
                 this.redirect = "/#/library/requests/";
             }
@@ -58,12 +67,7 @@ module Application.Components {
                 }
             }
 
-            this.links=[
-                {"url":"/#/library","text":"home"},
-                {"url":"/#/library/catalog","text":"catalog"},
-                {"url":"/#/library/catalog/view/"+this.Prefix+"/"+this.BookNumber,"text":this.CallNumber},
-                {"url":"","text":"request "+this.CallNumber},
-            ];
+           
  
         }
         LookupAccount(searchType: string, q: string) {
