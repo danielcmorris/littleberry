@@ -11,11 +11,14 @@ module Application.Components {
             this.webSearch('recent additions');
         }
         webSearch(terms: string) {
-            this.libraryService.Recent()
-                .then((resp: any) => {
-                    this.books = resp.data;
-
-                });
+           
+                this.libraryService.Recent()
+                    .then((resp: any) => {
+                        this.books = resp.data;
+                        this.$sessionStorage.searchResults = this.books;
+                         
+                        
+                    });
 
 
 

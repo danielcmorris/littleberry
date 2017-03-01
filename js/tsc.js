@@ -704,6 +704,7 @@ var Application;
                 this.libraryService.Recent()
                     .then(function (resp) {
                     _this.books = resp.data;
+                    _this.$sessionStorage.searchResults = _this.books;
                 });
             };
             Home.prototype.GetBook = function (book) {
