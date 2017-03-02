@@ -53,6 +53,7 @@ module Application.Components {
 
     }
     export class library {
+        public mode: string;
         public mydocs: any = [];
         public api: any = {};
         public searchText: string;
@@ -63,7 +64,8 @@ module Application.Components {
         public callnumber: string = '';
         public sessionStorage: any;
         public links: any;
-        public prefix:string='';
+        public prefix: string = '';
+        public pageTitle: string = 'Catalog';
 
         $insert = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
         constructor(private $location: ng.ILocationService, private $http: any,
@@ -106,7 +108,7 @@ module Application.Components {
         }
         Search(searchText?: string) {
             // if (this.searchText) 
-            this.webSearch(this.searchText, this.prefix);
+            this.webSearch(this.searchText, this.prefix, '');
             this.setCookie("titleSearch", this.searchText);
 
 
@@ -128,17 +130,37 @@ module Application.Components {
                     this.searchResults = true;
                 });
         }
-        webSearch(terms: string,prefix:string) {
+        webSearch(terms: string, prefix: string, author: string) {
             if (terms != 'recent additions') {
+                if (!prefix)
+                    prefix = '';
                 this.sessionStorage.searchText = terms
-                this.libraryService.Search(prefix, '', terms)
+                this.libraryService.Search(prefix, author, terms)
                     .then((resp: any) => {
                         this.books = resp.data;
                         this.sessionStorage.searchResults = this.books;
                         this.searchResults = true;
+                        let count = this.books.length;
+                        let countText = count.toString();
+                        if (count === 1000) { 'More than ' + countText }
+                        if (count > 0) {
+                            if (this.mode === 'author') {
+                                this.pageTitle = countText + " Titles by " + this.$routeParams.author;
+                            }
+                            if (this.mode === 'subject') {
+                                this.pageTitle = countText + " Titles in " + this.books[0].Subject;
+                            }
+                            if (this.mode === 'full') {
+                                this.pageTitle = countText + " Titles found";
+                            }
+                        } else {
+                            this.pageTitle = 'No Titles Found for search text ("' + terms + '")';
+                        }
+
                     });
 
             } else {
+                this.pageTitle = 'Recent Additions'
                 this.libraryService.Recent()
                     .then((resp: any) => {
                         this.books = resp.data;
@@ -160,28 +182,46 @@ module Application.Components {
 
             this.$location.url(url);
         }
+        Recent() {
+            this.pageTitle = "Recent Additions"
+            this.webSearch('recent additions', '', '');
+            this.$location.url('library/catalog');
 
+
+        }
         $onInit() {
             var lastSearch: any
             this.searchText = this.sessionStorage.searchText
+            let searchMode = ""
+            console.log(this.mode)
             this.prefix = this.$routeParams.prefix;
 
             if (this.sessionStorage) {
-                lastSearch = this.sessionStorage.searchResults
-            }
-            if (!lastSearch && !this.prefix) {
-                if (this.prefix) {
-                    this.SubjectSearch(this.prefix)
-                } else {
-                    this.webSearch('recent additions','');
-                }
-            } else {
-                if (this.prefix) {
-                    this.SubjectSearch(this.prefix)
 
+                this.searchText = this.sessionStorage.searchText
+                searchMode = this.sessionStorage.searchMode;
+                if (searchMode = this.mode) {
+                    lastSearch = this.sessionStorage.searchResults
+                }
+            }
+
+            if (!lastSearch && this.mode === 'catalog') {
+
+                this.webSearch('recent additions', '', '');
+            } else {
+
+                if (this.mode === 'subject') {
+                    this.webSearch('', this.$routeParams.prefix, '');
+                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": this.$routeParams.prefix }]
                     this.searchResults = true;
-                } else {
-                    this.webSearch('recent additions','');
+                }
+                if (this.mode == 'author') {
+                    this.webSearch('', '', this.$routeParams.author);
+                    this.books = lastSearch;
+                    this.searchResults = true;
+                }
+                if (this.mode == 'full') {
+
                     this.books = lastSearch;
                     this.searchResults = true;
                 }
@@ -219,6 +259,7 @@ module Application.Components {
     app.component("library", {
         controller: library,
         controllerAs: "vm",
+        bindings: { mode: '=' },
         templateUrl: function (templates: any) { return templates.library },
     })
 

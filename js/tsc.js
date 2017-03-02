@@ -131,7 +131,13 @@ var Application;
                     template: '<navbar></navbar><home></home>'
                 })
                     .when('/library/catalog', {
-                    template: '<navbar></navbar><library></library>'
+                    template: '<navbar></navbar><library mode="\'full\'"></library>'
+                })
+                    .when('/library/subject/:prefix', {
+                    template: '<navbar></navbar><library mode="\'subject\'"></library>'
+                })
+                    .when('/library/author/:author', {
+                    template: '<navbar></navbar><library mode="\'author\'"></library>'
                 })
                     .when('/library/catalog/add', {
                     template: '<navbar></navbar><book></book>'
@@ -772,6 +778,7 @@ var Application;
                 this.searchResults = false;
                 this.callnumber = '';
                 this.prefix = '';
+                this.pageTitle = 'Catalog';
                 this.$insert = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
                 this.links = [{ "url": "/#/library", "text": "home" }, { "url": "", "text": "catalog" }];
                 var library = [];
@@ -800,7 +807,7 @@ var Application;
                 }
             };
             library.prototype.Search = function (searchText) {
-                this.webSearch(this.searchText, this.prefix);
+                this.webSearch(this.searchText, this.prefix, '');
                 this.setCookie("titleSearch", this.searchText);
             };
             library.prototype.ClearSearch = function () {
@@ -819,18 +826,40 @@ var Application;
                     _this.searchResults = true;
                 });
             };
-            library.prototype.webSearch = function (terms, prefix) {
+            library.prototype.webSearch = function (terms, prefix, author) {
                 var _this = this;
                 if (terms != 'recent additions') {
+                    if (!prefix)
+                        prefix = '';
                     this.sessionStorage.searchText = terms;
-                    this.libraryService.Search(prefix, '', terms)
+                    this.libraryService.Search(prefix, author, terms)
                         .then(function (resp) {
                         _this.books = resp.data;
                         _this.sessionStorage.searchResults = _this.books;
                         _this.searchResults = true;
+                        var count = _this.books.length;
+                        var countText = count.toString();
+                        if (count === 1000) {
+                            'More than ' + countText;
+                        }
+                        if (count > 0) {
+                            if (_this.mode === 'author') {
+                                _this.pageTitle = countText + " Titles by " + _this.$routeParams.author;
+                            }
+                            if (_this.mode === 'subject') {
+                                _this.pageTitle = countText + " Titles in " + _this.books[0].Subject;
+                            }
+                            if (_this.mode === 'full') {
+                                _this.pageTitle = countText + " Titles found";
+                            }
+                        }
+                        else {
+                            _this.pageTitle = 'No Titles Found for search text ("' + terms + '")';
+                        }
                     });
                 }
                 else {
+                    this.pageTitle = 'Recent Additions';
                     this.libraryService.Recent()
                         .then(function (resp) {
                         _this.books = resp.data;
@@ -846,28 +875,39 @@ var Application;
             library.prototype.go = function (url) {
                 this.$location.url(url);
             };
+            library.prototype.Recent = function () {
+                this.pageTitle = "Recent Additions";
+                this.webSearch('recent additions', '', '');
+                this.$location.url('library/catalog');
+            };
             library.prototype.$onInit = function () {
                 var lastSearch;
                 this.searchText = this.sessionStorage.searchText;
+                var searchMode = "";
+                console.log(this.mode);
                 this.prefix = this.$routeParams.prefix;
                 if (this.sessionStorage) {
-                    lastSearch = this.sessionStorage.searchResults;
+                    this.searchText = this.sessionStorage.searchText;
+                    searchMode = this.sessionStorage.searchMode;
+                    if (searchMode = this.mode) {
+                        lastSearch = this.sessionStorage.searchResults;
+                    }
                 }
-                if (!lastSearch && !this.prefix) {
-                    if (this.prefix) {
-                        this.SubjectSearch(this.prefix);
-                    }
-                    else {
-                        this.webSearch('recent additions', '');
-                    }
+                if (!lastSearch && this.mode === 'catalog') {
+                    this.webSearch('recent additions', '', '');
                 }
                 else {
-                    if (this.prefix) {
-                        this.SubjectSearch(this.prefix);
+                    if (this.mode === 'subject') {
+                        this.webSearch('', this.$routeParams.prefix, '');
+                        this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": this.$routeParams.prefix }];
                         this.searchResults = true;
                     }
-                    else {
-                        this.webSearch('recent additions', '');
+                    if (this.mode == 'author') {
+                        this.webSearch('', '', this.$routeParams.author);
+                        this.books = lastSearch;
+                        this.searchResults = true;
+                    }
+                    if (this.mode == 'full') {
                         this.books = lastSearch;
                         this.searchResults = true;
                     }
@@ -896,6 +936,7 @@ var Application;
         app.component("library", {
             controller: library,
             controllerAs: "vm",
+            bindings: { mode: '=' },
             templateUrl: function (templates) { return templates.library; },
         });
     })(Components = Application.Components || (Application.Components = {}));

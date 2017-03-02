@@ -2,7 +2,7 @@
 
 <div class="row"  style="margin-top:0px">
     <div class="col-md-6">
-        <div style="padding-left:20px;font-family:Arial, Helvetica, sans-serif;font-size:20pt;font-weight:bold">Catalog</div>
+        <div style="padding-left:20px;font-family:Arial, Helvetica, sans-serif;font-size:20pt;font-weight:bold" ng-bind="vm.pageTitle">Full Catalog</div>
 
     </div>
 </div>
@@ -32,7 +32,7 @@
                 </div>
                 <button type="button" class="btn btn-default" ng-click="vm.Search(vm.searchText);">Search</button>
                 <button type="button" class="btn btn-default" ng-if="vm.searchText" ng-click="vm.ClearSearch();">Clear</button>
-                <button type="button" class="btn btn-default" ng-click="vm.webSearch('recent additions');">Recent</button>
+                <button type="button" class="btn btn-default" ng-click="vm.Recent();">Recent</button>
  
             </form>
         </div>

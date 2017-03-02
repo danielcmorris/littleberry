@@ -45,9 +45,15 @@ module Application.Config {
                 }) 
                  .when('/home', {
                     template: '<navbar></navbar><home></home>'
-                })                
+                })   
                 .when('/library/catalog', {
-                    template: '<navbar></navbar><library></library>'
+                    template: '<navbar></navbar><library mode="\'full\'"></library>'
+                })
+                .when('/library/subject/:prefix', {
+                    template: '<navbar></navbar><library mode="\'subject\'"></library>'
+                })             
+                .when('/library/author/:author', {
+                    template: '<navbar></navbar><library mode="\'author\'"></library>'
                 })
                 .when('/library/catalog/add', {
                     template: '<navbar></navbar><book></book>'
