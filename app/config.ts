@@ -52,6 +52,9 @@ module Application.Config {
                 .when('/library/catalog/add', {
                     template: '<navbar></navbar><book></book>'
                 })
+                .when('/library/catalog/:prefix', {
+                    template: '<navbar></navbar><library></library>'
+                })
                 .when('/library/catalog/request/:prefix/:booknumber', {
                     template: '<navbar></navbar><reservation></reservation>'
                 })

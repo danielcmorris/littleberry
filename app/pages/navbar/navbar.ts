@@ -14,13 +14,13 @@ module Application.Components {
         public callnumber: any
         public username: string;
         public AccountId: number;
-
+        public subjects:any;
         public permission:any={}
 
         $onInit() {
 
-
-
+                console.log("loading nav bar")
+            this.GetSubjects()
             if (this.$sessionStorage.myaccount) {
                 let a = this.$sessionStorage.myaccount
                 this.username = a.FirstName + ' ' + a.LastName;
@@ -46,7 +46,14 @@ module Application.Components {
             let url = "/";
             this.go(url);
         }
-
+        GetSubjects(){
+            
+            this.libraryService.getSubjects()
+                .then((resp:any)=>{
+                    this.subjects = resp;
+                     
+                })
+        }
         OpenByCallNumberKey(keyEvent: any) {
             if (keyEvent.which === 13) {
                 this.OpenByCallNumber();

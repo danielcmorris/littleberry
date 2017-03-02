@@ -136,6 +136,9 @@ var Application;
                     .when('/library/catalog/add', {
                     template: '<navbar></navbar><book></book>'
                 })
+                    .when('/library/catalog/:prefix', {
+                    template: '<navbar></navbar><library></library>'
+                })
                     .when('/library/catalog/request/:prefix/:booknumber', {
                     template: '<navbar></navbar><reservation></reservation>'
                 })
@@ -757,17 +760,19 @@ var Application;
             return Book;
         }());
         var library = (function () {
-            function library($location, $http, libraryService, $cookies, $sessionStorage) {
+            function library($location, $http, libraryService, $cookies, $sessionStorage, $routeParams) {
                 this.$location = $location;
                 this.$http = $http;
                 this.libraryService = libraryService;
                 this.$cookies = $cookies;
                 this.$sessionStorage = $sessionStorage;
+                this.$routeParams = $routeParams;
                 this.mydocs = [];
                 this.api = {};
                 this.searchResults = false;
                 this.callnumber = '';
-                this.$insert = ['$location', '$http', '$cookies', '$sessionStorage'];
+                this.prefix = '';
+                this.$insert = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
                 this.links = [{ "url": "/#/library", "text": "home" }, { "url": "", "text": "catalog" }];
                 var library = [];
                 this.sessionStorage = $sessionStorage;
@@ -795,7 +800,7 @@ var Application;
                 }
             };
             library.prototype.Search = function (searchText) {
-                this.webSearch(this.searchText);
+                this.webSearch(this.searchText, this.prefix);
                 this.setCookie("titleSearch", this.searchText);
             };
             library.prototype.ClearSearch = function () {
@@ -804,11 +809,21 @@ var Application;
             library.prototype.NewBook = function () {
                 this.$location.url('library/add');
             };
-            library.prototype.webSearch = function (terms) {
+            library.prototype.SubjectSearch = function (prefix) {
+                var _this = this;
+                this.sessionStorage.prefix = prefix;
+                this.libraryService.Search(prefix, '', '')
+                    .then(function (resp) {
+                    _this.books = resp.data;
+                    _this.sessionStorage.searchResults = _this.books;
+                    _this.searchResults = true;
+                });
+            };
+            library.prototype.webSearch = function (terms, prefix) {
                 var _this = this;
                 if (terms != 'recent additions') {
                     this.sessionStorage.searchText = terms;
-                    this.libraryService.Search('', '', terms)
+                    this.libraryService.Search(prefix, '', terms)
                         .then(function (resp) {
                         _this.books = resp.data;
                         _this.sessionStorage.searchResults = _this.books;
@@ -834,15 +849,28 @@ var Application;
             library.prototype.$onInit = function () {
                 var lastSearch;
                 this.searchText = this.sessionStorage.searchText;
+                this.prefix = this.$routeParams.prefix;
                 if (this.sessionStorage) {
                     lastSearch = this.sessionStorage.searchResults;
                 }
-                if (!lastSearch) {
-                    this.webSearch('recent additions');
+                if (!lastSearch && !this.prefix) {
+                    if (this.prefix) {
+                        this.SubjectSearch(this.prefix);
+                    }
+                    else {
+                        this.webSearch('recent additions', '');
+                    }
                 }
                 else {
-                    this.books = lastSearch;
-                    this.searchResults = true;
+                    if (this.prefix) {
+                        this.SubjectSearch(this.prefix);
+                        this.searchResults = true;
+                    }
+                    else {
+                        this.webSearch('recent additions', '');
+                        this.books = lastSearch;
+                        this.searchResults = true;
+                    }
                 }
             };
             library.prototype.submitForm = function () {
@@ -975,6 +1003,8 @@ var Application;
                 this.permission = {};
             }
             Navbar.prototype.$onInit = function () {
+                console.log("loading nav bar");
+                this.GetSubjects();
                 if (this.$sessionStorage.myaccount) {
                     var a = this.$sessionStorage.myaccount;
                     this.username = a.FirstName + ' ' + a.LastName;
@@ -989,6 +1019,13 @@ var Application;
                 this.permission = new Application.Context.NavigationPermissions('Anon');
                 var url = "/";
                 this.go(url);
+            };
+            Navbar.prototype.GetSubjects = function () {
+                var _this = this;
+                this.libraryService.getSubjects()
+                    .then(function (resp) {
+                    _this.subjects = resp;
+                });
             };
             Navbar.prototype.OpenByCallNumberKey = function (keyEvent) {
                 if (keyEvent.which === 13) {
