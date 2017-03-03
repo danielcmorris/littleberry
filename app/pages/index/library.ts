@@ -131,12 +131,12 @@ module Application.Components {
                 });
         }
         webSearch(terms: string, prefix: string, author: string) {
-            this.searchResults=false;
+            this.searchResults = false;
             if (terms != 'recent additions') {
                 if (!prefix)
                     prefix = '';
-                    if(this.$routeParams.author)
-                        author=this.$routeParams.author;
+                if (this.$routeParams.author)
+                    author = this.$routeParams.author;
                 this.sessionStorage.searchText = terms
                 this.libraryService.Search(prefix, author, terms)
                     .then((resp: any) => {
@@ -156,23 +156,24 @@ module Application.Components {
                             if (this.mode === 'full') {
                                 this.pageTitle = countText + " Titles found";
                             }
-                            this.searchResults=true;
+                            this.searchResults = true;
                         } else {
                             this.pageTitle = 'No Titles Found for search text ("' + terms + '")';
                         }
-                            
+
                     });
 
             } else {
-                this.pageTitle = 'Recent Additions'
-                this.libraryService.Recent()
-                    .then((resp: any) => {
-                        this.books = resp.data;
-                        this.sessionStorage.searchResults = this.books;
+                if (this.mode === 'recent') {
+                    this.pageTitle = 'Recent Additions'
+                    this.libraryService.Recent()
+                        .then((resp: any) => {
+                            this.books = resp.data;
+                            this.sessionStorage.searchResults = this.books;
 
-                        this.searchResults = true;
-                    });
-
+                            this.searchResults = true;
+                        });
+                }
             }
 
         }
@@ -187,14 +188,18 @@ module Application.Components {
             this.$location.url(url);
         }
         Recent() {
-            this.pageTitle = "Recent Additions"
-            this.webSearch('recent additions', '', '');
-            this.$location.url('library/catalog');
+            //this.pageTitle = "Recent Additions"
+            //this.webSearch('recent additions', '', '');
+            this.$location.url('library/recent');
 
 
         }
         $onInit() {
             var lastSearch: any
+            if (this.mode === 'recent') {
+                this.sessionStorage.searchText = '';
+
+            }
             this.searchText = this.sessionStorage.searchText
             let searchMode = ""
             console.log(this.mode)
@@ -209,8 +214,8 @@ module Application.Components {
                 }
             }
 
-            if (!lastSearch && this.mode === 'catalog') {
-
+            if (this.mode === 'recent') {
+                this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": 'recent additions' }]
                 this.webSearch('recent additions', '', '');
             } else {
 
@@ -221,17 +226,22 @@ module Application.Components {
                 }
                 if (this.mode == 'author') {
                     this.webSearch('', '', this.$routeParams.author);
-                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/author", "text": "authors" }, 
-                        { "url": "", "text": this.$routeParams.author }]
+                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/author", "text": "authors" },
+                    { "url": "", "text": this.$routeParams.author }]
                     this.books = lastSearch;
                     this.searchResults = true;
                 }
-                if (this.mode == 'full') {
+                if (this.mode == 'full' && !( this.searchText=== 'recent additions' || this.searchText==='')) {
 
                     this.books = lastSearch;
                     this.searchResults = true;
                 }
+                if (this.mode == 'full' && this.searchText === 'recent additions') {
 
+                    //this.books = lastSearch;
+                    this.searchResults = true;
+                }
+                this.searchResults = true;
             }
 
 

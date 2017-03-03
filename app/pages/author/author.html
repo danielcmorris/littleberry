@@ -6,7 +6,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-offset-2 col-md-5">
         <div style="padding-left:20px;">
             <form class="form-inline">
                 <div class="form-group">
@@ -15,10 +15,10 @@
                            placeholder="search text..." />
 
                 </div>
-                <button type="button" class="btn btn-default" ng-click="vm.Search(vm.searchText);">Search</button>
-                <button type="button" class="btn btn-default" ng-if="vm.searchText" ng-click="vm.ClearSearch();">Clear</button>
-                <button type="button" class="btn btn-default" ng-click="vm.Recent();">Recent</button>
- 
+                <button type="button" class="btn btn-default" ng-click="vm.AuthorName=vm.searchText;">Search</button>
+                <button type="button" class="btn btn-default" ng-if="vm.searchText" ng-click="vm.AuthorName='';vm.ClearSearch();">Clear</button>
+                 
+ <input ng-model='vm.AuthorName'>
             </form>
         </div>
     </div>
@@ -40,7 +40,7 @@
                  
              </tr>
 
-            <tr ng-repeat="a in vm.authors track by $index" >
+            <tr ng-repeat="a in vm.authors | filter: {'Author':vm.AuthorName}" >
                 
                
                 <td><a ng-href="/#/library/author/{{a.Author}}">{{a.Author}} </a></td>

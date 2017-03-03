@@ -8,6 +8,8 @@ module Application.Components {
         public mode: any
         public links: any;
         public authors: any;
+        public pageTitle:string;
+public AuthorName:string;
 public searchResults:boolean = false;
         $onInit() {
             console.log('Author, mode=' + this.mode);
@@ -23,6 +25,7 @@ public searchResults:boolean = false;
                 .then((resp: any) => {
                     this.authors = resp;
                     this.searchResults= true;
+                    this.pageTitle = this.authors.length+' Authors Found'
                 })
         }
         go(url: string) {

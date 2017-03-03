@@ -133,6 +133,9 @@ var Application;
                     .when('/library/catalog', {
                     template: '<navbar></navbar><library mode="\'full\'"></library>'
                 })
+                    .when('/library/recent', {
+                    template: '<navbar></navbar><library mode="\'recent\'"></library>'
+                })
                     .when('/library/subject/:prefix', {
                     template: '<navbar></navbar><library mode="\'subject\'"></library>'
                 })
@@ -409,6 +412,7 @@ var Application;
                     .then(function (resp) {
                     _this.authors = resp;
                     _this.searchResults = true;
+                    _this.pageTitle = _this.authors.length + ' Authors Found';
                 });
             };
             Author.prototype.go = function (url) {
@@ -909,13 +913,15 @@ var Application;
                     });
                 }
                 else {
-                    this.pageTitle = 'Recent Additions';
-                    this.libraryService.Recent()
-                        .then(function (resp) {
-                        _this.books = resp.data;
-                        _this.sessionStorage.searchResults = _this.books;
-                        _this.searchResults = true;
-                    });
+                    if (this.mode === 'recent') {
+                        this.pageTitle = 'Recent Additions';
+                        this.libraryService.Recent()
+                            .then(function (resp) {
+                            _this.books = resp.data;
+                            _this.sessionStorage.searchResults = _this.books;
+                            _this.searchResults = true;
+                        });
+                    }
                 }
             };
             library.prototype.getBook = function (b) {
@@ -926,12 +932,13 @@ var Application;
                 this.$location.url(url);
             };
             library.prototype.Recent = function () {
-                this.pageTitle = "Recent Additions";
-                this.webSearch('recent additions', '', '');
-                this.$location.url('library/catalog');
+                this.$location.url('library/recent');
             };
             library.prototype.$onInit = function () {
                 var lastSearch;
+                if (this.mode === 'recent') {
+                    this.sessionStorage.searchText = '';
+                }
                 this.searchText = this.sessionStorage.searchText;
                 var searchMode = "";
                 console.log(this.mode);
@@ -943,7 +950,8 @@ var Application;
                         lastSearch = this.sessionStorage.searchResults;
                     }
                 }
-                if (!lastSearch && this.mode === 'catalog') {
+                if (this.mode === 'recent') {
+                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": 'recent additions' }];
                     this.webSearch('recent additions', '', '');
                 }
                 else {
@@ -959,10 +967,14 @@ var Application;
                         this.books = lastSearch;
                         this.searchResults = true;
                     }
-                    if (this.mode == 'full') {
+                    if (this.mode == 'full' && !(this.searchText === 'recent additions' || this.searchText === '')) {
                         this.books = lastSearch;
                         this.searchResults = true;
                     }
+                    if (this.mode == 'full' && this.searchText === 'recent additions') {
+                        this.searchResults = true;
+                    }
+                    this.searchResults = true;
                 }
             };
             library.prototype.submitForm = function () {

@@ -63,6 +63,7 @@ module Application.Components {
 
                 })
         }
+         
         OpenByCallNumberKey(keyEvent: any) {
             if (keyEvent.which === 13) {
                 this.OpenByCallNumber();

@@ -49,6 +49,9 @@ module Application.Config {
                 .when('/library/catalog', {
                     template: '<navbar></navbar><library mode="\'full\'"></library>'
                 })
+                .when('/library/recent', {
+                    template: '<navbar></navbar><library mode="\'recent\'"></library>'
+                })
                 .when('/library/subject/:prefix', {
                     template: '<navbar></navbar><library mode="\'subject\'"></library>'
                 })             
