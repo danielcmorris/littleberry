@@ -391,12 +391,15 @@ var Application;
     var Components;
     (function (Components) {
         var Author = (function () {
-            function Author($location, $sessionStorage, libraryService) {
+            function Author($location, $sessionStorage, libraryService, $filter) {
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.$filter = $filter;
+                this.$insert = ['$location', '$sessionStorage', 'libraryService',
+                    '$filter'];
                 this.searchResults = false;
+                this.spinner = false;
             }
             Author.prototype.$onInit = function () {
                 console.log('Author, mode=' + this.mode);
@@ -406,17 +409,49 @@ var Application;
             Author.prototype.GetAuthor = function (author) {
                 this.go("library/authors/" + author.Author);
             };
+            Author.prototype.ClearSearch = function () {
+                this.searchResults = false;
+                this.authorList = true;
+                this.searchText = '';
+                this.pageTitle = this.authors.length + ' Authors Found';
+            };
             Author.prototype.GetAuthors = function () {
                 var _this = this;
-                this.libraryService.getAuthorsByBookCount(1)
-                    .then(function (resp) {
-                    _this.authors = resp;
-                    _this.searchResults = true;
-                    _this.pageTitle = _this.authors.length + ' Authors Found';
-                });
+                this.spinner = true;
+                if (this.$sessionStorage.authors) {
+                    this.authors = this.$sessionStorage.authors;
+                    this.spinner = false;
+                    this.authorList = true;
+                    this.pageTitle = this.authors.length + ' Authors Found';
+                }
+                else {
+                    this.libraryService.getAuthorsByBookCount(1)
+                        .then(function (resp) {
+                        _this.spinner = false;
+                        _this.authors = resp;
+                        _this.$sessionStorage.authors = _this.authors;
+                        _this.authorList = true;
+                        _this.pageTitle = _this.authors.length + ' Authors Found';
+                    });
+                }
             };
             Author.prototype.go = function (url) {
                 this.$location.url(url);
+            };
+            Author.prototype.SearchKey = function (keyEvent) {
+                if (keyEvent.which === 13) {
+                    this.SearchAuthors();
+                }
+            };
+            Author.prototype.SearchAuthors = function () {
+                this.searchResults = false;
+                this.spinner = true;
+                this.authorList = false;
+                this.filteredList = this.$filter('filter')(this.authors, { "Author": this.searchText });
+                this.spinner = false;
+                this.pageTitle = this.filteredList.length + ' Authors Found';
+                this.searchResults = true;
+                console.log(this.authors);
             };
             return Author;
         }());
