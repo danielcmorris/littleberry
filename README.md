@@ -1,11 +1,12 @@
 ## LittleBerry Library Management Database
 
 This is a client-side SPA for LittleBerryLibrary, a cloud based database for small and mid-sized libraries.
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+The system is written in AngularJS and links to an API server which stores the data in a MS Sql database.  
+The images are stored on Amazon S3
 
-## Code Example
+## The Database
 
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+THe database itself is extremely simple.  It consists of a book table, members table and a request table.
 
 ## Motivation
 
