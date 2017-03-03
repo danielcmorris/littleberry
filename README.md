@@ -10,13 +10,12 @@ THe database itself is extremely simple.  It consists of a book table, members t
 
 ## Motivation
 
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
+I have a small fraternal organization with a private library of 10k books in portuguese or from portuguese authors.  They needed a simple way to track the inventory as well as offer users the ability to request books online.  I found a number of "library" plugins for things like WordPress and a variety of systems that have been hacked together over the years, but honestly, there just isn't any basic lending library for private institutions.  LittleBerry should offer other developers a good starting point for their own
 
 ## Installation
 
 Simply copy the files to the root of an public directory.  It's excusively client-side, so it can be on just about any service. 
-The configiuration file /app/config.ts   will have all the codes necessary to access the server.  If you have no account, you'll have to contact 
-LittleBerryLibrary and get one.
+The configiuration file /app/config.ts   will have all the codes necessary to access the server.  All you need is an account and you can use the LittleBerry Server.  That will give you all the APIs necessary to run an entire library.  However, it is hosted on one of our machines.  The server is in 2 parts, an API server and a database.  If you actually want your own install, I'll be happy to get you a copy, but they aren't public just yet.
 
 ## Security
 
@@ -26,7 +25,7 @@ The system uses a custom session variable to control security.  Once you log in,
 Everything else is public.
 
 ### Webpages
-The admin pages are hidden by setting the userlevel in a sessionStorage variable, but if someone were to mess with that directly, they'd be able to see the empty templates.  They can't do anything, but some people have a problem with that and try to lock stuff down at the s
+The admin pages are hidden by setting the userlevel in a sessionStorage variable, but if someone were to mess with that directly, they'd be able to see the empty templates.  They can't do anything, but some people have a problem with that and try to lock stuff down at the server.  In my experience, I really don't care if people hack around in javascript and see empty templates.
 
 ## API Reference
 
