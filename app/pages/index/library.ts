@@ -131,9 +131,12 @@ module Application.Components {
                 });
         }
         webSearch(terms: string, prefix: string, author: string) {
+            this.searchResults=false;
             if (terms != 'recent additions') {
                 if (!prefix)
                     prefix = '';
+                    if(this.$routeParams.author)
+                        author=this.$routeParams.author;
                 this.sessionStorage.searchText = terms
                 this.libraryService.Search(prefix, author, terms)
                     .then((resp: any) => {
@@ -153,10 +156,11 @@ module Application.Components {
                             if (this.mode === 'full') {
                                 this.pageTitle = countText + " Titles found";
                             }
+                            this.searchResults=true;
                         } else {
                             this.pageTitle = 'No Titles Found for search text ("' + terms + '")';
                         }
-
+                            
                     });
 
             } else {
@@ -217,6 +221,8 @@ module Application.Components {
                 }
                 if (this.mode == 'author') {
                     this.webSearch('', '', this.$routeParams.author);
+                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/author", "text": "authors" }, 
+                        { "url": "", "text": this.$routeParams.author }]
                     this.books = lastSearch;
                     this.searchResults = true;
                 }

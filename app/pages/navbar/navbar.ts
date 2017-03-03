@@ -6,38 +6,40 @@
 
 module Application.Components {
 
-  
+
 
     export class Navbar {
-        $insert = ['$location','$sessionStorage', 'libraryService'];
-        constructor(public $location: ng.ILocationService, public $sessionStorage:any , private libraryService:Application.Services.libraryService) { }
+        $insert = ['$location', '$sessionStorage', 'libraryService'];
+        constructor(public $location: ng.ILocationService, public $sessionStorage: any, private libraryService: Application.Services.libraryService) { }
         public callnumber: any
         public username: string;
         public AccountId: number;
-        public subjects:any;
-        public permission:any={}
+        public subjects: any;
+        public authors: any;
+        public permission: any = {}
 
         $onInit() {
 
-                console.log("loading nav bar")
+            
             this.GetSubjects()
+            this.GetAuthors(30);
             if (this.$sessionStorage.myaccount) {
                 let a = this.$sessionStorage.myaccount
                 this.username = a.FirstName + ' ' + a.LastName;
                 this.AccountId = a.AccountId;
 
-            this.permission = new Application.Context.NavigationPermissions(a.AccountType);
+                this.permission = new Application.Context.NavigationPermissions(a.AccountType);
 
             }
             else {
 
-                    //this.$location.url('/')
-               
+                //this.$location.url('/')
+
             }
-          
 
 
-           
+
+
         }
 
         LogOut() {
@@ -46,12 +48,19 @@ module Application.Components {
             let url = "/";
             this.go(url);
         }
-        GetSubjects(){
-            
+        GetAuthors(bookCount:number) {
+            this.libraryService.getAuthorsByBookCount(bookCount)
+                .then((resp: any) => {
+                    this.authors = resp;
+                    
+                })
+        }
+        GetSubjects() {
+
             this.libraryService.getSubjects()
-                .then((resp:any)=>{
+                .then((resp: any) => {
                     this.subjects = resp;
-                     
+
                 })
         }
         OpenByCallNumberKey(keyEvent: any) {
@@ -65,20 +74,20 @@ module Application.Components {
             let prefix = cn.replace(/[0-9]/g, '');
             let url = "/library/catalog/view/" + prefix + "/" + booknumber;
             let ls = this.libraryService;
-            ls.getBook(prefix,booknumber)
-                .then((resp:any)=>{
-                     
-                    if(resp.data.CallNumber){
-                        if(resp.data.Status='Deleted'){
+            ls.getBook(prefix, booknumber)
+                .then((resp: any) => {
+
+                    if (resp.data.CallNumber) {
+                        if (resp.data.Status === 'Deleted') {
                             alert('This title was deleted.');
-                        }else{
+                        } else {
                             this.go(url);
-                        }                        
-                    }else{
-                        alert('No title found for call number '+ cn);
+                        }
+                    } else {
+                        alert('No title found for call number ' + cn);
                     }
                 })
-            
+
         }
         go(url: string) {
             this.$location.url(url);

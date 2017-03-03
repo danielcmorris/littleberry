@@ -52,6 +52,9 @@ module Application.Config {
                 .when('/library/subject/:prefix', {
                     template: '<navbar></navbar><library mode="\'subject\'"></library>'
                 })             
+                .when('/library/author', {
+                    template: '<navbar></navbar><author mode="\'list\'"></author>'
+                })
                 .when('/library/author/:author', {
                     template: '<navbar></navbar><library mode="\'author\'"></library>'
                 })
@@ -141,6 +144,7 @@ module Application.Config {
         /* LIBRARY COMPONENTS */
         public library: string = ROOT_PATH +"app/pages/index/library.html";
         public home: string = ROOT_PATH +"app/pages/home/home.html";
+         public author: string = ROOT_PATH +"app/pages/author/author.html";
         public book: string = ROOT_PATH + "app/pages/book/book.html";
         public subjects: string = ROOT_PATH + "app/pages/subjects/subjects.html";
         public account: string = ROOT_PATH + "app/pages/account/account.html";

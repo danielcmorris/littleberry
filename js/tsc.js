@@ -136,6 +136,9 @@ var Application;
                     .when('/library/subject/:prefix', {
                     template: '<navbar></navbar><library mode="\'subject\'"></library>'
                 })
+                    .when('/library/author', {
+                    template: '<navbar></navbar><author mode="\'list\'"></author>'
+                })
                     .when('/library/author/:author', {
                     template: '<navbar></navbar><library mode="\'author\'"></library>'
                 })
@@ -205,6 +208,7 @@ var Application;
             function templates() {
                 this.library = ROOT_PATH + "app/pages/index/library.html";
                 this.home = ROOT_PATH + "app/pages/home/home.html";
+                this.author = ROOT_PATH + "app/pages/author/author.html";
                 this.book = ROOT_PATH + "app/pages/book/book.html";
                 this.subjects = ROOT_PATH + "app/pages/subjects/subjects.html";
                 this.account = ROOT_PATH + "app/pages/account/account.html";
@@ -376,6 +380,48 @@ var Application;
             bindings: { accountId: '<' },
             controllerAs: "vm",
             templateUrl: function (templates) { return templates.account; }
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var Author = (function () {
+            function Author($location, $sessionStorage, libraryService) {
+                this.$location = $location;
+                this.$sessionStorage = $sessionStorage;
+                this.libraryService = libraryService;
+                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.searchResults = false;
+            }
+            Author.prototype.$onInit = function () {
+                console.log('Author, mode=' + this.mode);
+                this.links = [{ "url": "/#/library", "text": "home" }, { "url": "", "text": "authors" }];
+                this.GetAuthors();
+            };
+            Author.prototype.GetAuthor = function (author) {
+                this.go("library/authors/" + author.Author);
+            };
+            Author.prototype.GetAuthors = function () {
+                var _this = this;
+                this.libraryService.getAuthorsByBookCount(1)
+                    .then(function (resp) {
+                    _this.authors = resp;
+                    _this.searchResults = true;
+                });
+            };
+            Author.prototype.go = function (url) {
+                this.$location.url(url);
+            };
+            return Author;
+        }());
+        Components.Author = Author;
+        app.component("author", {
+            controller: Author,
+            bindings: { mode: '<' },
+            controllerAs: "vm",
+            templateUrl: function (templates) { return templates.author; },
         });
     })(Components = Application.Components || (Application.Components = {}));
 })(Application || (Application = {}));
@@ -828,9 +874,12 @@ var Application;
             };
             library.prototype.webSearch = function (terms, prefix, author) {
                 var _this = this;
+                this.searchResults = false;
                 if (terms != 'recent additions') {
                     if (!prefix)
                         prefix = '';
+                    if (this.$routeParams.author)
+                        author = this.$routeParams.author;
                     this.sessionStorage.searchText = terms;
                     this.libraryService.Search(prefix, author, terms)
                         .then(function (resp) {
@@ -852,6 +901,7 @@ var Application;
                             if (_this.mode === 'full') {
                                 _this.pageTitle = countText + " Titles found";
                             }
+                            _this.searchResults = true;
                         }
                         else {
                             _this.pageTitle = 'No Titles Found for search text ("' + terms + '")';
@@ -904,6 +954,8 @@ var Application;
                     }
                     if (this.mode == 'author') {
                         this.webSearch('', '', this.$routeParams.author);
+                        this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/author", "text": "authors" },
+                            { "url": "", "text": this.$routeParams.author }];
                         this.books = lastSearch;
                         this.searchResults = true;
                     }
@@ -1044,8 +1096,8 @@ var Application;
                 this.permission = {};
             }
             Navbar.prototype.$onInit = function () {
-                console.log("loading nav bar");
                 this.GetSubjects();
+                this.GetAuthors(30);
                 if (this.$sessionStorage.myaccount) {
                     var a = this.$sessionStorage.myaccount;
                     this.username = a.FirstName + ' ' + a.LastName;
@@ -1060,6 +1112,13 @@ var Application;
                 this.permission = new Application.Context.NavigationPermissions('Anon');
                 var url = "/";
                 this.go(url);
+            };
+            Navbar.prototype.GetAuthors = function (bookCount) {
+                var _this = this;
+                this.libraryService.getAuthorsByBookCount(bookCount)
+                    .then(function (resp) {
+                    _this.authors = resp;
+                });
             };
             Navbar.prototype.GetSubjects = function () {
                 var _this = this;
@@ -1083,7 +1142,7 @@ var Application;
                 ls.getBook(prefix, booknumber)
                     .then(function (resp) {
                     if (resp.data.CallNumber) {
-                        if (resp.data.Status = 'Deleted') {
+                        if (resp.data.Status === 'Deleted') {
                             alert('This title was deleted.');
                         }
                         else {
@@ -1673,6 +1732,35 @@ var Application;
                     .then(function (resp) {
                     deferred.resolve(resp.data);
                 });
+                return deferred.promise;
+            };
+            libraryService.prototype.getAuthorsByBookCount = function (bookCount) {
+                var _this = this;
+                var deferred = this.$q.defer();
+                var resolved = false;
+                if (this.$sessionStorage.authors && bookCount === 1) {
+                    var s = this.$sessionStorage.authors;
+                    deferred.resolve(s);
+                    resolved = true;
+                }
+                if (this.$sessionStorage.authors30 && bookCount === 30) {
+                    var s = this.$sessionStorage.authors30;
+                    deferred.resolve(s);
+                    resolved = true;
+                }
+                if (!resolved) {
+                    var url = this.server + "/api/author?bookCount=" + bookCount;
+                    this.$http.get(url)
+                        .then(function (resp) {
+                        if (bookCount === 1) {
+                            _this.$sessionStorage.authors = resp.data;
+                        }
+                        if (bookCount === 30) {
+                            _this.$sessionStorage.authors30 = resp.data;
+                        }
+                        deferred.resolve(resp.data);
+                    });
+                }
                 return deferred.promise;
             };
             libraryService.prototype.getSubjects = function () {

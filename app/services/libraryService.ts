@@ -52,6 +52,37 @@ module Application.Services {
 
             return deferred.promise;
         }
+        getAuthorsByBookCount(bookCount:number): ng.IHttpPromise<any> {
+            
+            let deferred: any = this.$q.defer();
+            let resolved:boolean = false;
+
+             if (this.$sessionStorage.authors && bookCount===1) {
+                let s = this.$sessionStorage.authors;
+                deferred.resolve(s);
+                resolved = true;
+            }
+             if (this.$sessionStorage.authors30 && bookCount===30) {
+                let s = this.$sessionStorage.authors30;
+                deferred.resolve(s);
+                resolved=true;
+            }
+             if(!resolved){
+
+            let url: string = this.server + "/api/author?bookCount="+bookCount;
+            this.$http.get(url)
+                .then((resp: any) => {
+                    if(bookCount===1){
+                     this.$sessionStorage.authors = resp.data;
+                    }
+                    if(bookCount ===30){
+                         this.$sessionStorage.authors30 = resp.data;
+                    }
+                    deferred.resolve(resp.data);
+                });
+            }
+            return deferred.promise;
+        }
         getSubjects(): ng.IHttpPromise<any> {
             var deferred: any;
             deferred = this.$q.defer();

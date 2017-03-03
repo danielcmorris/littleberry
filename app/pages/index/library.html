@@ -40,7 +40,11 @@
 
 </div>
 
-
+<div class="row" ng-hide="vm.searchResults">
+    <div class="col-md-offset-2 col-md-5">
+ <md-progress-circular ng-disabled="vm.searchResults" md-diameter="96"></md-progress-circular>
+    </div>
+</div>
 <div class="row" ng-show="vm.searchResults">
     <div class="col-md-12">
         <table class="table table-striped table-hover;" style="cursor:pointer">
