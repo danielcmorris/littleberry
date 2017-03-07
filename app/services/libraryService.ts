@@ -26,6 +26,8 @@ module Application.Services {
             this.server = v.apiServer;
             if (this.$sessionStorage.myaccount) {
                 this.sid = this.$sessionStorage.myaccount.SessionId;
+            }else{
+                this.sid=0;
             }
         }
         checkLogin() {

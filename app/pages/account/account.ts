@@ -7,40 +7,49 @@ module Application.Components {
     export class Account {
         public accounts: any;
         public account: any;
-        public mode: string = 'empty';
+        public mode: string
         public setPassword: boolean = false;
+        public showHints:boolean = true;
+public states:any;
 
-        $insert = ['$location', 'libraryService', '$routeParams', '$mdDialog', '$mdToast'];
-        constructor(public $location: ng.ILocationService, public libraryService: any, public $routeParams: any, private $mdDialog: any, private $mdToast: any) { }
+        $insert = ['$location', 'libraryService', '$routeParams', '$mdDialog', '$mdToast','$sessionStorage'];
+        constructor(public $location: ng.ILocationService, public libraryService: any, public $routeParams: any, private $mdDialog: any,
+         private $mdToast: any, private $sessionStorage) { }
         $onInit() {
             //  console.log(this.book)
             let l = this.libraryService;
-            let aid = this.$routeParams.accountid;
 
-            if (this.$location.url() == '/library/accounts/add') {
-                this.mode = 'edit';
-                aid = 0;
-                this.account = {}
+            let aid = 0;
+            
+    this.states = ('AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS ' +
+    'MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI ' +
+    'WY').split(' ').map(function(state) {
+        return {abbrev: state};
+      });
+
+
+            if (this.mode === 'add' || this.mode === 'join') {
+
+                this.account = new Application.Models.Account()
                 this.account.Status = 'Active';
                 this.account.AccountType = 'Member';
-
+                this.account.Country = 'United States'
+                this.account.Password='password';
                 this.setPassword = true;
-            } else {
-
-                if (!aid) {
-                    this.mode = 'list';
-                    l.getAccounts()
-                        .then((resp: any) => { this.accounts = resp; });
-                } else {
-                    this.mode = 'edit';
-                    if (aid > 0) {
-                        l.getAccount(aid)
-                            .then((resp: any) => {
-                                this.account = resp.data;
-                            });
-                    }
-                }
             }
+            if (this.mode == 'edit') {
+                aid = this.$routeParams.accountid;
+                l.getAccount(aid)
+                    .then((resp: any) => {
+                        this.account = resp.data;
+                    });
+            }
+            if (this.mode == 'list') {
+
+                l.getAccounts()
+                    .then((resp: any) => { this.accounts = resp; });
+            }
+
         }
         editAccount(obj: any) {
             this.go('/library/accounts/' + obj.AccountId);
@@ -63,8 +72,8 @@ module Application.Components {
             this.SaveUser(3);
 
         }
-       
-        Toast(msg: string, secs:number) {
+
+        Toast(msg: string, secs: number) {
             secs = secs * 1000;
             this.$mdToast.show(
                 this.$mdToast.simple()
@@ -81,7 +90,7 @@ module Application.Components {
             let msg = 'Are you sure you want to delete ' + a.FirstName + ' ' + a.LastName + '\'s account?';
             if (confirm(msg)) {
                 this.account.Status = 'Deleted';
-                this.Toast("Deleting Account...",2);
+                this.Toast("Deleting Account...", 2);
                 this.SaveUser(1);
             }
         }
@@ -97,7 +106,12 @@ module Application.Components {
                         return;
                     }
 
-
+                    if (saveType === 4) {
+                        this.Toast("Saved", 2);
+                        this.account = resp.data;
+                        this.$sessionStorage.myaccount = this.account;
+                        this.$location.url('/#/members/welcome')
+                    }
                     if (saveType === 1)
                         this.go('/library/accounts/');
 
@@ -114,7 +128,7 @@ module Application.Components {
             this.$location.url(url);
         }
 
-        AddAccount(){
+        AddAccount() {
 
             this.go('/library/accounts/add');
         }
@@ -122,7 +136,7 @@ module Application.Components {
 
     app.component("account", {
         controller: Account,
-        bindings: { accountId: '<' },
+        bindings: { accountId: '<', mode: '<' },
         controllerAs: "vm",
         templateUrl: function (templates: any) { return templates.account }
     })

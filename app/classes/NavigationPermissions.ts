@@ -21,7 +21,9 @@ module Application.Context {
                     this.Members = true;
                     this.Requests=true;
                     break;
-            
+                case 'Member':
+                    this.AddRequest = true;
+                    this.LoggedIn = true;
                 default:
                     break;
             }

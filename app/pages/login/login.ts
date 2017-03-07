@@ -1,4 +1,4 @@
-﻿ 
+﻿
 module Application.Components {
 
 
@@ -11,16 +11,16 @@ module Application.Components {
         public username: string;
         public password: string;
         public errorMessage: string;
-        public refreshStatus:Function;
-        public redirect:string;
-        public loading:boolean = false;
-        $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage','$window']
+        public refreshStatus: Function;
+        public redirect: string;
+        public loading: boolean = false;
+        $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window']
         constructor(private $location: ng.ILocationService, private $timeout: ng.ITimeoutService
             , private libraryService: any
             , private $cookies: any
-            , private $sessionStorage: any , private $window:ng.IWindowService) {
-              this.password = '';
-        
+            , private $sessionStorage: any, private $window: ng.IWindowService) {
+            this.password = '';
+
         }
         LoginKey(keyEvent: any) {
             if (keyEvent.which === 13) {
@@ -28,25 +28,25 @@ module Application.Components {
             }
         }
         Login() {
-            if (this.password!='') {
+            if (this.password != '') {
                 this.loading = true
                 this.libraryService.Login(this.username, this.password)
                     .then((resp: any) => {
-                      
+
                         this.$sessionStorage.myaccount = resp.data;
                         console.log("SUCCESSFUL LOGIN")
                         this.refreshStatus();
-                   //  this.$location.url(this.redirect);
-                   if(!this.redirect){
-                        this.$location.url('/catalog');
-                    }else{
-                     this.$window.location.href = this.redirect+"?redirect=true";
-                     }
+                        //  this.$location.url(this.redirect);
+                        if (!this.redirect) {
+                            this.$location.url('/catalog');
+                        } else {
+                            this.$window.location.href = this.redirect + "?redirect=true";
+                        }
 
                     }, (resp: any) => {
                         this.password = '';
                         this.errorMessage = 'Sorry, wrong username/password.';
-                        this.loading=false;
+                        this.loading = false;
                         this.$timeout(() => {
                             this.errorMessage = '';
                         }, 3200);
@@ -57,10 +57,10 @@ module Application.Components {
         }
         $onInit() {
             let account = this.getCookie("account");
-          
-           if (account.Email) {
-               this.username = account.Email;
-           }
+
+            if (account.Email) {
+                this.username = account.Email;
+            }
         }
         setCookie(cookieName: any, obj: IIncome) {
             let expireDate = new Date()
@@ -68,17 +68,17 @@ module Application.Components {
             this.$cookies.putObject(cookieName, obj, { expires: expireDate });
         }
         getCookie(cookieName: any): any {
-            let obj:any= this.$cookies.getObject(cookieName)
+            let obj: any = this.$cookies.getObject(cookieName)
             if (!obj) {
                 obj = {};
             }
             return obj;
         }
-    } 
+    }
     app.component("login", {
         controller: login,
-        bindings: { refreshStatus: '&',redirect:'<' },
+        bindings: { refreshStatus: '&', redirect: '<' },
         controllerAs: "vm",
         templateUrl: "app/pages/login/login.html?v=" + new Date(),
     })
-    }
+}

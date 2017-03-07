@@ -30,98 +30,7 @@ module Application.Config {
 
         }
     }
-    export class routes {
-        $insert = ['$routeProvider', '$locationProvider','$location']
-        constructor(private $routeProvider: ng.route.IRouteProvider,
-            private $locationProvider: ng.ILocationProvider
-        ) {
-            
-            this.$routeProvider
-                .when('/login', {
-                    template: '<navbar></navbar><login-page></login-page>'
-                })
-                .when('/', {
-                    template: '<navbar></navbar><home></home>'
-                }) 
-                 .when('/home', {
-                    template: '<navbar></navbar><home></home>'
-                })   
-                .when('/library/catalog', {
-                    template: '<navbar></navbar><library mode="\'full\'"></library>'
-                })
-                .when('/library/recent', {
-                    template: '<navbar></navbar><library mode="\'recent\'"></library>'
-                })
-                .when('/library/subject/:prefix', {
-                    template: '<navbar></navbar><library mode="\'subject\'"></library>'
-                })             
-                .when('/library/author', {
-                    template: '<navbar></navbar><author mode="\'list\'"></author>'
-                })
-                .when('/library/author/:author', {
-                    template: '<navbar></navbar><library mode="\'author\'"></library>'
-                })
-                .when('/library/catalog/add', {
-                    template: '<navbar></navbar><book></book>'
-                })
-                .when('/library/catalog/:prefix', {
-                    template: '<navbar></navbar><library></library>'
-                })
-                .when('/library/catalog/request/:prefix/:booknumber', {
-                    template: '<navbar></navbar><reservation></reservation>'
-                })
-                .when('/library/catalog/:mode/:prefix/:booknumber', {
-                    template: '<navbar></navbar><book></book>'
-                })                                                 
-                .when('/library/advanced', {
-                    template: '<navbar></navbar><reservation></reservation>'
-                })                
-                .when('/library/requests', {
-                    template: '<navbar></navbar><requests></requests>'
-                })
-                .when('/library/requests/:mode/:prefix/:booknumber', {
-                    template: '<navbar></navbar><requests></requests>'
-                })
-                .when('/library/requests/:modem', {
-                    template: '<navbar></navbar><requests></requests>'
-                })
-                .when('/library/subjects', {
-                    template: '<navbar></navbar><subjects></subjects>'
-                })
-                .when('/library/accounts/add', {
-                    template: '<navbar></navbar><account></account>'
-                })
-                .when('/library/accounts/:accountid', {
-                    template: '<navbar></navbar><account></account>'
-                })
-                .when('/library/accounts', {
-                    template: '<navbar></navbar><account></account>'
-                })
-                .when('/library/preview/:barcode', {
-                    template: '<book-preview></book-preview>'
-                })                
-                .when('/library/recent-additions', {
-                    template: '<recent-additions></recent-additions>'
-                })
-                .otherwise({ redirectTo: '/' });;
-
-                this.$locationProvider.html5Mode(false);
-
-                //if ($sessionStorage.myaccount) {
-
-                //    let sid = $sessionStorage.myaccount.SessionId;
-                //    console.log(sid);
-                //}
-                //else {
-                //    if (this.$location.path != '/') {
-                //        this.$location.url('/');
-                //    }
-                //}
-
-        }
-    }
-    app.config(routes);
-
+    
     interface IHttpProviderLocal extends ng.IHttpProvider {
         defaults: any;
     }
@@ -154,9 +63,11 @@ module Application.Config {
         public navbar: string = ROOT_PATH + "app/pages/navbar/navbar.html";
         public reservation: string = ROOT_PATH + "app/pages/reservation/reservation.html";
         public requests: string = ROOT_PATH + "app/pages/requests/requests.html";
-        public bookTile: string = ROOT_PATH + "app/pages/library/book/bookTile.html";
         public recentAdditions: string = ROOT_PATH + "app/pages/library/recentAdditions/recentAdditions.html";
+        public myRequests: string = ROOT_PATH + "app/pages/requests/my-requests.html";
 
+public bookTile: string = ROOT_PATH + "app/pages/library/book/bookTile.html";
+        
 
         /* COMPONENTS */
         public address: string = ROOT_PATH +"app/components/address/address.html";

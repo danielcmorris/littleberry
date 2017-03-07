@@ -7,7 +7,7 @@ module Application.Components {
         $insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService','$mdDialog'];
         constructor(public $location: ng.ILocationService, public $sessionStorage: any, public $routeParams: any, public libraryService: any,private $mdDialog:any) { }
         public requests: any
-        public email: string = "dmorris@morrisdev.com";
+        public email: string;
         public ShipSelections: any = []
         public mode: string;
         public CallNumber: string;
@@ -37,6 +37,7 @@ module Application.Components {
                 this.getBook(this.Prefix, this.BookNumber);
                // this.showSearch = true;
                 this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
+                this.email = this.$sessionStorage.myaccount.Email;
                 this.LookupAccount('email', this.email)
                  this.links=[
                 {"url":"/#/library","text":"home"},
@@ -57,7 +58,7 @@ module Application.Components {
             if (this.$sessionStorage.myaccount) {
                 this.Account = this.$sessionStorage.myaccount;
                 let s = this.Account.AccountType;
-               
+                
                   if(this.mode === "mine"){this.email=this.Account.Email;}
                 if(s==="Admin" || s==="Librarian" || s==="Staff"){
                    // this.showSearch = true;
@@ -72,6 +73,15 @@ module Application.Components {
         }
         LookupAccount(searchType: string, q: string) {
              if (this.$sessionStorage.myaccount) {
+                let a:Application.Models.Account = this.$sessionStorage.myaccount;
+                if(a.Email === q){
+                    this.Account = a;
+                    this.showAddress=true;
+                    this.showSearch=false;
+                    this.showConfirm = false;
+                    return true;
+                }
+
             this.libraryService.LookupAccount(searchType, q)
                 .then((resp: any) => {
                     console.log(resp);
