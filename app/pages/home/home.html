@@ -1,16 +1,13 @@
 ﻿<div style="margin-left:auto;margin-right:auto;width:90%">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-12">
             <h4>Welcome to the PFSA Library!</h4>
         </div>
-        <div class="col-md-4 hidden-sm"></div>
-        <div class="col-md-4">
-            <h4>Recent Additions</h4>
-        </div>
+        
     </div>
     <div class="row">
-        <div class="col-md-6">
-            <img src="/images/library.jpg" style="float:right;margin:10px;">
+         <div class="col-md-6">
+           
             <p>
                 The library collection consists of over 12,000 works dealing with the Portuguese throughout the world. It holds a vast number
                 of books on the Azores and a fairly complete sample of periodicals published by the Portuguese in California,
@@ -21,18 +18,55 @@
                 California.
             </p>
         </div>
-        <div class="col-md-6" style="padding:10px">
-            <div ng-repeat="book in vm.books track by $index">
+        <div class="col-md-6">
+            <img src="/images/library.jpg" style="float:right;margin:10px;">
             
-                    <div ng-click="vm.GetBook(book)" ng-if="book.Url!=''" style="margin:10px;padding:5px;float:right;width:250px;height:260px;border:solid 1px gray;overflow: hidden">
-                        <a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.Title}}</a>
-                        <img style="margin-left:auto;margin-right:auto;margin-top:10px;margin-bottom:10px;display:block" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}"
-                            width="100" />
+        </div>
+    </div>
+     <div class="row">
+        
+        <div class="col-md-12">
+            <h4>Here are our most recent additions</h4>
+        </div>
+    </div>
 
-                        <br>By {{book.Author}}
+    <style>
+    /*On the flex container*/
+.flexcontainer {
+   display: -webkit-flex;
+   display: flex;
+   -webkit-flex-direction: row;
+   flex-direction: row;
+}
+.item {
+  align-self:center;
+  height:280px;width:300px;
+}
+.bookItem{margin:10px;padding:5px;float:right;width:250px;height:260px;
+                                border:solid 1px gray;overflow: hidden;text-align: center}
+ .bookImage{margin-left:auto;margin-right:auto;margin-top:10px;margin-bottom:10px;display:block}
+ .bookTitle, bookAuthor{border:solid green 1px;width:100%;text-align: center;height:40px;overflow: hidden}
+ .bookAuthor{vertical-align:baseline}
+ .bookImageBox{border:solid green 1px;width:100%;text-align: center;height:170px;overflow: hidden}
+</style>
+
+    <div class="row" style="background:white">
+        <div class="col-md-12" style="padding:10px">
+            <div class="flex-container">
+            <div ng-repeat="book in vm.books track by $index " class="bookItem"  ng-if="book.Url!=''"   >
+            
+                    <div ng-click="vm.GetBook(book)">
+                       <div class="bookTitle"> <a   ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.Title}}</a></div>
+                       <div class="bookImageBox">
+                        <img class="bookImage" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}"
+                            width="100" />
+                       </div>
+                       <div class="bookAuthor">
+                        By {{book.Author}}
+                       </div>
                     </div>
               
             </div>
-
+            </div>
         </div>
     </div>
