@@ -14,7 +14,7 @@ public states:any;
 
         $insert = ['$location', 'libraryService', '$routeParams', '$mdDialog', '$mdToast','$sessionStorage'];
         constructor(public $location: ng.ILocationService, public libraryService: any, public $routeParams: any, private $mdDialog: any,
-         private $mdToast: any, private $sessionStorage) { }
+         private $mdToast: any, private $sessionStorage:any) { }
         $onInit() {
             //  console.log(this.book)
             let l = this.libraryService;

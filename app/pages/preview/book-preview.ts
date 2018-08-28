@@ -1,5 +1,4 @@
-﻿/// <reference path="../../../td/types.d.ts" />
-module Application.Components {
+﻿ module Application.Components {
     interface IBook extends Application.Library.Types.IBook { }
     export class BookPreview {
         public mydocs: any = [];
