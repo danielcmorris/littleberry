@@ -22,7 +22,8 @@ module Application.Config {
                 this.apiServer = "http://localhost:53035";
              
             } else {
-                this.apiServer = "http://api.pfsa.morrisdev.com";
+                       // this.apiServer = "https://api.pfsa.morrisdev.com";
+                       this.apiServer = "https://pfsaapi.azurewebsites.net"
 
             }
 
