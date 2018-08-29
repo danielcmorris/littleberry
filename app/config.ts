@@ -1,4 +1,3 @@
-/// <reference path="../../type-definitions/types.d.ts" />
 declare var ROOT_PATH: string;
 
 
@@ -20,6 +19,7 @@ module Application.Config {
          
             if (path.substring(0, 5) === "local") {
                 this.apiServer = "http://localhost:53035";
+                this.apiServer = "https://pfsaapi.azurewebsites.net"
              
             } else {
                        // this.apiServer = "https://api.pfsa.morrisdev.com";

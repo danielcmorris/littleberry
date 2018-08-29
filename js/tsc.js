@@ -32,6 +32,7 @@ var Application;
                 var path = window.location.host;
                 if (path.substring(0, 5) === "local") {
                     this.apiServer = "http://localhost:53035";
+                    this.apiServer = "https://pfsaapi.azurewebsites.net";
                 }
                 else {
                     this.apiServer = "https://pfsaapi.azurewebsites.net";
