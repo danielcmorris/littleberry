@@ -735,8 +735,7 @@ var Application;
                     console.log(this.mode + ':' + this.callnumber);
                     this.links = [
                         { "url": "/#/library", "text": "home" },
-                        { "url": "/#/library/catalog", "text": "catalog" }
-                    ];
+                        { "url": "/#/library/catalog", "text": "catalog" }];
                     if (this.callnumber) {
                         this.editing = false;
                         this.mode = "update";
@@ -1813,6 +1812,7 @@ var Application;
         Config.LibraryConfig = LibraryConfig;
     })(Config = Application.Config || (Application.Config = {}));
 })(Application || (Application = {}));
+var Application;
 (function (Application) {
     var Services;
     (function (Services) {
