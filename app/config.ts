@@ -49,6 +49,16 @@ module Application.Config {
     app.config(httpConfig)
 
     
+    // export class AuthZero{
+    //     $inject = ["angularAuth0Provider"]
+    //     constructor(private auth:any){
+
+    //     }
+    // }
+    // app.config(AuthZero)
+
+
+
     export class templates {
 
         /* PAGES */

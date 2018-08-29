@@ -1,5 +1,4 @@
-﻿
-<html lang="en" ng-app="app" ng-controller="MainCtrl as main">
+﻿<html lang="en" ng-app="app" ng-controller="MainCtrl as main">
 
 <head>
     <meta charset="UTF-8">
@@ -13,12 +12,18 @@
     <link href="css/boot.css" rel="stylesheet" type="text/css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+
 
     <!--<base href="/tools/">-->
 </head>
 
 <body>
-    
+
+    <!-- <button onclick="login()">Login</button>
+    <button onclick="logout()">LogOut</button>
+    <button onclick="profile()">profile</button>
+ -->
 
     <div class="container">
         <div ng-hide="true" style="width:300px;margin-left:auto;margin-right:auto;padding-top:30px">
@@ -52,22 +57,86 @@
 
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular-fcsa-number/src/fcsaNumber.js"></script>
-   
+
+    <script src="https://cdn.auth0.com/js/auth0/9.7.3/auth0.min.js"></script>
+    <script src="https://cdn.auth0.com/js/auth0/8.0/auth0.min.js"></script>
+    <script src="node_modules/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
     <script>
+        'use strict';
         var app = angular.module('app',
-      ['ngRoute', 
-            'ngAnimate',
-            'ngSanitize',   
-            'ngCookies', 
-            'ngMaterial', 
-            'fcsa-number',
-            'ui.mask', 'ngStorage'])
-        
+            ['ui.router', 'ngRoute',
+                'ngAnimate',
+                'ngSanitize',
+                'ngCookies',
+                'ngMaterial',
+                'fcsa-number',
+                'ui.mask',
+                'ngStorage'
+            ]
+        );
         var ROOT_PATH = '';
 
+
+    
+
+        var webAuth = new auth0.WebAuth({
+            clientID: 'LHdL4hUjgN6ulY31zLDl6xaaQsM-BAvG',
+            domain: 'littleberry.auth0.com',
+            redirectUri: 'http://localhost:3000/callback',
+            responseType: 'token id_token',
+            scope: 'openid email profile'
+        });
+       
+
+
+        function login() {
+
+            webAuth.authorize({});
+
+        }
+        function logout() {
+            // Remove tokens and expiry time from localStorage
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('id_token');
+            localStorage.removeItem('expires_at');
+            window.location.href="/login";
+        }
+        function profile() {
+          
+            webAuth.parseHash(function (err, data) {
+                console.log(err, data);
+                if (err) {
+                    console.log('ERROR!', err);
+                    return (err);
+
+                }
+                if (data) {
+
+                    if (data.accessToken) {
+                        
+                         localStorage.setItem("access_token",data.accessToken);
+                         localStorage.setItem("id_token",data.idToken);
+                         localStorage.setItem("expires_at",data.expiresIn);
+
+                        webAuth.client.userInfo(data.accessToken, function (err, data) {
+                            localStorage.setItem("email",data.email);
+                            localStorage.setItem("name",data.name);
+                            localStorage.setItem("familyName",data.familyName);
+                            localStorage.setItem("givenName",data.givenName);
+                            localStorage.setItem("picture",data.picture )
+                          
+                            if (data) { console.log("UserInfo", data); }
+                        });
+                    }
+                }
+                // window.location.hash = '';
+            });
+        }
+
     </script>
-    <script src="js/tsc.js"> </script> 
- 
+
+    <script src="js/tsc.js"> </script>
+
 
     <script type="text/javascript">
         angular.element(document.getElementsByTagName('head')).append(angular.element('<base href="' + window.location.pathname + '" />'));
@@ -75,4 +144,3 @@
 </body>
 
 </html>
-

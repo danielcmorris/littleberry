@@ -1,13 +1,47 @@
+declare function profile():any;
+
 module Application.Config{
     export class routes {
-        $insert = ['$routeProvider', '$locationProvider','$location']
+        Login() {
+
+            let email = localStorage.getItem("email");
+            if(email){
+                var a = new Library.Models.Account();
+                a.Email = email;
+                a.FirstName = localStorage.getItem("givenName");
+                a.LastName = localStorage.getItem("familyName");
+                a.Password = localStorage.getItem("access_token");
+                
+          
+                            
+                this.libraryService.autoLogin(a)
+                    .then((resp: any) => {
+
+                        this.$sessionStorage.myaccount = resp.data;
+                        console.log("SUCCESSFUL LOGIN")
+                      
+
+                    }, (resp: any) => {
+                         console.log("ERROR",resp)
+                    });
+                }
+
+        }
+
+        $insert = ['$routeProvider', '$locationProvider','$location', '$sessionStorage', 'libraryService']
         constructor(private $routeProvider: ng.route.IRouteProvider,
-            private $locationProvider: ng.ILocationProvider
+            private $locationProvider: ng.ILocationProvider,
+            private  libraryService: Application.Services.libraryService,
+            private $sessionStorage:  any, 
         ) {
+            profile()
             
             this.$routeProvider
                 .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
+                })
+                .when('/callback', {
+                    template: '<navbar></navbar><callback-page></callback-page>'
                 })
                 .when('/', {
                     template: '<navbar></navbar><home></home>'
@@ -87,7 +121,7 @@ module Application.Config{
                 .otherwise({ redirectTo: '/' });;
 
                 this.$locationProvider.html5Mode(false);
-
+                //this.$locationProvider.hashPrefix('');
                 //if ($sessionStorage.myaccount) {
 
                 //    let sid = $sessionStorage.myaccount.SessionId;

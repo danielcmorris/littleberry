@@ -123,13 +123,19 @@ var Application;
     var Config;
     (function (Config) {
         var routes = (function () {
-            function routes($routeProvider, $locationProvider) {
+            function routes($routeProvider, $locationProvider, libraryService, $sessionStorage) {
                 this.$routeProvider = $routeProvider;
                 this.$locationProvider = $locationProvider;
-                this.$insert = ['$routeProvider', '$locationProvider', '$location'];
+                this.libraryService = libraryService;
+                this.$sessionStorage = $sessionStorage;
+                this.$insert = ['$routeProvider', '$locationProvider', '$location', '$sessionStorage', 'libraryService'];
+                profile();
                 this.$routeProvider
                     .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
+                })
+                    .when('/callback', {
+                    template: '<navbar></navbar><callback-page></callback-page>'
                 })
                     .when('/', {
                     template: '<navbar></navbar><home></home>'
@@ -210,6 +216,24 @@ var Application;
                 ;
                 this.$locationProvider.html5Mode(false);
             }
+            routes.prototype.Login = function () {
+                var _this = this;
+                var email = localStorage.getItem("email");
+                if (email) {
+                    var a = new Application.Library.Models.Account();
+                    a.Email = email;
+                    a.FirstName = localStorage.getItem("givenName");
+                    a.LastName = localStorage.getItem("familyName");
+                    a.Password = localStorage.getItem("access_token");
+                    this.libraryService.autoLogin(a)
+                        .then(function (resp) {
+                        _this.$sessionStorage.myaccount = resp.data;
+                        console.log("SUCCESSFUL LOGIN");
+                    }, function (resp) {
+                        console.log("ERROR", resp);
+                    });
+                }
+            };
             return routes;
         }());
         Config.routes = routes;
@@ -736,7 +760,8 @@ var Application;
                     console.log(this.mode + ':' + this.callnumber);
                     this.links = [
                         { "url": "/#/library", "text": "home" },
-                        { "url": "/#/library/catalog", "text": "catalog" }];
+                        { "url": "/#/library/catalog", "text": "catalog" }
+                    ];
                     if (this.callnumber) {
                         this.editing = false;
                         this.mode = "update";
@@ -805,6 +830,96 @@ var Application;
             bindings: { book: '<' },
             controllerAs: "vm",
             templateUrl: function (templates) { return templates.bookTile; },
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var CallbackPage = (function () {
+            function CallbackPage() {
+            }
+            return CallbackPage;
+        }());
+        app.component("callbackPage", {
+            controller: CallbackPage,
+            controllerAs: "vm",
+            template: "\n        <style>\n    \n</style>\n<div class=\"container\">\n\n    <div class=\"row\">\n        <div class=\"col-md-12 login-cta\">\n        <h2>Callback</h2>\n        <callback></callback>\n        \n        </div>\n    </div>\n\n</div>\n        "
+        });
+    })(Components = Application.Components || (Application.Components = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
+    var Components;
+    (function (Components) {
+        var callback = (function () {
+            function callback($location, $timeout, libraryService, $cookies, $sessionStorage, $window) {
+                this.$location = $location;
+                this.$timeout = $timeout;
+                this.libraryService = libraryService;
+                this.$cookies = $cookies;
+                this.$sessionStorage = $sessionStorage;
+                this.$window = $window;
+                this.loading = false;
+                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
+                this.password = '';
+            }
+            callback.prototype.LoginKey = function (keyEvent) {
+                if (keyEvent.which === 13) {
+                    this.Login();
+                }
+            };
+            callback.prototype.Login = function () {
+                var _this = this;
+                if (this.password != '') {
+                    this.loading = true;
+                    this.libraryService.Login(this.username, this.password)
+                        .then(function (resp) {
+                        _this.$sessionStorage.myaccount = resp.data;
+                        console.log("SUCCESSFUL LOGIN");
+                        _this.refreshStatus();
+                        if (!_this.redirect) {
+                            _this.$location.url('/catalog');
+                        }
+                        else {
+                            _this.$window.location.href = _this.redirect + "?redirect=true";
+                        }
+                    }, function (resp) {
+                        _this.password = '';
+                        _this.errorMessage = 'Sorry, wrong username/password.';
+                        _this.loading = false;
+                        _this.$timeout(function () {
+                            _this.errorMessage = '';
+                        }, 3200);
+                    });
+                }
+            };
+            callback.prototype.$onInit = function () {
+                var account = this.getCookie("account");
+                if (account.Email) {
+                    this.username = account.Email;
+                }
+            };
+            callback.prototype.setCookie = function (cookieName, obj) {
+                var expireDate = new Date();
+                expireDate.setDate(expireDate.getDate() + 100);
+                this.$cookies.putObject(cookieName, obj, { expires: expireDate });
+            };
+            callback.prototype.getCookie = function (cookieName) {
+                var obj = this.$cookies.getObject(cookieName);
+                if (!obj) {
+                    obj = {};
+                }
+                return obj;
+            };
+            return callback;
+        }());
+        app.component("callback", {
+            controller: callback,
+            bindings: { refreshStatus: '&', redirect: '<' },
+            controllerAs: "vm",
+            templateUrl: "app/pages/callback/callback.html?v=" + new Date(),
         });
     })(Components = Application.Components || (Application.Components = {}));
 })(Application || (Application = {}));
@@ -1813,7 +1928,6 @@ var Application;
         Config.LibraryConfig = LibraryConfig;
     })(Config = Application.Config || (Application.Config = {}));
 })(Application || (Application = {}));
-var Application;
 (function (Application) {
     var Services;
     (function (Services) {
@@ -1918,6 +2032,24 @@ var Application;
                 var creds = { "email": email, "password": password };
                 var url = this.server + "/api/Account/";
                 return this.$http.post(url, creds);
+            };
+            libraryService.prototype.autoLogin = function (account) {
+                var deferred;
+                deferred = this.$q.defer();
+                var url = this.server + "/api/autologin";
+                if (account.AccountId > 0) {
+                    this.$http.put(url, account)
+                        .then(function (resp) {
+                        deferred.resolve(resp);
+                    });
+                }
+                else {
+                    this.$http.post(url, account)
+                        .then(function (resp) {
+                        deferred.resolve(resp);
+                    });
+                }
+                return deferred.promise;
             };
             libraryService.prototype.uploadImage = function (fd) {
                 this.checkLogin();
