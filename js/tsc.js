@@ -3,14 +3,16 @@ var Application;
     var Controllers;
     (function (Controllers) {
         var MainCtrl = (function () {
-            function MainCtrl($route, $routeParams, $location) {
+            function MainCtrl($route, $routeParams, $location, CustomAuth0) {
                 this.$route = $route;
                 this.$routeParams = $routeParams;
                 this.$location = $location;
-                this.$insert = ['$route', '$routeParams', '$location'];
+                this.CustomAuth0 = CustomAuth0;
+                this.$insert = ['$route', '$routeParams', '$location', 'CustomAuth0'];
                 var v = new Application.Config.version();
                 console.log(v);
                 this.Title = "PFSA Library Version " + v.number;
+                CustomAuth0.profile();
             }
             return MainCtrl;
         }());
@@ -123,13 +125,12 @@ var Application;
     var Config;
     (function (Config) {
         var routes = (function () {
-            function routes($routeProvider, $locationProvider, libraryService, $sessionStorage) {
+            function routes($routeProvider, $locationProvider) {
                 this.$routeProvider = $routeProvider;
                 this.$locationProvider = $locationProvider;
-                this.libraryService = libraryService;
-                this.$sessionStorage = $sessionStorage;
-                this.$insert = ['$routeProvider', '$locationProvider', '$location', '$sessionStorage', 'libraryService'];
-                profile();
+                this.$insert = ['$routeProvider', '$locationProvider'];
+                console.log(this.$routeProvider);
+                console.log(window.location);
                 this.$routeProvider
                     .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
@@ -214,10 +215,9 @@ var Application;
                 })
                     .otherwise({ redirectTo: '/' });
                 ;
-                this.$locationProvider.html5Mode(false);
+                this.$locationProvider.html5Mode(true);
             }
             routes.prototype.Login = function () {
-                var _this = this;
                 var email = localStorage.getItem("email");
                 if (email) {
                     var a = new Application.Library.Models.Account();
@@ -225,13 +225,6 @@ var Application;
                     a.FirstName = localStorage.getItem("givenName");
                     a.LastName = localStorage.getItem("familyName");
                     a.Password = localStorage.getItem("access_token");
-                    this.libraryService.autoLogin(a)
-                        .then(function (resp) {
-                        _this.$sessionStorage.myaccount = resp.data;
-                        console.log("SUCCESSFUL LOGIN");
-                    }, function (resp) {
-                        console.log("ERROR", resp);
-                    });
                 }
             };
             return routes;
@@ -863,56 +856,8 @@ var Application;
                 this.$window = $window;
                 this.loading = false;
                 this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
-                this.password = '';
+                console.log('Called back!');
             }
-            callback.prototype.LoginKey = function (keyEvent) {
-                if (keyEvent.which === 13) {
-                    this.Login();
-                }
-            };
-            callback.prototype.Login = function () {
-                var _this = this;
-                if (this.password != '') {
-                    this.loading = true;
-                    this.libraryService.Login(this.username, this.password)
-                        .then(function (resp) {
-                        _this.$sessionStorage.myaccount = resp.data;
-                        console.log("SUCCESSFUL LOGIN");
-                        _this.refreshStatus();
-                        if (!_this.redirect) {
-                            _this.$location.url('/catalog');
-                        }
-                        else {
-                            _this.$window.location.href = _this.redirect + "?redirect=true";
-                        }
-                    }, function (resp) {
-                        _this.password = '';
-                        _this.errorMessage = 'Sorry, wrong username/password.';
-                        _this.loading = false;
-                        _this.$timeout(function () {
-                            _this.errorMessage = '';
-                        }, 3200);
-                    });
-                }
-            };
-            callback.prototype.$onInit = function () {
-                var account = this.getCookie("account");
-                if (account.Email) {
-                    this.username = account.Email;
-                }
-            };
-            callback.prototype.setCookie = function (cookieName, obj) {
-                var expireDate = new Date();
-                expireDate.setDate(expireDate.getDate() + 100);
-                this.$cookies.putObject(cookieName, obj, { expires: expireDate });
-            };
-            callback.prototype.getCookie = function (cookieName) {
-                var obj = this.$cookies.getObject(cookieName);
-                if (!obj) {
-                    obj = {};
-                }
-                return obj;
-            };
             return callback;
         }());
         app.component("callback", {
@@ -1206,15 +1151,16 @@ var Application;
     var Components;
     (function (Components) {
         var login = (function () {
-            function login($location, $timeout, libraryService, $cookies, $sessionStorage, $window) {
+            function login($location, $timeout, libraryService, $cookies, $sessionStorage, $window, CustomAuth0) {
                 this.$location = $location;
                 this.$timeout = $timeout;
                 this.libraryService = libraryService;
                 this.$cookies = $cookies;
                 this.$sessionStorage = $sessionStorage;
                 this.$window = $window;
+                this.CustomAuth0 = CustomAuth0;
                 this.loading = false;
-                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
+                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window', 'CustomAuth0'];
                 this.password = '';
             }
             login.prototype.LoginKey = function (keyEvent) {
@@ -1224,6 +1170,9 @@ var Application;
             };
             login.prototype.Login = function () {
                 var _this = this;
+                console.log("logging in");
+                this.CustomAuth0.login();
+                return false;
                 if (this.password != '') {
                     this.loading = true;
                     this.libraryService.Login(this.username, this.password)
@@ -1280,11 +1229,12 @@ var Application;
     var Components;
     (function (Components) {
         var Navbar = (function () {
-            function Navbar($location, $sessionStorage, libraryService) {
+            function Navbar($location, $sessionStorage, libraryService, CustomAuth0) {
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.CustomAuth0 = CustomAuth0;
+                this.$insert = ['$location', '$sessionStorage', 'libraryService', 'CustomAuth0'];
                 this.permission = {};
             }
             Navbar.prototype.$onInit = function () {
@@ -1298,6 +1248,9 @@ var Application;
                 }
                 else {
                 }
+            };
+            Navbar.prototype.Login = function () {
+                this.CustomAuth0.login();
             };
             Navbar.prototype.LogOut = function () {
                 this.$sessionStorage.$reset();

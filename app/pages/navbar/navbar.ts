@@ -9,8 +9,8 @@ module Application.Components {
 
 
     export class Navbar {
-        $insert = ['$location', '$sessionStorage', 'libraryService'];
-        constructor(public $location: ng.ILocationService, public $sessionStorage: any, private libraryService: Application.Services.libraryService) { }
+        $insert = ['$location', '$sessionStorage', 'libraryService','CustomAuth0'];
+        constructor(public $location: ng.ILocationService, public $sessionStorage: any, private libraryService: Application.Services.libraryService,private CustomAuth0:any) { }
         public callnumber: any
         public username: string;
         public AccountId: number;
@@ -41,7 +41,10 @@ module Application.Components {
 
 
         }
+        Login(){
+            this.CustomAuth0.login();
 
+        }
         LogOut() {
             this.$sessionStorage.$reset();
             this.permission = new Application.Context.NavigationPermissions('Anon');

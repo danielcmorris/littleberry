@@ -14,11 +14,12 @@ module Application.Components {
         public refreshStatus: Function;
         public redirect: string;
         public loading: boolean = false;
-        $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window']
+        $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window', 'CustomAuth0']
         constructor(private $location: ng.ILocationService, private $timeout: ng.ITimeoutService
             , private libraryService: any
             , private $cookies: any
-            , private $sessionStorage: any, private $window: ng.IWindowService) {
+            , private $sessionStorage: any, private $window: ng.IWindowService,
+            private CustomAuth0:any) {
             this.password = '';
 
         }
@@ -28,6 +29,9 @@ module Application.Components {
             }
         }
         Login() {
+            console.log("logging in");
+            this.CustomAuth0.login();
+            return false;
             if (this.password != '') {
                 this.loading = true
                 this.libraryService.Login(this.username, this.password)

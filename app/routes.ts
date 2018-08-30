@@ -12,30 +12,18 @@ module Application.Config{
                 a.LastName = localStorage.getItem("familyName");
                 a.Password = localStorage.getItem("access_token");
                 
-          
-                            
-                this.libraryService.autoLogin(a)
-                    .then((resp: any) => {
-
-                        this.$sessionStorage.myaccount = resp.data;
-                        console.log("SUCCESSFUL LOGIN")
-                      
-
-                    }, (resp: any) => {
-                         console.log("ERROR",resp)
-                    });
                 }
 
         }
 
-        $insert = ['$routeProvider', '$locationProvider','$location', '$sessionStorage', 'libraryService']
+        $insert = ['$routeProvider', '$locationProvider'   ]
         constructor(private $routeProvider: ng.route.IRouteProvider,
-            private $locationProvider: ng.ILocationProvider,
-            private  libraryService: Application.Services.libraryService,
-            private $sessionStorage:  any, 
-        ) {
-            profile()
+            private $locationProvider: ng.ILocationProvider 
+          
             
+        ) {
+            console.log(this.$routeProvider);
+            console.log(window.location)
             this.$routeProvider
                 .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
@@ -120,7 +108,7 @@ module Application.Config{
                 })
                 .otherwise({ redirectTo: '/' });;
 
-                this.$locationProvider.html5Mode(false);
+                this.$locationProvider.html5Mode(true);
                 //this.$locationProvider.hashPrefix('');
                 //if ($sessionStorage.myaccount) {
 
