@@ -12,7 +12,7 @@ class Authorization {
 
         var webAuth = new auth0.WebAuth(this.authorization);
         webAuth.authorize({
-            redirectUri: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/callback',
+            redirectUri: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/#/callback',
             responseType: 'token id_token',
             scope: 'openid email profile',
             connection: 'google-oauth2'
