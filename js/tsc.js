@@ -3,16 +3,14 @@ var Application;
     var Controllers;
     (function (Controllers) {
         var MainCtrl = (function () {
-            function MainCtrl($route, $routeParams, $location, CustomAuth0) {
+            function MainCtrl($route, $routeParams, $location) {
                 this.$route = $route;
                 this.$routeParams = $routeParams;
                 this.$location = $location;
-                this.CustomAuth0 = CustomAuth0;
-                this.$insert = ['$route', '$routeParams', '$location', 'CustomAuth0'];
+                this.$insert = ['$route', '$routeParams', '$location'];
                 var v = new Application.Config.version();
                 console.log(v);
                 this.Title = "PFSA Library Version " + v.number;
-                CustomAuth0.profile();
             }
             return MainCtrl;
         }());
@@ -34,7 +32,6 @@ var Application;
                 var path = window.location.host;
                 if (path.substring(0, 5) === "local") {
                     this.apiServer = "http://localhost:53035";
-                    this.apiServer = "https://pfsaapi.azurewebsites.net";
                 }
                 else {
                     this.apiServer = "https://pfsaapi.azurewebsites.net";
@@ -128,9 +125,27 @@ var Application;
             function routes($routeProvider, $locationProvider) {
                 this.$routeProvider = $routeProvider;
                 this.$locationProvider = $locationProvider;
-                this.$insert = ['$routeProvider', '$locationProvider'];
-                console.log(this.$routeProvider);
-                console.log(window.location);
+                this.$insert = ['$routeProvider', '$locationProvider',];
+                var a = new Authorization;
+                var authorization = {
+                    clientID: 'LHdL4hUjgN6ulY31zLDl6xaaQsM-BAvG',
+                    domain: 'littleberry.auth0.com',
+                };
+                var webAuth = new auth0.WebAuth(a.authorization);
+                webAuth.parseHash({ hash: window.location.hash }, function (err, authResult) {
+                    if (!authResult) {
+                        return console.log('authResult', err);
+                    }
+                    else {
+                        console.log('authResult', authResult);
+                        localStorage.setItem('authResult', JSON.stringify(authResult));
+                        localStorage.setItem('access_token', authResult.accessToken);
+                        localStorage.setItem('id_token', authResult.idToken);
+                        var t = new Date();
+                        t.setSeconds(t.getSeconds() + authResult.expiresIn);
+                        localStorage.setItem('expires_at', t.toString());
+                    }
+                });
                 this.$routeProvider
                     .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
@@ -215,7 +230,7 @@ var Application;
                 })
                     .otherwise({ redirectTo: '/' });
                 ;
-                this.$locationProvider.html5Mode(true);
+                this.$locationProvider.html5Mode(false);
             }
             routes.prototype.Login = function () {
                 var email = localStorage.getItem("email");
@@ -259,6 +274,7 @@ var Application;
                 this.Members = false;
                 this.Subjects = false;
                 this.LoggedIn = false;
+                console.log('AccountType', AccountType);
                 switch (AccountType) {
                     case 'Admin':
                         this.AddTitle = true;
@@ -1151,51 +1167,17 @@ var Application;
     var Components;
     (function (Components) {
         var login = (function () {
-            function login($location, $timeout, libraryService, $cookies, $sessionStorage, $window, CustomAuth0) {
+            function login($location, $timeout, libraryService, $cookies, $sessionStorage, $window) {
                 this.$location = $location;
                 this.$timeout = $timeout;
                 this.libraryService = libraryService;
                 this.$cookies = $cookies;
                 this.$sessionStorage = $sessionStorage;
                 this.$window = $window;
-                this.CustomAuth0 = CustomAuth0;
                 this.loading = false;
-                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window', 'CustomAuth0'];
+                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
                 this.password = '';
             }
-            login.prototype.LoginKey = function (keyEvent) {
-                if (keyEvent.which === 13) {
-                    this.Login();
-                }
-            };
-            login.prototype.Login = function () {
-                var _this = this;
-                console.log("logging in");
-                this.CustomAuth0.login();
-                return false;
-                if (this.password != '') {
-                    this.loading = true;
-                    this.libraryService.Login(this.username, this.password)
-                        .then(function (resp) {
-                        _this.$sessionStorage.myaccount = resp.data;
-                        console.log("SUCCESSFUL LOGIN");
-                        _this.refreshStatus();
-                        if (!_this.redirect) {
-                            _this.$location.url('/catalog');
-                        }
-                        else {
-                            _this.$window.location.href = _this.redirect + "?redirect=true";
-                        }
-                    }, function (resp) {
-                        _this.password = '';
-                        _this.errorMessage = 'Sorry, wrong username/password.';
-                        _this.loading = false;
-                        _this.$timeout(function () {
-                            _this.errorMessage = '';
-                        }, 3200);
-                    });
-                }
-            };
             login.prototype.$onInit = function () {
                 var account = this.getCookie("account");
                 if (account.Email) {
@@ -1229,30 +1211,53 @@ var Application;
     var Components;
     (function (Components) {
         var Navbar = (function () {
-            function Navbar($location, $sessionStorage, libraryService, CustomAuth0) {
+            function Navbar($location, $sessionStorage, libraryService) {
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.CustomAuth0 = CustomAuth0;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService', 'CustomAuth0'];
+                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
                 this.permission = {};
             }
             Navbar.prototype.$onInit = function () {
+                var _this = this;
+                var auth = new Authorization();
                 this.GetSubjects();
                 this.GetAuthors(30);
-                if (this.$sessionStorage.myaccount) {
-                    var a = this.$sessionStorage.myaccount;
-                    this.username = a.FirstName + ' ' + a.LastName;
-                    this.AccountId = a.AccountId;
-                    this.permission = new Application.Context.NavigationPermissions(a.AccountType);
+                var profile = auth.profile();
+                if (profile) {
+                    console.log("profile", profile);
+                    this.username = profile.given_name + ' ' + profile.family_name;
+                    var a = {};
+                    a.AccountType = 'Member';
+                    a.FirstName = profile.given_name;
+                    a.LastName = profile.family_name;
+                    a.Email = profile.email;
+                    a.AccountId = 0;
+                    console.log("Logged in as " + this.username);
+                    this.permission.LoggedIn = true;
+                    this.libraryService.autoLogin(a)
+                        .then(function (resp) {
+                        var data = resp.data;
+                        _this.AccountId = parseInt(data.AccountId);
+                        console.log('autoLogin Data', data);
+                        _this.permission = new Application.Context.NavigationPermissions(data.AccountType);
+                        console.log(_this.permission);
+                        _this.permission.LoggedIn = true;
+                    });
                 }
                 else {
+                    console.log("NOT LOGGED IN");
                 }
             };
+            Navbar.prototype.SetProfile = function () {
+            };
             Navbar.prototype.Login = function () {
-                this.CustomAuth0.login();
+                var auth = new Authorization();
+                auth.login();
             };
             Navbar.prototype.LogOut = function () {
+                var auth = new Authorization();
+                auth.logout();
                 this.$sessionStorage.$reset();
                 this.permission = new Application.Context.NavigationPermissions('Anon');
                 var url = "/";
@@ -1859,6 +1864,44 @@ var Application;
         });
     })(Components = Application.Components || (Application.Components = {}));
 })(Application || (Application = {}));
+var Authorization = (function () {
+    function Authorization() {
+        this.googleClient = "773988801980-kf3n06kh3jbgvqb5s3j7iknmfketfh7k.apps.googleusercontent.com";
+        this.googleSecret = "T0eBdFhxwSip6OB4WGNlpxQw";
+        this.authorization = {
+            clientID: 'LHdL4hUjgN6ulY31zLDl6xaaQsM-BAvG',
+            domain: 'littleberry.auth0.com',
+        };
+    }
+    Authorization.prototype.login = function () {
+        var webAuth = new auth0.WebAuth(this.authorization);
+        webAuth.authorize({
+            redirectUri: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/callback',
+            responseType: 'token id_token',
+            scope: 'openid email profile',
+            connection: 'google-oauth2'
+        });
+    };
+    Authorization.prototype.logout = function () {
+        console.log('this.authorization', this.authorization);
+        var webAuth = new auth0.WebAuth(this.authorization);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('id_token');
+        localStorage.removeItem('expires_at');
+    };
+    Authorization.prototype.profile = function () {
+        if (localStorage.getItem('authResult')) {
+            var userProfile = JSON.parse(localStorage.getItem('authResult'));
+            if (userProfile.idTokenPayload) {
+                return userProfile.idTokenPayload;
+            }
+            else {
+                return null;
+            }
+        }
+    };
+    return Authorization;
+}());
 var Application;
 (function (Application) {
     var Config;
@@ -1987,22 +2030,8 @@ var Application;
                 return this.$http.post(url, creds);
             };
             libraryService.prototype.autoLogin = function (account) {
-                var deferred;
-                deferred = this.$q.defer();
                 var url = this.server + "/api/autologin";
-                if (account.AccountId > 0) {
-                    this.$http.put(url, account)
-                        .then(function (resp) {
-                        deferred.resolve(resp);
-                    });
-                }
-                else {
-                    this.$http.post(url, account)
-                        .then(function (resp) {
-                        deferred.resolve(resp);
-                    });
-                }
-                return deferred.promise;
+                return this.$http.post(url, account);
             };
             libraryService.prototype.uploadImage = function (fd) {
                 this.checkLogin();

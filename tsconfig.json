@@ -16,6 +16,7 @@
     "components",
     "node_modules",
     "bower_components",
-    "js"
+    "js",
+    "custom_services"
   ]
 }

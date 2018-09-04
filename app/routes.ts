@@ -1,4 +1,5 @@
 declare function profile():any;
+declare var auth0:any;
 
 module Application.Config{
     export class routes {
@@ -16,14 +17,38 @@ module Application.Config{
 
         }
 
-        $insert = ['$routeProvider', '$locationProvider'   ]
+        $insert = ['$routeProvider', '$locationProvider',  ]
         constructor(private $routeProvider: ng.route.IRouteProvider,
-            private $locationProvider: ng.ILocationProvider 
+            private $locationProvider: ng.ILocationProvider   
           
             
         ) {
-            console.log(this.$routeProvider);
-            console.log(window.location)
+            var a = new Authorization;
+            var authorization = {
+                clientID: 'LHdL4hUjgN6ulY31zLDl6xaaQsM-BAvG',
+                domain: 'littleberry.auth0.com',
+    
+            }
+
+            
+            var webAuth = new auth0.WebAuth(a.authorization);
+            webAuth.parseHash({ hash: window.location.hash }, function(err:any, authResult:any) {
+                if (!authResult) {
+                    return console.log('authResult',err);
+  
+                  }else{
+                      console.log('authResult',authResult)
+                      localStorage.setItem('authResult',JSON.stringify(authResult))
+                      localStorage.setItem('access_token',authResult.accessToken);
+                      localStorage.setItem('id_token',authResult.idToken);
+                      var t = new Date();
+                      t.setSeconds(t.getSeconds() + authResult.expiresIn);
+                      localStorage.setItem('expires_at',t.toString());
+                  }
+                });
+
+
+ 
             this.$routeProvider
                 .when('/login', {
                     template: '<navbar></navbar><login-page></login-page>'
@@ -108,7 +133,7 @@ module Application.Config{
                 })
                 .otherwise({ redirectTo: '/' });;
 
-                this.$locationProvider.html5Mode(true);
+                this.$locationProvider.html5Mode(false);
                 //this.$locationProvider.hashPrefix('');
                 //if ($sessionStorage.myaccount) {
 

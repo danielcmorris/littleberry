@@ -1,14 +1,13 @@
-﻿
-<div class="container-fluid siteheader" style="margin:0px;padding:0px">
-<div class="row" style="margin:0px;padding:0px">
-    <div class="col-md-3 col-sm-5" >
-        <div class="siteLogo"></div>
-    </div>
-    <div class="col-md-8 col-sm-7 hidden-xs" style="text-align: center">
-        <h2>The J.A. Freitas Library</h2>
-        <span class="siteTitle">Founded in 1964, the J.A. Freitas Library consists of over 1200 works dealing with the Portuguese,
-            some dating back to the late 1880's</span>
-    </div>
+﻿<div class="container-fluid siteheader" style="margin:0px;padding:0px">
+    <div class="row" style="margin:0px;padding:0px">
+        <div class="col-md-3 col-sm-5">
+            <div class="siteLogo"></div>
+        </div>
+        <div class="col-md-8 col-sm-7 hidden-xs" style="text-align: center">
+            <h2>The J.A. Freitas Library</h2>
+            <span class="siteTitle">Founded in 1964, the J.A. Freitas Library consists of over 1200 works dealing with the
+                Portuguese, some dating back to the late 1880's</span>
+        </div>
 
     </div>
 </div>
@@ -24,15 +23,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#/library">Home</a>
+            </button>
+            <a class="navbar-brand" href="#/library">Home</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catalog<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catalog<span
+                            class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/#/library/catalog/add" ng-show="vm.permission.AddTitle">Add Title</a></li>
                         <li><a href="/#/library/catalog">Full Catalog</a></li>
@@ -40,22 +40,27 @@
 
                     </ul>
                 </li>
-                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Subjects<span class="caret"></span></a>
-                    <ul class="dropdown-menu" >                        
-                        <li ng-repeat="s in vm.subjects | filter:{Status:'Active'}"><a ng-href="/#/library/subject/{{s.Prefix}}">{{s.Name}}</a></li>                        
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Subjects<span
+                            class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="s in vm.subjects | filter:{Status:'Active'}"><a ng-href="/#/library/subject/{{s.Prefix}}">{{s.Name}}</a></li>
                     </ul>
                 </li>
-                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Popular Authors<span class="caret"></span></a>
-                    <ul class="dropdown-menu" >   
-                         <li><a ng-href="/#/library/author">All Authors</a></li>  
-                         <li><hr></li>
-                        <li ng-repeat="s in vm.authors"><a ng-href="#/library/author/{{s.Author}}">{{s.Author}} ({{s.BookCount}})</a></li>                        
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Popular
+                        Authors<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-href="/#/library/author">All Authors</a></li>
+                        <li>
+                            <hr>
+                        </li>
+                        <li ng-repeat="s in vm.authors"><a ng-href="#/library/author/{{s.Author}}">{{s.Author}} ({{s.BookCount}})</a></li>
                     </ul>
                 </li>
                 <li class="dropdown" ng-show="vm.permission.Requests">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Requests<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Requests<span
+                            class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/#/library/requests">Add Request</a></li>
                         <li><a href="/#/library/requests">Search</a></li>
@@ -63,11 +68,12 @@
                     </ul>
                 </li>
                 <li class="dropdown" ng-show="vm.permission.AddRequest">
-                    <a  role="button" aria-haspopup="true" aria-expanded="false" ng-href="/#/member/requests">My Requests</a>
-                         
+                    <a role="button" aria-haspopup="true" aria-expanded="false" ng-href="/#/member/requests">My Requests</a>
+
                 </li>
                 <li class="dropdown" ng-show="vm.permission.Members">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members<span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members<span
+                            class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/#/library/accounts/add">Add Member</a></li>
                         <li><a href="/#/library/accounts">Search</a></li>
@@ -88,7 +94,7 @@
                             <div class="input-group">
                                 <input type="text" style="width:100px" class="form-control" ng-model="vm.callnumber" ng-keypress="vm.OpenByCallNumberKey($event);"
                                     placeholder="Callnumber">
-                                    <span class="input-group-btn">
+                                <span class="input-group-btn">
                                     <button class="btn btn-default" type="button" ng-click="vm.OpenByCallNumber();">Open</button>
                                 </span>
                             </div>
@@ -97,9 +103,10 @@
                     </form>
                 </li>
                 <li class="dropdown" ng-show="vm.permission.LoggedIn">
-                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{vm.username}}  <span class="caret"></span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{vm.username}}
+                        <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a ng-href="/#/library/accounts/{{vm.AccountId}}">Edit Profile*</a></li>
+                        <!-- <li><a ng-href="/#/library/accounts/{{vm.AccountId}}">Edit Profile*</a></li> -->
                         <li><a href ng-click="vm.LogOut()">Log Out</a></li>
 
                         <!--<li role="separator" class="divider"></li>
@@ -109,7 +116,7 @@
                 <li class="dropdown" ng-hide="vm.permission.LoggedIn">
                     <a href="#" ng-click="vm.Login()">Login</a>
                 </li>
-
+              
 
 
             </ul>

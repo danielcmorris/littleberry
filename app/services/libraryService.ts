@@ -123,22 +123,12 @@ module Application.Services {
             return this.$http.post(url, creds)
         }
         autoLogin(account:Application.Library.Models.Account){
-            var deferred: any;
-            deferred = this.$q.defer();
-
+           
             let url: string = this.server + "/api/autologin";
-            if (account.AccountId > 0) {
-                this.$http.put(url, account)
-                    .then((resp: any) => {
-                        deferred.resolve(resp);
-                    });
-            } else {
-                this.$http.post(url, account)
-                    .then((resp: any) => {
-                        deferred.resolve(resp);
-                    });
-            }
-            return deferred.promise;
+            
+              return  this.$http.post(url, account)
+                    
+            
         }
 
 

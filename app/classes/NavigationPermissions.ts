@@ -11,6 +11,7 @@ module Application.Context {
         LoggedIn:boolean=false
         
         constructor(AccountType:string){
+            console.log('AccountType',AccountType)
             switch (AccountType) {
                 case 'Admin':
                     this.AddTitle = true;

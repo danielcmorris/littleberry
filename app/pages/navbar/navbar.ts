@@ -9,8 +9,8 @@ module Application.Components {
 
 
     export class Navbar {
-        $insert = ['$location', '$sessionStorage', 'libraryService','CustomAuth0'];
-        constructor(public $location: ng.ILocationService, public $sessionStorage: any, private libraryService: Application.Services.libraryService,private CustomAuth0:any) { }
+        $insert = ['$location', '$sessionStorage', 'libraryService'];
+        constructor(public $location: ng.ILocationService, public $sessionStorage: any, private libraryService: Application.Services.libraryService ) { }
         public callnumber: any
         public username: string;
         public AccountId: number;
@@ -18,22 +18,42 @@ module Application.Components {
         public authors: any;
         public permission: any = {}
 
-        $onInit() {
-
+        $onInit() {   
+           
+            let auth=new Authorization();
             
             this.GetSubjects()
             this.GetAuthors(30);
-            if (this.$sessionStorage.myaccount) {
-                let a = this.$sessionStorage.myaccount
-                this.username = a.FirstName + ' ' + a.LastName;
-                this.AccountId = a.AccountId;
+            let profile = auth.profile();
+            if(profile){
+                console.log("profile",profile)
+                this.username = profile.given_name + ' ' + profile.family_name;
+                
 
-                this.permission = new Application.Context.NavigationPermissions(a.AccountType);
+               let a:any ={}
+                a.AccountType = 'Member';
+                a.FirstName = profile.given_name
+                a.LastName =   profile.family_name;
+                a.Email = profile.email;
+                a.AccountId=0;
 
+                console.log("Logged in as "+this.username)
+                this.permission.LoggedIn=true
+                this.libraryService.autoLogin(a)
+                    .then((resp:any)=>{
+                          var data:Application.Models.Account=resp.data;
+                            this.AccountId = parseInt(data.AccountId);
+                            console.log('autoLogin Data',data);
+                            this.permission = new Application.Context.NavigationPermissions( data.AccountType)
+                            console.log(this.permission);
+                            this.permission.LoggedIn=true
+                    })
+ 
+                
             }
             else {
 
-                //this.$location.url('/')
+               console.log("NOT LOGGED IN")
 
             }
 
@@ -41,11 +61,18 @@ module Application.Components {
 
 
         }
+        SetProfile(){
+            
+        }
         Login(){
-            this.CustomAuth0.login();
+            let auth=new Authorization();
+            
+            auth.login();
 
         }
         LogOut() {
+            let auth=new Authorization();
+            auth.logout();
             this.$sessionStorage.$reset();
             this.permission = new Application.Context.NavigationPermissions('Anon');
             let url = "/";

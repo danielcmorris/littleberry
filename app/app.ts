@@ -3,16 +3,15 @@ module Application.Controllers{
     
     export class MainCtrl{
         public Title:string;
-        $insert= ['$route', '$routeParams', '$location','CustomAuth0'];
+        $insert= ['$route', '$routeParams', '$location' ];
         constructor(private $route: ng.route.IRouteService,
             private $routeParams: ng.route.IRouteParamsService,
-            private $location:ng.ILocationService,
-            private CustomAuth0:any) {
+            private $location:ng.ILocationService ) {
             //console.log(this.$routeParams);
              var v=new Application.Config.version()
             console.log(v)
             this.Title="PFSA Library Version "+v.number;
-            CustomAuth0.profile();
+            
 
             
        
