@@ -24,6 +24,7 @@ module Application.Services {
             let v = new Application.Config.version()
 
             this.server = v.apiServer;
+            this.$sessionStorage.myaccount = JSON.parse(localStorage.getItem("account"));
             if (this.$sessionStorage.myaccount) {
                 this.sid = this.$sessionStorage.myaccount.SessionId;
             }else{
@@ -254,11 +255,12 @@ module Application.Services {
         }
         UpdatePermissions(): Application.Context.NavigationPermissions {
             if (this.$sessionStorage.myaccount) {
-                let a = this.$sessionStorage.myaccount
+               let a= JSON.parse(localStorage.getItem("account"))
+          
                 return new Application.Context.NavigationPermissions(a.AccountType);
 
             } else {
-                return new Application.Context.NavigationPermissions('Anon');
+                return new Application.Context.NavigationPermissions('Member');
             }
         }
     }

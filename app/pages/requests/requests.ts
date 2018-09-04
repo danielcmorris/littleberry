@@ -30,14 +30,18 @@ module Application.Components {
             this.Prefix = this.$routeParams.prefix;
             this.BookNumber = this.$routeParams.booknumber;
             this.CallNumber = this.Prefix + this.BookNumber;
-
+            this.Account = JSON.parse(localStorage.getItem("account"));
+            if(!this.Account){
+                //GO TO SIGN IN OR SOMETHING LIKE THAT
+            }
             if (this.mode)
                 this.mode = this.mode.toLowerCase();
             if (this.mode == 'edit' || this.mode == 'add') {
                 this.getBook(this.Prefix, this.BookNumber);
                // this.showSearch = true;
                 this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
-                this.email = this.$sessionStorage.myaccount.Email;
+                this.email = this.Account.Email;
+                console.log("email",this.email)
                 this.LookupAccount('email', this.email)
                  this.links=[
                 {"url":"/#/library","text":"home"},
@@ -72,8 +76,10 @@ module Application.Components {
  
         }
         LookupAccount(searchType: string, q: string) {
-             if (this.$sessionStorage.myaccount) {
-                let a:Application.Models.Account = this.$sessionStorage.myaccount;
+            this.Account = JSON.parse(localStorage.getItem('account'));
+            console.log("looking up account")
+             if (this.Account) {
+                let a:Application.Models.Account = JSON.parse(localStorage.getItem('account'));
                 if(a.Email === q){
                     this.Account = a;
                     this.showAddress=true;
@@ -209,7 +215,8 @@ DialogCtrl(mdPanelRef:any) {
                 });
         }
         GetRequests() {
-             if (this.$sessionStorage.myaccount) {
+            this.Account = JSON.parse(localStorage.getItem('account'))
+             if (this.Account) {
             this.libraryService.getOpenRequests()
                 .then((resp: any) => {
                     this.requests = resp.data;

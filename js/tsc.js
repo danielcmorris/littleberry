@@ -1238,11 +1238,13 @@ var Application;
                     this.libraryService.autoLogin(a)
                         .then(function (resp) {
                         var data = resp.data;
+                        localStorage.setItem("account", JSON.stringify(data));
                         _this.AccountId = parseInt(data.AccountId);
                         console.log('autoLogin Data', data);
                         _this.permission = new Application.Context.NavigationPermissions(data.AccountType);
                         console.log(_this.permission);
                         _this.permission.LoggedIn = true;
+                        _this.permission.AddRequest = true;
                     });
                 }
                 else {
@@ -1509,12 +1511,16 @@ var Application;
                 this.Prefix = this.$routeParams.prefix;
                 this.BookNumber = this.$routeParams.booknumber;
                 this.CallNumber = this.Prefix + this.BookNumber;
+                this.Account = JSON.parse(localStorage.getItem("account"));
+                if (!this.Account) {
+                }
                 if (this.mode)
                     this.mode = this.mode.toLowerCase();
                 if (this.mode == 'edit' || this.mode == 'add') {
                     this.getBook(this.Prefix, this.BookNumber);
                     this.redirect = "/#/library/requests/" + this.mode + "/" + this.Prefix + "/" + this.BookNumber;
-                    this.email = this.$sessionStorage.myaccount.Email;
+                    this.email = this.Account.Email;
+                    console.log("email", this.email);
                     this.LookupAccount('email', this.email);
                     this.links = [
                         { "url": "/#/library", "text": "home" },
@@ -1549,8 +1555,10 @@ var Application;
             };
             Requests.prototype.LookupAccount = function (searchType, q) {
                 var _this = this;
-                if (this.$sessionStorage.myaccount) {
-                    var a = this.$sessionStorage.myaccount;
+                this.Account = JSON.parse(localStorage.getItem('account'));
+                console.log("looking up account");
+                if (this.Account) {
+                    var a = JSON.parse(localStorage.getItem('account'));
                     if (a.Email === q) {
                         this.Account = a;
                         this.showAddress = true;
@@ -1662,7 +1670,8 @@ var Application;
             };
             Requests.prototype.GetRequests = function () {
                 var _this = this;
-                if (this.$sessionStorage.myaccount) {
+                this.Account = JSON.parse(localStorage.getItem('account'));
+                if (this.Account) {
                     this.libraryService.getOpenRequests()
                         .then(function (resp) {
                         _this.requests = resp.data;
@@ -1937,6 +1946,7 @@ var Application;
                 this.$insert = ["$http", "$sessionStorage", "$location", "$q"];
                 var v = new Application.Config.version();
                 this.server = v.apiServer;
+                this.$sessionStorage.myaccount = JSON.parse(localStorage.getItem("account"));
                 if (this.$sessionStorage.myaccount) {
                     this.sid = this.$sessionStorage.myaccount.SessionId;
                 }
@@ -2136,11 +2146,11 @@ var Application;
             };
             libraryService.prototype.UpdatePermissions = function () {
                 if (this.$sessionStorage.myaccount) {
-                    var a = this.$sessionStorage.myaccount;
+                    var a = JSON.parse(localStorage.getItem("account"));
                     return new Application.Context.NavigationPermissions(a.AccountType);
                 }
                 else {
-                    return new Application.Context.NavigationPermissions('Anon');
+                    return new Application.Context.NavigationPermissions('Member');
                 }
             };
             return libraryService;

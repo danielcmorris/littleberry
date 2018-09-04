@@ -42,11 +42,14 @@ module Application.Components {
                 this.libraryService.autoLogin(a)
                     .then((resp:any)=>{
                           var data:Application.Models.Account=resp.data;
+                            localStorage.setItem("account",JSON.stringify(data));
                             this.AccountId = parseInt(data.AccountId);
                             console.log('autoLogin Data',data);
+
                             this.permission = new Application.Context.NavigationPermissions( data.AccountType)
                             console.log(this.permission);
-                            this.permission.LoggedIn=true
+                            this.permission.LoggedIn=true;
+                            this.permission.AddRequest=true;
                     })
  
                 
