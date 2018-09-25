@@ -22,17 +22,18 @@ class Authorization {
     }
     logout() {
         console.log('this.authorization', this.authorization);
+        let authDomain = this.authorization.domain;
 
         var webAuth = new auth0.WebAuth(this.authorization);
-        // webAuth.logout({
-        //     returnTo: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/callback',
-        //     client_id: clientID
-        // })
+        webAuth.logout({
+            returnTo: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
+            client_id: this.authorization.clientID,
+        })
 
         localStorage.removeItem('access_token');
         localStorage.removeItem('id_token');
         localStorage.removeItem('expires_at');
-
+//        document.location.href="https://YOUR_AUTH0_DOMAIN/v2/logout"
 
     }
     profile() {

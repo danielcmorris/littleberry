@@ -1261,6 +1261,8 @@ var Application;
                 var auth = new Authorization();
                 auth.logout();
                 this.$sessionStorage.$reset();
+                localStorage.clear();
+                this.permission = {};
                 this.permission = new Application.Context.NavigationPermissions('Anon');
                 var url = "/";
                 this.go(url);
@@ -1893,7 +1895,12 @@ var Authorization = (function () {
     };
     Authorization.prototype.logout = function () {
         console.log('this.authorization', this.authorization);
+        var authDomain = this.authorization.domain;
         var webAuth = new auth0.WebAuth(this.authorization);
+        webAuth.logout({
+            returnTo: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/',
+            client_id: this.authorization.clientID,
+        });
         localStorage.removeItem('access_token');
         localStorage.removeItem('id_token');
         localStorage.removeItem('expires_at');
