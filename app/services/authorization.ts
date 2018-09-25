@@ -15,11 +15,13 @@ class Authorization {
             redirectUri: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/#/callback',
             responseType: 'token id_token',
             scope: 'openid email profile',
-            connection: 'google-oauth2'
+          
 
         });
-
-    }
+//  if we want, we can choose a specific connection
+//  connection: 'Username-Password-Authentication'
+//  connection: 'google-oauth2'
+}
     logout() {
         console.log('this.authorization', this.authorization);
         let authDomain = this.authorization.domain;

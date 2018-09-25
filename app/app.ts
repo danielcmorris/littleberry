@@ -9,7 +9,8 @@ module Application.Controllers{
             private $location:ng.ILocationService ,
             private $window:Window) {
             //console.log(this.$routeParams);
-            if ($location.protocol() !== 'https') {
+
+            if ($location.protocol() !== 'https' && $location.host() != 'localhost') {
                 $window.location.href = $location.absUrl().replace('http', 'https');
             }
 

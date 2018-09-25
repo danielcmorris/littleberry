@@ -9,7 +9,7 @@ var Application;
                 this.$location = $location;
                 this.$window = $window;
                 this.$insert = ['$route', '$routeParams', '$location'];
-                if ($location.protocol() !== 'https') {
+                if ($location.protocol() !== 'https' && $location.host() != 'localhost') {
                     $window.location.href = $location.absUrl().replace('http', 'https');
                 }
                 var v = new Application.Config.version();
@@ -1894,7 +1894,6 @@ var Authorization = (function () {
             redirectUri: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/#/callback',
             responseType: 'token id_token',
             scope: 'openid email profile',
-            connection: 'google-oauth2'
         });
     };
     Authorization.prototype.logout = function () {
