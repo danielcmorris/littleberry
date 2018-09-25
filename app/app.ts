@@ -6,8 +6,14 @@ module Application.Controllers{
         $insert= ['$route', '$routeParams', '$location' ];
         constructor(private $route: ng.route.IRouteService,
             private $routeParams: ng.route.IRouteParamsService,
-            private $location:ng.ILocationService ) {
+            private $location:ng.ILocationService ,
+            private $window:Window) {
             //console.log(this.$routeParams);
+            if ($location.protocol() !== 'https') {
+                $window.location.href = $location.absUrl().replace('http', 'https');
+            }
+
+
              var v=new Application.Config.version()
             console.log(v)
             this.Title="PFSA Library Version "+v.number;

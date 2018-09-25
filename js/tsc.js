@@ -3,11 +3,15 @@ var Application;
     var Controllers;
     (function (Controllers) {
         var MainCtrl = (function () {
-            function MainCtrl($route, $routeParams, $location) {
+            function MainCtrl($route, $routeParams, $location, $window) {
                 this.$route = $route;
                 this.$routeParams = $routeParams;
                 this.$location = $location;
+                this.$window = $window;
                 this.$insert = ['$route', '$routeParams', '$location'];
+                if ($location.protocol() !== 'https') {
+                    $window.location.href = $location.absUrl().replace('http', 'https');
+                }
                 var v = new Application.Config.version();
                 console.log(v);
                 this.Title = "PFSA Library Version " + v.number;
