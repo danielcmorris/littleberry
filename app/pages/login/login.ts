@@ -20,6 +20,10 @@ module Application.Components {
             , private $cookies: any
             , private $sessionStorage: any, private $window: ng.IWindowService ) {
             this.password = '';
+            let auth=new Authorization();
+            
+            auth.login();
+
 
         }
         // LoginKey(keyEvent: any) {

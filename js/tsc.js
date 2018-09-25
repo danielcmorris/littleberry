@@ -1181,6 +1181,8 @@ var Application;
                 this.loading = false;
                 this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
                 this.password = '';
+                var auth = new Authorization();
+                auth.login();
             }
             login.prototype.$onInit = function () {
                 var account = this.getCookie("account");
