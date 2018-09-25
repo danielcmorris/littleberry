@@ -1964,6 +1964,9 @@ var Application;
                     this.sid = 0;
                 }
             }
+            libraryService.prototype.getSessionId = function () {
+                return JSON.parse(localStorage.getItem("account")).SessionId;
+            };
             libraryService.prototype.checkLogin = function () {
                 if (this.$sessionStorage.myaccount) {
                     this.sid = this.$sessionStorage.myaccount.SessionId;
@@ -1976,9 +1979,8 @@ var Application;
                 }
             };
             libraryService.prototype.getAccounts = function () {
-                this.checkLogin();
                 var deferred = this.$q.defer();
-                var url = this.server + "/library/account?sid=" + this.sid;
+                var url = this.server + "/library/account?sid=" + this.getSessionId();
                 this.$http.get(url)
                     .then(function (resp) {
                     deferred.resolve(resp.data);

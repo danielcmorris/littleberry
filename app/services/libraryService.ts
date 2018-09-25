@@ -31,6 +31,10 @@ module Application.Services {
                 this.sid=0;
             }
         }
+        getSessionId(){
+            return JSON.parse(localStorage.getItem("account")).SessionId;
+           
+        }
         checkLogin() {
 
             if (this.$sessionStorage.myaccount) {
@@ -46,9 +50,9 @@ module Application.Services {
         }
 
         getAccounts(): ng.IHttpPromise<any> {
-            this.checkLogin();
+           // this.checkLogin();
             let deferred: any = this.$q.defer();
-            let url: string = this.server + "/library/account?sid=" + this.sid
+            let url: string = this.server + "/library/account?sid=" + this.getSessionId()
             this.$http.get(url)
                 .then((resp: any) => {
                     deferred.resolve(resp.data);
