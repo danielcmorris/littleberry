@@ -40,6 +40,9 @@ module Application.Components {
 
                 console.log("Logged in as "+this.username)
                 this.permission.LoggedIn=true
+                let sid = this.libraryService.getSessionId();
+                if(!sid){
+                    console.log("Doing an autologin")
                 this.libraryService.autoLogin(a)
                     .then((resp:any)=>{
                           var data:Application.Models.Account=resp.data;
@@ -52,7 +55,7 @@ module Application.Components {
                             this.permission.LoggedIn=true;
                             this.permission.AddRequest=true;
                     })
- 
+                }
                 
             }
             else {

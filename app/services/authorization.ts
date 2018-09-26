@@ -8,20 +8,32 @@ class Authorization {
 
     }
 
+
+    public isAuthenticated(): boolean {
+        // Check whether the current time is past the
+        // access token's expiry time
+        try {
+            const expiresAt = JSON.parse(localStorage.getItem('expires_at') || '{}');
+            return new Date().getTime() < expiresAt;
+        } catch{
+            return false;
+        }
+    }
     login() {
 
         var webAuth = new auth0.WebAuth(this.authorization);
+
         webAuth.authorize({
             redirectUri: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/#/callback',
             responseType: 'token id_token',
             scope: 'openid email profile',
-          
+
 
         });
-//  if we want, we can choose a specific connection
-//  connection: 'Username-Password-Authentication'
-//  connection: 'google-oauth2'
-}
+        //  if we want, we can choose a specific connection
+        //  connection: 'Username-Password-Authentication'
+        //  connection: 'google-oauth2'
+    }
     logout() {
         console.log('this.authorization', this.authorization);
         let authDomain = this.authorization.domain;
@@ -35,7 +47,7 @@ class Authorization {
         localStorage.removeItem('access_token');
         localStorage.removeItem('id_token');
         localStorage.removeItem('expires_at');
-//        document.location.href="https://YOUR_AUTH0_DOMAIN/v2/logout"
+        //        document.location.href="https://YOUR_AUTH0_DOMAIN/v2/logout"
 
     }
     profile() {

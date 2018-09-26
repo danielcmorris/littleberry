@@ -32,7 +32,12 @@ module Application.Services {
             }
         }
         getSessionId(){
-            return JSON.parse(localStorage.getItem("account")).SessionId;
+            try{
+                return JSON.parse(localStorage.getItem("account")).SessionId;
+            }catch{
+                return null;
+            }
+            
            
         }
         checkLogin() {
@@ -42,7 +47,8 @@ module Application.Services {
             }
             else {
                 if (this.$location.path != '/') {
-                    this.$location.url('/')
+                   // this.$location.url('/')
+                    alert('redircting!')
                 };
 
             }
@@ -153,6 +159,7 @@ module Application.Services {
         }
         getBookHistory(Prefix: string, BookNumber: number) {
             let url = this.server + "/library/catalog/" + Prefix + "/" + BookNumber + "/history";
+            console.log("Getting book history")
             return this.$http.get(url);
 
         }

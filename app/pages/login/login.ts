@@ -21,8 +21,9 @@ module Application.Components {
             , private $sessionStorage: any, private $window: ng.IWindowService ) {
             this.password = '';
             let auth=new Authorization();
-            
-            auth.login();
+
+            console.log("auth.isAuthenticated()",auth.isAuthenticated())
+          //  auth.login();
 
 
         }

@@ -790,7 +790,7 @@ var Application;
                         this.editing = true;
                         this.mode = "update";
                     }
-                    console.log(viewmode);
+                    console.log("viewmode", viewmode);
                     this.links.push({ "url": "", "text": this.callnumber });
                 };
                 return book;
@@ -1182,7 +1182,7 @@ var Application;
                 this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
                 this.password = '';
                 var auth = new Authorization();
-                auth.login();
+                console.log("auth.isAuthenticated()", auth.isAuthenticated());
             }
             login.prototype.$onInit = function () {
                 var account = this.getCookie("account");
@@ -1241,17 +1241,21 @@ var Application;
                     a.AccountId = 0;
                     console.log("Logged in as " + this.username);
                     this.permission.LoggedIn = true;
-                    this.libraryService.autoLogin(a)
-                        .then(function (resp) {
-                        var data = resp.data;
-                        localStorage.setItem("account", JSON.stringify(data));
-                        _this.AccountId = parseInt(data.AccountId);
-                        console.log('autoLogin Data', data);
-                        _this.permission = new Application.Context.NavigationPermissions(data.AccountType);
-                        console.log(_this.permission);
-                        _this.permission.LoggedIn = true;
-                        _this.permission.AddRequest = true;
-                    });
+                    var sid = this.libraryService.getSessionId();
+                    if (!sid) {
+                        console.log("Doing an autologin");
+                        this.libraryService.autoLogin(a)
+                            .then(function (resp) {
+                            var data = resp.data;
+                            localStorage.setItem("account", JSON.stringify(data));
+                            _this.AccountId = parseInt(data.AccountId);
+                            console.log('autoLogin Data', data);
+                            _this.permission = new Application.Context.NavigationPermissions(data.AccountType);
+                            console.log(_this.permission);
+                            _this.permission.LoggedIn = true;
+                            _this.permission.AddRequest = true;
+                        });
+                    }
                 }
                 else {
                     console.log("NOT LOGGED IN");
@@ -1890,6 +1894,15 @@ var Authorization = (function () {
             domain: 'littleberry.auth0.com',
         };
     }
+    Authorization.prototype.isAuthenticated = function () {
+        try {
+            var expiresAt = JSON.parse(localStorage.getItem('expires_at') || '{}');
+            return new Date().getTime() < expiresAt;
+        }
+        catch (_a) {
+            return false;
+        }
+    };
     Authorization.prototype.login = function () {
         var webAuth = new auth0.WebAuth(this.authorization);
         webAuth.authorize({
@@ -1967,7 +1980,12 @@ var Application;
                 }
             }
             libraryService.prototype.getSessionId = function () {
-                return JSON.parse(localStorage.getItem("account")).SessionId;
+                try {
+                    return JSON.parse(localStorage.getItem("account")).SessionId;
+                }
+                catch (_a) {
+                    return null;
+                }
             };
             libraryService.prototype.checkLogin = function () {
                 if (this.$sessionStorage.myaccount) {
@@ -1975,7 +1993,7 @@ var Application;
                 }
                 else {
                     if (this.$location.path != '/') {
-                        this.$location.url('/');
+                        alert('redircting!');
                     }
                     ;
                 }
@@ -2071,6 +2089,7 @@ var Application;
             };
             libraryService.prototype.getBookHistory = function (Prefix, BookNumber) {
                 var url = this.server + "/library/catalog/" + Prefix + "/" + BookNumber + "/history";
+                console.log("Getting book history");
                 return this.$http.get(url);
             };
             libraryService.prototype.getAccount = function (id) {

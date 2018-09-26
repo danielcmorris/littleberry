@@ -264,7 +264,7 @@ module Application.Library.Components {
                 this.mode = "update";
             }
 
-            console.log(viewmode);
+            console.log("viewmode",viewmode);
             this.links.push({"url":"","text":this.callnumber})
 
         }
