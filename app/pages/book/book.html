@@ -51,7 +51,7 @@
                         <div style="width:300px;padding:10px;height:300px;overflow:hidden;border:solid gray 1px;">
                             <img ng-src="{{vm.bookImage}}" width="100%" />
                         </div>
-                        <md-button class="md-raised" ng-click="vm.bookImage=''">Remove Image</md-button>
+                        <md-button class="md-raised" ng-click="vm.clearBookImage()">Remove Image</md-button>
                     </div>
                     <div class="md-block" flex="50" ng-if="vm.bookImage==''">
                         <div ng-if="!vm.image.uploading" style="text-align: center">

@@ -726,6 +726,10 @@ var Application;
                         _this.loading = false;
                     });
                 };
+                book.prototype.clearBookImage = function () {
+                    this.bookImage = '';
+                    this.book.Url = '';
+                };
                 book.prototype.UpdateStatus = function () {
                 };
                 book.prototype.checkFile = function () {

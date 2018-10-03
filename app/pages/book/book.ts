@@ -163,6 +163,10 @@ module Application.Library.Components {
 
 
         }
+        clearBookImage(){
+            this.bookImage='';
+            this.book.Url='';
+        }
         UpdateStatus() {
 
         }
