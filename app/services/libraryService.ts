@@ -24,41 +24,51 @@ module Application.Services {
             let v = new Application.Config.version()
 
             this.server = v.apiServer;
+
             this.$sessionStorage.myaccount = JSON.parse(localStorage.getItem("account"));
             if (this.$sessionStorage.myaccount) {
                 this.sid = this.$sessionStorage.myaccount.SessionId;
-            }else{
-                this.sid=0;
+            } else {
+                this.sid = 0;
+            }
+            if (this.sid == 0) {
+                try {
+                    JSON.parse(localStorage.getItem("account")).SessionId
+                } catch{
+                    console.log("ERROR: No SessionID in sessionStorage OR localStorage!")
+                }
             }
         }
-        getSessionId(){
-            try{
+        getSessionId() {
+            try {
+
                 return JSON.parse(localStorage.getItem("account")).SessionId;
-            }catch{
+
+            } catch{
                 return null;
             }
-            
-           
+
+
         }
         checkLogin() {
 
-            if (this.$sessionStorage.myaccount) {
-                this.sid = this.$sessionStorage.myaccount.SessionId;
-            }
-            else {
-                if (this.$location.path != '/') {
-                   // this.$location.url('/')
-                    alert('redircting!')
-                };
+            // if (this.$sessionStorage.myaccount) {
+            //     this.sid = this.$sessionStorage.myaccount.SessionId;
+            // }
+            // else {
+            //     if (this.$location.path != '/') {
+            //         // this.$location.url('/')
+            //         alert('redircting!')
+            //     };
 
-            }
+            // }
 
         }
 
         getAccounts(): ng.IHttpPromise<any> {
-           // this.checkLogin();
+            // this.checkLogin();
             let deferred: any = this.$q.defer();
-            let url: string = this.server + "/library/account?sid=" + this.getSessionId()
+            let url: string = this.server + "/library/account?sid=" + this.sid;
             this.$http.get(url)
                 .then((resp: any) => {
                     deferred.resolve(resp.data);
@@ -66,34 +76,34 @@ module Application.Services {
 
             return deferred.promise;
         }
-        getAuthorsByBookCount(bookCount:number): ng.IHttpPromise<any> {
-            
-            let deferred: any = this.$q.defer();
-            let resolved:boolean = false;
+        getAuthorsByBookCount(bookCount: number): ng.IHttpPromise<any> {
 
-             if (this.$sessionStorage.authors && bookCount===1) {
+            let deferred: any = this.$q.defer();
+            let resolved: boolean = false;
+
+            if (this.$sessionStorage.authors && bookCount === 1) {
                 let s = this.$sessionStorage.authors;
                 deferred.resolve(s);
                 resolved = true;
             }
-             if (this.$sessionStorage.authors30 && bookCount===30) {
+            if (this.$sessionStorage.authors30 && bookCount === 30) {
                 let s = this.$sessionStorage.authors30;
                 deferred.resolve(s);
-                resolved=true;
+                resolved = true;
             }
-             if(!resolved){
+            if (!resolved) {
 
-            let url: string = this.server + "/api/author?bookCount="+bookCount;
-            this.$http.get(url)
-                .then((resp: any) => {
-                    if(bookCount===1){
-                     this.$sessionStorage.authors = resp.data;
-                    }
-                    if(bookCount ===30){
-                         this.$sessionStorage.authors30 = resp.data;
-                    }
-                    deferred.resolve(resp.data);
-                });
+                let url: string = this.server + "/api/author?bookCount=" + bookCount;
+                this.$http.get(url)
+                    .then((resp: any) => {
+                        if (bookCount === 1) {
+                            this.$sessionStorage.authors = resp.data;
+                        }
+                        if (bookCount === 30) {
+                            this.$sessionStorage.authors30 = resp.data;
+                        }
+                        deferred.resolve(resp.data);
+                    });
             }
             return deferred.promise;
         }
@@ -133,13 +143,13 @@ module Application.Services {
             let url = this.server + "/api/Account/";
             return this.$http.post(url, creds)
         }
-        autoLogin(account:Application.Library.Models.Account){
-           
+        autoLogin(account: Application.Library.Models.Account) {
+
             let url: string = this.server + "/api/autologin";
-            
-              return  this.$http.post(url, account)
-                    
-            
+
+            return this.$http.post(url, account)
+
+
         }
 
 
@@ -180,8 +190,8 @@ module Application.Services {
             let url = this.server + "/library/request?sid=" + this.sid;
             return this.$http.get(url);
         }
-        getRequest(id:number){
-            let url = this.server + "/library/request/"+id+"?sid=" + this.sid;
+        getRequest(id: number) {
+            let url = this.server + "/library/request/" + id + "?sid=" + this.sid;
             return this.$http.get(url);
         }
         UpdateRequest(obj: any) {
@@ -266,8 +276,8 @@ module Application.Services {
         }
         UpdatePermissions(): Application.Context.NavigationPermissions {
             if (this.$sessionStorage.myaccount) {
-               let a= JSON.parse(localStorage.getItem("account"))
-          
+                let a = JSON.parse(localStorage.getItem("account"))
+
                 return new Application.Context.NavigationPermissions(a.AccountType);
 
             } else {

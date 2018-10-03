@@ -28,7 +28,7 @@ module Application.Components {
             let profile = auth.profile();
             if(profile){
                 console.log("profile",profile)
-                this.username = profile.given_name + ' ' + profile.family_name;
+                this.username = profile.nickname;
                 
 
                let a:any ={}
@@ -55,6 +55,15 @@ module Application.Components {
                             this.permission.LoggedIn=true;
                             this.permission.AddRequest=true;
                     })
+                }else{
+
+                    let a=  JSON.parse(localStorage.getItem("account"));
+                    this.AccountId =a.AccountId;
+ 
+                    this.permission = new Application.Context.NavigationPermissions( a.AccountType)
+                   
+                    this.permission.LoggedIn=true;
+                    this.permission.AddRequest=true;
                 }
                 
             }

@@ -1232,7 +1232,7 @@ var Application;
                 var profile = auth.profile();
                 if (profile) {
                     console.log("profile", profile);
-                    this.username = profile.given_name + ' ' + profile.family_name;
+                    this.username = profile.nickname;
                     var a = {};
                     a.AccountType = 'Member';
                     a.FirstName = profile.given_name;
@@ -1255,6 +1255,13 @@ var Application;
                             _this.permission.LoggedIn = true;
                             _this.permission.AddRequest = true;
                         });
+                    }
+                    else {
+                        var a_1 = JSON.parse(localStorage.getItem("account"));
+                        this.AccountId = a_1.AccountId;
+                        this.permission = new Application.Context.NavigationPermissions(a_1.AccountType);
+                        this.permission.LoggedIn = true;
+                        this.permission.AddRequest = true;
                     }
                 }
                 else {
@@ -1978,6 +1985,14 @@ var Application;
                 else {
                     this.sid = 0;
                 }
+                if (this.sid == 0) {
+                    try {
+                        JSON.parse(localStorage.getItem("account")).SessionId;
+                    }
+                    catch (_a) {
+                        console.log("ERROR: No SessionID in sessionStorage OR localStorage!");
+                    }
+                }
             }
             libraryService.prototype.getSessionId = function () {
                 try {
@@ -1988,19 +2003,10 @@ var Application;
                 }
             };
             libraryService.prototype.checkLogin = function () {
-                if (this.$sessionStorage.myaccount) {
-                    this.sid = this.$sessionStorage.myaccount.SessionId;
-                }
-                else {
-                    if (this.$location.path != '/') {
-                        alert('redircting!');
-                    }
-                    ;
-                }
             };
             libraryService.prototype.getAccounts = function () {
                 var deferred = this.$q.defer();
-                var url = this.server + "/library/account?sid=" + this.getSessionId();
+                var url = this.server + "/library/account?sid=" + this.sid;
                 this.$http.get(url)
                     .then(function (resp) {
                     deferred.resolve(resp.data);
