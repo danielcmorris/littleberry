@@ -648,8 +648,6 @@ var Application;
                     this.bookImage = '';
                     this.book = {};
                     this.imageChanged = false;
-                    this.$insert = ['$location', '$http', '$routeParams',
-                        '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
                     this.permissions = libraryService.UpdatePermissions();
                     this.redirect = $location.path();
                     this.image.uploading = false;
@@ -772,6 +770,9 @@ var Application;
                     this.LoadSubjects();
                     var viewmode = this.$routeParams.mode;
                     this.prefix = this.$routeParams.prefix;
+                    if (!viewmode) {
+                        viewmode = 'add';
+                    }
                     this.booknumber = this.$routeParams.booknumber;
                     this.callnumber = this.prefix + this.booknumber;
                     console.log(this.mode + ':' + this.callnumber);
@@ -779,7 +780,7 @@ var Application;
                         { "url": "/#/library", "text": "home" },
                         { "url": "/#/library/catalog", "text": "catalog" }
                     ];
-                    if (this.callnumber) {
+                    if (this.callnumber && viewmode != 'add') {
                         this.editing = false;
                         this.mode = "update";
                         this.getBook(this.prefix, this.booknumber);
@@ -2010,7 +2011,7 @@ var Application;
             };
             libraryService.prototype.getAccounts = function () {
                 var deferred = this.$q.defer();
-                var url = this.server + "/library/account?sid=" + this.sid;
+                var url = this.server + "/library/account?sid=" + this.getSessionId();
                 this.$http.get(url)
                     .then(function (resp) {
                     deferred.resolve(resp.data);

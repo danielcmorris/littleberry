@@ -36,6 +36,11 @@ app.directive('fileModel', ['$parse', function ($parse: any) {
 
 module Application.Library.Components {
 
+    interface IRouteParams extends ng.route.IRouteParamsService {
+        mode: string;
+        prefix:string
+    }
+
     interface IBook extends Application.Library.Types.IBook { }
 
 
@@ -61,11 +66,13 @@ module Application.Library.Components {
         public permissions: Application.Context.NavigationPermissions;
         public redirect:string;
         public links:any;
-        $insert = ['$location', '$http', '$routeParams',
-            '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
+        // static $inject = ['$location', '$http', '$routeParams',
+        //     '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
+
+
         constructor(private $location: ng.ILocationService,
             private $http: ng.IHttpService,
-            private $routeParams: any,
+            private $routeParams: IRouteParams,
             private $httpParamSerializerJQLike: any,
             private libraryService: any, public $sessionStorage: any) {
             this.permissions = libraryService.UpdatePermissions();
@@ -244,6 +251,9 @@ module Application.Library.Components {
             let viewmode = this.$routeParams.mode
             this.prefix = this.$routeParams.prefix
 
+            if(!viewmode){
+                viewmode='add';
+            }
             this.booknumber = this.$routeParams.booknumber
             this.callnumber = this.prefix + this.booknumber;
             console.log(this.mode + ':' + this.callnumber);
@@ -251,7 +261,7 @@ module Application.Library.Components {
                             {"url":"/#/library","text":"home"},
                             {"url":"/#/library/catalog","text":"catalog"}];
                            
-            if (this.callnumber) {
+            if (this.callnumber && viewmode!='add') {
                 this.editing = false;
                 this.mode = "update";
                 this.getBook(this.prefix, this.booknumber);
