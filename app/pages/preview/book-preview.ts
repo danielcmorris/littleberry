@@ -7,7 +7,7 @@
         public books: Array<IBook> = [];
         public patient: any ={};
         public myChart: any;
-        $insert = ['$location', '$http'];
+        $inject = ['$location', '$http'];
         constructor(private $location: any, private $http: any) {
 
 

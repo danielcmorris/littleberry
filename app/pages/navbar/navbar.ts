@@ -9,7 +9,7 @@ module Application.Components {
 
 
     export class Navbar {
-        $insert = ['$location', '$sessionStorage', 'libraryService'];
+        $inject = ['$location', '$sessionStorage', 'libraryService'];
         constructor(public $location: ng.ILocationService, public $sessionStorage: any, 
             private libraryService: Application.Services.libraryService ) { }
         public callnumber: any

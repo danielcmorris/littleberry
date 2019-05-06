@@ -3,7 +3,7 @@
 
 module Application.Components {
     export class BlankTemplate {
-        $insert = ['$location','$sessionStorage','libraryService'];
+        $inject = ['$location','$sessionStorage','libraryService'];
         constructor(public $location: ng.ILocationService, public $sessionStorage: any, public libraryService:any) { }
         public someVariable: any
          $onInit() {

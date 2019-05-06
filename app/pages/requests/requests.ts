@@ -4,7 +4,7 @@
 module Application.Components {
     interface IBook extends Application.Library.Types.IBook { }
     export class Requests {
-        $insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService','$mdDialog'];
+        $inject = ['$location', '$sessionStorage', '$routeParams', 'libraryService','$mdDialog'];
         constructor(public $location: ng.ILocationService, public $sessionStorage: any, public $routeParams: any, public libraryService: any,private $mdDialog:any) { }
         public requests: any
         public email: string;

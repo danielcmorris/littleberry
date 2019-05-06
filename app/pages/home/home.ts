@@ -2,7 +2,7 @@
 
 module Application.Components {
     export class Home {
-        $insert = ['$location', '$sessionStorage', 'libraryService'];
+        $inject = ['$location', '$sessionStorage', 'libraryService'];
         public books: any;
         constructor(public $location: ng.ILocationService, public $sessionStorage: any, public libraryService: any) { }
         public someVariable: any

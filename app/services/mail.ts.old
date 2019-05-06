@@ -13,7 +13,7 @@ module Application.Services {
     
     
     export class MailService {
-        $insert = ["$http", "$location"]
+        $inject = ["$http", "$location"]
         private mydomain:string
         constructor(private $http: ng.IHttpService, $location: ng.ILocationService) {
             this.mydomain = $location.protocol() + "://" + $location.host()

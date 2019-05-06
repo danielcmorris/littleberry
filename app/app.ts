@@ -3,7 +3,7 @@ module Application.Controllers{
     
     export class MainCtrl{
         public Title:string;
-        $insert= ['$route', '$routeParams', '$location' ];
+        $inject= ['$route', '$routeParams', '$location' ];
         constructor(private $route: ng.route.IRouteService,
             private $routeParams: ng.route.IRouteParamsService,
             private $location:ng.ILocationService ,

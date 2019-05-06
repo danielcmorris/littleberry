@@ -7,7 +7,7 @@ module Application.Components {
         public mysubject: any;
         public sortColumn: string = 'Name';
         public hidelist: boolean=false;
-        $insert = ['$location', 'libraryService', '$sessionStorage'];
+        $inject = ['$location', 'libraryService', '$sessionStorage'];
         constructor(private $location: ng.ILocationService,
             private $http: ng.IHttpService,
             private libraryService: any, public $sessionStorage: any) { }

@@ -3,7 +3,7 @@
 
 module Application.Components {
     export class Author {
-        $insert = ['$location', '$sessionStorage', 'libraryService',
+        $inject = ['$location', '$sessionStorage', 'libraryService',
             '$filter'];
         constructor(private $location: ng.ILocationService, private $sessionStorage: any, private libraryService: any, private $filter: any) { }
         public mode: any

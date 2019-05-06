@@ -67,7 +67,7 @@ module Application.Components {
         public prefix: string = '';
         public pageTitle: string = 'Catalog';
 
-        $insert = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
+        $inject = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
         constructor(private $location: ng.ILocationService, private $http: any,
             public libraryService: any, public $cookies: any, private $sessionStorage: any, private $routeParams: any) {
 

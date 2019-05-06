@@ -14,7 +14,7 @@ module Application.Components {
         public refreshStatus: Function;
         public redirect: string;
         public loading: boolean = false;
-        $insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window']
+        $inject = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window']
         constructor(private $location: ng.ILocationService, private $timeout: ng.ITimeoutService
             , private libraryService: any
             , private $cookies: any

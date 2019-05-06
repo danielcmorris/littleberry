@@ -17,7 +17,7 @@ module Application.Config{
 
         }
 
-        $insert = ['$routeProvider', '$locationProvider',  ]
+        $inject = ['$routeProvider', '$locationProvider',  ]
         constructor(private $routeProvider: ng.route.IRouteProvider,
             private $locationProvider: ng.ILocationProvider   
           

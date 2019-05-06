@@ -20,7 +20,7 @@ module Application.Services {
         NewsLetter?:string;
         }
     export class mailChimp {
-        $insert = ["$http"]
+        $inject = ["$http"]
         public lists:IChimpLists=
             {
             WebSubscription :"699a73df35",

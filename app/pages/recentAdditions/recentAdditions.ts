@@ -74,7 +74,7 @@ module Application.Components {
         public books: Array<IBook>;
         public recent: Book[];
 
-        $insert = ['$location', '$http', 'md5'];
+        $inject = ['$location', '$http', 'md5'];
         constructor(private $location: any, private $http: any, public md5: any) {
             let library: IBook[] = []
 

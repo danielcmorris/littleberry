@@ -37,7 +37,7 @@ module Application.Config {
         defaults: any;
     }
     export class httpConfig {
-        $insert = ["$httpProvider"]
+        $inject = ["$httpProvider"]
         constructor(private $httpProvider: IHttpProviderLocal) {
 
             this.$httpProvider.defaults.useXDomain = true;

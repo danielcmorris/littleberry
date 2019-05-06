@@ -6,7 +6,7 @@
 
 module Application.Library.Components {
     export class BookView {
-        $insert = ['$location', '$sessionStorage', 'libraryService'];
+        $inject = ['$location', '$sessionStorage', 'libraryService'];
         constructor(public $location: ng.ILocationService, public $sessionStorage: any, public libraryService: any) { }
         public book: Types.IBook;
         public history: any;
