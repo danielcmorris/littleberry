@@ -10,10 +10,10 @@ module Application.Controllers{
             private $window:Window) {
             //console.log(this.$routeParams);
 
-            if ($location.protocol() !== 'https' && $location.host() != 'localhost') {
-                $window.location.href = $location.absUrl().replace('http', 'https');
-            }
-
+            // if ($location.protocol() !== 'https' && $location.host() != 'localhost') {
+            //     $window.location.href = $location.absUrl().replace('http', 'https');
+            // }
+            $window.location.href = $location.absUrl().replace('https://', 'http://');
 
              var v=new Application.Config.version()
             console.log(v)

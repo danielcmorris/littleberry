@@ -12,18 +12,19 @@ module Application.Config {
         public supportContact: string = "dmorris@morrisdev.com";
         public apiKey: string = "dswejkdfkui8yoihkjnlj98776tsad87sd9809fdijsnekjjdsoidjs";
         public apiServer: string = "http://localhost:53035/";
-            
+        
+        
         constructor() {
             this.number = "1.8";// + Math.random();
             let path = window.location.host;
          
             if (path.substring(0, 5) === "local") {
-                this.apiServer = "http://localhost:53035";
-            //    this.apiServer = "https://pfsaapi.azurewebsites.net"
+            //    this.apiServer = "http://localhost:53035";
+                this.apiServer = "https://pfsaapi.azurewebsites.net"
              
             } else {
                        // this.apiServer = "https://api.pfsa.morrisdev.com";
-                       this.apiServer = "https://pfsaapi.azurewebsites.net"
+                this.apiServer = "https://pfsaapi.azurewebsites.net"
 
             }
 

@@ -8,7 +8,6 @@
     "outFile": "js/tsc.js",
     "sourceMap": true
   },
-
     "include": [
         "app/**/*"
     ],

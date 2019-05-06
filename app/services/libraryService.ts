@@ -18,7 +18,7 @@ module Application.Services {
         public sid: any = {};
         public server: string;
         public imageServer: string;
-        $insert = ["$http", "$sessionStorage", "$location", "$q"]
+        $inject = ["$http", "$sessionStorage", "$location", "$q"]
         constructor(private $http: any, private $sessionStorage: any, private $location: any, private $q: any) {
 
             let v = new Application.Config.version()
