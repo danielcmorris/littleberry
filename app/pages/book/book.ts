@@ -1,5 +1,5 @@
 ﻿/// <reference path="../../../../type-definitions/types.d.ts" />
-
+ 
 
 
 app.directive('fileModel', ['$parse', function ($parse: any) {
@@ -41,7 +41,9 @@ module Application.Library.Components {
         prefix:string
     }
 
-    interface IBook extends Application.Library.Types.IBook { }
+    interface IBook extends Application.Library.Types.IBook {
+        Number: any;
+}
 
 
     export class book {
@@ -66,21 +68,23 @@ module Application.Library.Components {
         public permissions: Application.Context.NavigationPermissions;
         public redirect:string;
         public links:any;
-        // static $inject = ['$location', '$http', '$routeParams',
-        //     '$httpParamSerializerJQLike', 'libraryService', '$sessionStorage', 'libraryConfig'];
+        static $inject = ['$location', '$http', '$routeParams',                         
+                         'libraryService', '$sessionStorage','ToolService' ];
 
 
-        constructor(private $location: ng.ILocationService,
+        constructor(
+            private $location: ng.ILocationService,
             private $http: ng.IHttpService,
-            private $routeParams: IRouteParams,
-            private $httpParamSerializerJQLike: any,
-            private libraryService: any, public $sessionStorage: any) {
+            private $routeParams: IRouteParams,            
+            private libraryService: any, 
+            public $sessionStorage: any,
+            public tools:Application.Services.ToolService   ) {
             this.permissions = libraryService.UpdatePermissions();
             this.redirect = $location.path();
             this.image.uploading = false;
             this.book.Url = "";
             this.imageServer = Application.Config.LibraryConfig.imageServer;
-
+            
 
             
 
@@ -148,10 +152,18 @@ module Application.Library.Components {
         }
         getBook(prefix: string, booknumber: string) {
             this.loading = true;
-
+           
             this.libraryService.getBook(prefix, booknumber)
                 .then((resp: any) => {
+                    console.log("got data",resp.data)
+                  
                     this.book = <IBook>resp.data;
+                  
+                  
+                    this.book.CallNumber = this.book.Prefix + this.book.BookNumber;
+
+                    console.log(resp.data, this.book)
+
                     if (!this.book.Url) {
                         let img = Application.Config.LibraryConfig.defaultBookImage;
                         this.bookImage = this.imageServer + '/' + img;
@@ -246,11 +258,11 @@ module Application.Library.Components {
         }
 
         $onInit() {
-
+            console.log("WTF?" )
             this.LoadSubjects()
             let viewmode = this.$routeParams.mode
             this.prefix = this.$routeParams.prefix
-
+           
             if(!viewmode){
                 viewmode='add';
             }
@@ -264,6 +276,7 @@ module Application.Library.Components {
             if (this.callnumber && viewmode!='add') {
                 this.editing = false;
                 this.mode = "update";
+                
                 this.getBook(this.prefix, this.booknumber);
 
             } else {

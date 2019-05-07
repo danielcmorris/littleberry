@@ -42,10 +42,12 @@
                 </md-input-container>
                 <!-- SUBJECT END -->
 
-
-
+                <md-button class="md-raised" ng-if="!vm.book.CallNumber && vm.book.SubjectId" 
+                ng-click="vm.ApplySubject()">Generate CallNumber</md-button>
+                    
+ 
                 <!--## START  IMAGE AND DESCRIPTION -->
-                <div layout="row" layout-md="column">
+                <div layout="row" layout-md="column"  ng-if="vm.book.CallNumber" >
                     <div class="md-block" flex="50" ng-if="vm.bookImage!=''">
                         <label>Image </label><br />
                         <div style="width:300px;padding:10px;height:300px;overflow:hidden;border:solid gray 1px;">
@@ -81,18 +83,17 @@
     </div>
 
 
-    <div layout="row" layout-xs="column" layout-align="center" style="background-color: white">
+    <div layout="row" layout-xs="column" layout-align="center" style="background-color: white"   ng-if="vm.book.CallNumber" >
         <div flex="10" hide-sm>&nbsp;</div>
         <div flex>
             <!--## START COMMAND LINE -->
             <div layout="row" layout-md="column">
-                <div flex="50">
-                    <md-button class="md-raised" ng-if="!vm.book.CallNumber" ng-click="vm.ApplySubject()">Generate CallNumber</md-button>
+                <div flex="80">
                     <md-button ng-click="vm.go('catalog')" class="md-raised">Close</md-button>
                     <md-button ng-click="vm.saveBook(1)" class="md-raised md-primary">Save &amp; Close</md-button>
                     <md-button ng-click="vm.saveBook(2)" class="md-raised md-primary">Save &amp; New</md-button>
                 </div>
-                <div flex="30" style="padding-top:10px;">
+                <div flex="20" style="padding-top:10px;">
                     <div style="float:right;" ng-if="vm.book.Status!='Checked Out' && vm.book.Status!='On Request'">
                         <button type="button" class="btn btn-sm btn-danger" ng-click="vm.book.Status='Deleted'">Set as Deleted</button>
                         <button type="button" class="btn btn-sm btn-info" ng-click="vm.book.Status='Inactive'">Set as Inactive</button>

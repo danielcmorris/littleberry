@@ -13,7 +13,7 @@ module Application.Controllers{
             // if ($location.protocol() !== 'https' && $location.host() != 'localhost') {
             //     $window.location.href = $location.absUrl().replace('http', 'https');
             // }
-            $window.location.href = $location.absUrl().replace('https://', 'http://');
+         //   $window.location.href = $location.absUrl().replace('https://', 'http://');
 
              var v=new Application.Config.version()
             console.log(v)

@@ -8,8 +8,7 @@ var Application;
                 this.$routeParams = $routeParams;
                 this.$location = $location;
                 this.$window = $window;
-                this.$insert = ['$route', '$routeParams', '$location'];
-                $window.location.href = $location.absUrl().replace('httpa', 'http');
+                this.$inject = ['$route', '$routeParams', '$location'];
                 var v = new Application.Config.version();
                 console.log(v);
                 this.Title = "PFSA Library Version " + v.number;
@@ -45,7 +44,7 @@ var Application;
         var httpConfig = (function () {
             function httpConfig($httpProvider) {
                 this.$httpProvider = $httpProvider;
-                this.$insert = ["$httpProvider"];
+                this.$inject = ["$httpProvider"];
                 this.$httpProvider.defaults.useXDomain = true;
                 this.$httpProvider.defaults.withCredentials = false;
                 delete this.$httpProvider.defaults.headers.common["X-Requested-With"];
@@ -127,7 +126,7 @@ var Application;
             function routes($routeProvider, $locationProvider) {
                 this.$routeProvider = $routeProvider;
                 this.$locationProvider = $locationProvider;
-                this.$insert = ['$routeProvider', '$locationProvider',];
+                this.$inject = ['$routeProvider', '$locationProvider',];
                 var a = new Authorization;
                 var authorization = {
                     clientID: 'LHdL4hUjgN6ulY31zLDl6xaaQsM-BAvG',
@@ -558,6 +557,29 @@ var Application;
 })(Application || (Application = {}));
 var Application;
 (function (Application) {
+    var Services;
+    (function (Services) {
+        var ToolService = (function () {
+            function ToolService() {
+            }
+            ToolService.prototype.convertToCamelCase = function (o) {
+                var mystring = JSON.stringify(o);
+                mystring = this.camelCase(mystring);
+                return JSON.parse(mystring);
+            };
+            ToolService.prototype.camelCase = function (json) {
+                json = json.replace(/-([a-z])/g, function (g) {
+                    return g[1].toUpperCase();
+                });
+                return json;
+            };
+            return ToolService;
+        }());
+        Services.ToolService = ToolService;
+    })(Services = Application.Services || (Application.Services = {}));
+})(Application || (Application = {}));
+var Application;
+(function (Application) {
     var Components;
     (function (Components) {
         var SubjectsPage = (function () {
@@ -590,7 +612,7 @@ var Application;
                 this.subjects = [];
                 this.sortColumn = 'Name';
                 this.hidelist = false;
-                this.$insert = ['$location', 'libraryService', '$sessionStorage'];
+                this.$inject = ['$location', 'libraryService', '$sessionStorage'];
             }
             Subjects.prototype.CancelEdit = function () {
                 var _this = this;
@@ -665,7 +687,7 @@ var Application;
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.$inject = ['$location', '$sessionStorage', 'libraryService'];
                 this.ShipSelections = [];
             }
             Reservation.prototype.$onInit = function () {
@@ -730,7 +752,7 @@ var Application;
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.$inject = ['$location', '$sessionStorage', 'libraryService'];
             }
             MyRequests.prototype.$onInit = function () {
                 console.log('MyRequests');
@@ -765,7 +787,7 @@ var Application;
                 this.$routeParams = $routeParams;
                 this.libraryService = libraryService;
                 this.$mdDialog = $mdDialog;
-                this.$insert = ['$location', '$sessionStorage', '$routeParams', 'libraryService', '$mdDialog'];
+                this.$inject = ['$location', '$sessionStorage', '$routeParams', 'libraryService', '$mdDialog'];
                 this.ShipSelections = [];
                 this.showAddress = false;
                 this.showConfirm = false;
@@ -1015,7 +1037,7 @@ var Application;
                 this.md5 = md5;
                 this.mydocs = [];
                 this.api = {};
-                this.$insert = ['$location', '$http', 'md5'];
+                this.$inject = ['$location', '$http', 'md5'];
                 var library = [];
             }
             RecentAdditions.prototype.search = function () {
@@ -1094,7 +1116,7 @@ var Application;
                 this.api = {};
                 this.books = [];
                 this.patient = {};
-                this.$insert = ['$location', '$http'];
+                this.$inject = ['$location', '$http'];
             }
             BookPreview.prototype.$onInit = function () {
                 var b = {};
@@ -1155,7 +1177,7 @@ var Application;
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.$inject = ['$location', '$sessionStorage', 'libraryService'];
                 this.permission = {};
             }
             Navbar.prototype.$onInit = function () {
@@ -1302,7 +1324,7 @@ var Application;
                 this.$sessionStorage = $sessionStorage;
                 this.$window = $window;
                 this.loading = false;
-                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
+                this.$inject = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
                 this.password = '';
                 var auth = new Authorization();
                 console.log("auth.isAuthenticated()", auth.isAuthenticated());
@@ -1383,7 +1405,7 @@ var Application;
                 this.callnumber = '';
                 this.prefix = '';
                 this.pageTitle = 'Catalog';
-                this.$insert = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
+                this.$inject = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
                 this.links = [{ "url": "/#/library", "text": "home" }, { "url": "", "text": "catalog" }];
                 var library = [];
                 this.sessionStorage = $sessionStorage;
@@ -1568,7 +1590,7 @@ var Application;
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.$inject = ['$location', '$sessionStorage', 'libraryService'];
             }
             Home.prototype.$onInit = function () {
                 console.log('Home Page');
@@ -1626,7 +1648,7 @@ var Application;
                 this.$sessionStorage = $sessionStorage;
                 this.$window = $window;
                 this.loading = false;
-                this.$insert = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
+                this.$inject = ['$location', '$timeout', 'libraryService', '$cookies', '$sessionStorage', '$window'];
                 console.log('Called back!');
             }
             return callback;
@@ -1650,7 +1672,7 @@ var Application;
                     this.$location = $location;
                     this.$sessionStorage = $sessionStorage;
                     this.libraryService = libraryService;
-                    this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                    this.$inject = ['$location', '$sessionStorage', 'libraryService'];
                     this.showBookImage = false;
                 }
                 BookView.prototype.$onInit = function () {
@@ -1712,13 +1734,13 @@ var Application;
         var Components;
         (function (Components) {
             var book = (function () {
-                function book($location, $http, $routeParams, $httpParamSerializerJQLike, libraryService, $sessionStorage) {
+                function book($location, $http, $routeParams, libraryService, $sessionStorage, tools) {
                     this.$location = $location;
                     this.$http = $http;
                     this.$routeParams = $routeParams;
-                    this.$httpParamSerializerJQLike = $httpParamSerializerJQLike;
                     this.libraryService = libraryService;
                     this.$sessionStorage = $sessionStorage;
+                    this.tools = tools;
                     this.mode = "insert";
                     this.subjects = [];
                     this.loading = false;
@@ -1788,7 +1810,10 @@ var Application;
                     this.loading = true;
                     this.libraryService.getBook(prefix, booknumber)
                         .then(function (resp) {
+                        console.log("got data", resp.data);
                         _this.book = resp.data;
+                        _this.book.CallNumber = _this.book.Prefix + _this.book.BookNumber;
+                        console.log(resp.data, _this.book);
                         if (!_this.book.Url) {
                             var img = Application.Config.LibraryConfig.defaultBookImage;
                             _this.bookImage = _this.imageServer + '/' + img;
@@ -1847,6 +1872,7 @@ var Application;
                     this.$location.url('/library/' + url);
                 };
                 book.prototype.$onInit = function () {
+                    console.log("WTF?");
                     this.LoadSubjects();
                     var viewmode = this.$routeParams.mode;
                     this.prefix = this.$routeParams.prefix;
@@ -1878,6 +1904,8 @@ var Application;
                     console.log("viewmode", viewmode);
                     this.links.push({ "url": "", "text": this.callnumber });
                 };
+                book.$inject = ['$location', '$http', '$routeParams',
+                    'libraryService', '$sessionStorage', 'ToolService'];
                 return book;
             }());
             Components.book = book;
@@ -1940,7 +1968,7 @@ var Application;
                 this.$location = $location;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService'];
+                this.$inject = ['$location', '$sessionStorage', 'libraryService'];
             }
             BlankTemplate.prototype.$onInit = function () {
                 console.log('Blank Startup');
@@ -1969,7 +1997,7 @@ var Application;
                 this.$sessionStorage = $sessionStorage;
                 this.libraryService = libraryService;
                 this.$filter = $filter;
-                this.$insert = ['$location', '$sessionStorage', 'libraryService',
+                this.$inject = ['$location', '$sessionStorage', 'libraryService',
                     '$filter'];
                 this.searchResults = false;
                 this.spinner = false;
@@ -2051,7 +2079,7 @@ var Application;
                 this.$sessionStorage = $sessionStorage;
                 this.setPassword = false;
                 this.showHints = true;
-                this.$insert = ['$location', 'libraryService', '$routeParams', '$mdDialog', '$mdToast', '$sessionStorage'];
+                this.$inject = ['$location', 'libraryService', '$routeParams', '$mdDialog', '$mdToast', '$sessionStorage'];
             }
             Account.prototype.$onInit = function () {
                 var _this = this;
