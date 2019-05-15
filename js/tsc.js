@@ -1800,6 +1800,7 @@ var Application;
                             _this.book.SubjectId = v.SubjectId;
                         }
                     });
+                    this.clearBookImage();
                 };
                 book.prototype.getBook = function (prefix, booknumber) {
                     var _this = this;
@@ -1877,9 +1878,14 @@ var Application;
                             _this.book.CallNumber = '';
                             _this.book.Number = '';
                             _this.book.Author = '';
-                            _this.book.bookImage = '';
                             _this.book.Subject = '';
+                            _this.book.Notes = '';
+                            _this.image.uploading = false;
+                            _this.bookImage = '';
+                            _this.book.Url = '';
+                            _this.file = null;
                             _this.init();
+                            _this.$location.url('/library/catalog/add');
                             _this.loading = false;
                             return;
                         }

@@ -1,4 +1,4 @@
-﻿/// <reference path="../../../../type-definitions/types.d.ts" />
+/// <reference path="../../../../type-definitions/types.d.ts" />
 
 
 
@@ -38,12 +38,14 @@ module Application.Library.Components {
 
     interface IRouteParams extends ng.route.IRouteParamsService {
         mode: string;
-        prefix: string
+        prefix: string;
+       
     }
 
     interface IBook extends Application.Library.Types.IBook {
         Number: any;
         bookImage:string;
+        Notes:string;
     }
 
 
@@ -150,6 +152,7 @@ module Application.Library.Components {
                     this.book.SubjectId = v.SubjectId
                 }
             });
+            this.clearBookImage();
         }
         getBook(prefix: string, booknumber: string) {
             this.loading = true;
@@ -260,11 +263,15 @@ module Application.Library.Components {
                         this.book.Title='';
                         this.book.CallNumber='';
                         this.book.Number='';
-                        this.book.Author='';
-                        this.book.bookImage=''
+                        this.book.Author='';                       
                         this.book.Subject='';
+                        this.book.Notes='';
+                        this.image.uploading=false;
+                        this.bookImage = '';
+                        this.book.Url = '';
+                        this.file=null;
                         this.init(); 
-                        //this.$location.url('/library/catalog/add');
+                        this.$location.url('/library/catalog/add');
                         this.loading = false;
                         return;
                     }
