@@ -537,7 +537,7 @@ var Application;
                 return this.$http.get(url);
             };
             libraryService.prototype.UpdatePermissions = function () {
-                if (this.$sessionStorage.myaccount) {
+                if (localStorage.getItem("account")) {
                     var a = JSON.parse(localStorage.getItem("account"));
                     return new Application.Context.NavigationPermissions(a.AccountType);
                 }
@@ -1873,7 +1873,13 @@ var Application;
                             return;
                         }
                         if (option == 2) {
-                            _this.$location.url('/library/catalog/add');
+                            _this.book.Title = '';
+                            _this.book.CallNumber = '';
+                            _this.book.Number = '';
+                            _this.book.Author = '';
+                            _this.book.bookImage = '';
+                            _this.book.Subject = '';
+                            _this.init();
                             _this.loading = false;
                             return;
                         }
@@ -1884,6 +1890,9 @@ var Application;
                     this.$location.url('/library/' + url);
                 };
                 book.prototype.$onInit = function () {
+                    this.init();
+                };
+                book.prototype.init = function () {
                     this.LoadSubjects();
                     var viewmode = this.$routeParams.mode;
                     this.prefix = this.$routeParams.prefix;

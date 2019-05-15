@@ -43,6 +43,7 @@ module Application.Library.Components {
 
     interface IBook extends Application.Library.Types.IBook {
         Number: any;
+        bookImage:string;
     }
 
 
@@ -244,7 +245,7 @@ module Application.Library.Components {
             this.libraryService.saveBook(this.book)
                 .then((resp: any) => {
                     let b = this.book;
-
+                       
                     if (this.book.Status === 'Deleted') {
                         this.$location.url('/library/recent')
                         this.loading = false;
@@ -256,7 +257,14 @@ module Application.Library.Components {
                         return;
                     }
                     if (option == 2) {
-                        this.$location.url('/library/catalog/add');
+                        this.book.Title='';
+                        this.book.CallNumber='';
+                        this.book.Number='';
+                        this.book.Author='';
+                        this.book.bookImage=''
+                        this.book.Subject='';
+                        this.init(); 
+                        //this.$location.url('/library/catalog/add');
                         this.loading = false;
                         return;
                     }
@@ -276,7 +284,14 @@ module Application.Library.Components {
 
         $onInit() {
 
-            this.LoadSubjects()
+           
+            this.init();
+           
+        }
+
+
+        init(){
+            this.LoadSubjects();
             let viewmode = this.$routeParams.mode
             this.prefix = this.$routeParams.prefix
 

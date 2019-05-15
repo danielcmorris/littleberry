@@ -272,7 +272,7 @@ module Application.Services {
 
         }
         UpdatePermissions(): Application.Context.NavigationPermissions {
-            if (this.$sessionStorage.myaccount) {
+            if (localStorage.getItem("account")) {
                 let a = JSON.parse(localStorage.getItem("account"))
 
                 return new Application.Context.NavigationPermissions(a.AccountType);
