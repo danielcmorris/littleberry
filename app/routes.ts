@@ -4,18 +4,16 @@ declare var auth0:any;
 module Application.Config{
     export class routes {
         Login() {
-
             let email = localStorage.getItem("email");
             if(email){
                 var a = new Library.Models.Account();
                 a.Email = email;
                 a.FirstName = localStorage.getItem("givenName");
                 a.LastName = localStorage.getItem("familyName");
-                a.Password = localStorage.getItem("access_token");
-                
-                }
-
+                a.Password = localStorage.getItem("access_token");                
+                }            
         }
+
 
         $inject = ['$routeProvider', '$locationProvider',  ]
         constructor(private $routeProvider: ng.route.IRouteProvider,
@@ -136,7 +134,7 @@ module Application.Config{
                 this.$locationProvider.html5Mode(false);
                 //this.$locationProvider.hashPrefix('');
                 //if ($sessionStorage.myaccount) {
-
+///this is a test
                 //    let sid = $sessionStorage.myaccount.SessionId;
                 //    console.log(sid);
                 //}

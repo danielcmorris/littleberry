@@ -2,7 +2,7 @@ declare var ROOT_PATH: string;
 
 
 module Application.Config {
-   export interface ITemplates {
+    export interface ITemplates {
         GetUrl(templateName: string): string;
     }
 
@@ -12,18 +12,19 @@ module Application.Config {
         public supportContact: string = "dmorris@morrisdev.com";
         public apiKey: string = "dswejkdfkui8yoihkjnlj98776tsad87sd9809fdijsnekjjdsoidjs";
         public apiServer: string = "http://localhost:53035/";
-        
-        
+
+
+
         constructor() {
             this.number = "1.8";// + Math.random();
             let path = window.location.host;
-         
+
             if (path.substring(0, 5) === "local") {
-            //    this.apiServer = "http://localhost:53035";
-                this.apiServer = "https://pfsaapi.azurewebsites.net"
-             
+                this.apiServer = "http://localhost:53035";
+                //         this.apiServer = "https://pfsaapi.azurewebsites.net"
+
             } else {
-                       // this.apiServer = "https://api.pfsa.morrisdev.com";
+                // this.apiServer = "https://api.pfsa.morrisdev.com";
                 this.apiServer = "https://pfsaapi.azurewebsites.net"
 
             }
@@ -32,7 +33,7 @@ module Application.Config {
 
         }
     }
-    
+
     interface IHttpProviderLocal extends ng.IHttpProvider {
         defaults: any;
     }
@@ -49,7 +50,7 @@ module Application.Config {
     }
     app.config(httpConfig)
 
-    
+
     // export class AuthZero{
     //     $inject = ["angularAuth0Provider"]
     //     constructor(private auth:any){
@@ -63,12 +64,12 @@ module Application.Config {
     export class templates {
 
         /* PAGES */
-             
-         
+
+
         /* LIBRARY COMPONENTS */
-        public library: string = ROOT_PATH +"app/pages/index/library.html";
-        public home: string = ROOT_PATH +"app/pages/home/home.html";
-         public author: string = ROOT_PATH +"app/pages/author/author.html";
+        public library: string = ROOT_PATH + "app/pages/index/library.html";
+        public home: string = ROOT_PATH + "app/pages/home/home.html";
+        public author: string = ROOT_PATH + "app/pages/author/author.html";
         public book: string = ROOT_PATH + "app/pages/book/book.html";
         public subjects: string = ROOT_PATH + "app/pages/subjects/subjects.html";
         public account: string = ROOT_PATH + "app/pages/account/account.html";
@@ -78,13 +79,13 @@ module Application.Config {
         public recentAdditions: string = ROOT_PATH + "app/pages/library/recentAdditions/recentAdditions.html";
         public myRequests: string = ROOT_PATH + "app/pages/requests/my-requests.html";
 
-public bookTile: string = ROOT_PATH + "app/pages/library/book/bookTile.html";
-        
+        public bookTile: string = ROOT_PATH + "app/pages/library/book/bookTile.html";
+
 
         /* COMPONENTS */
-        public address: string = ROOT_PATH +"app/components/address/address.html";
+        public address: string = ROOT_PATH + "app/components/address/address.html";
         public assets: string = ROOT_PATH + "app/components/assets/assets.html";
-        public cashNeeds: string = ROOT_PATH +"app/components/cashNeeds/cashNeeds.html";
+        public cashNeeds: string = ROOT_PATH + "app/components/cashNeeds/cashNeeds.html";
         public contact: string = ROOT_PATH + "app/components/contact/contact.html";
         public contactUs: string = ROOT_PATH + "app/components/contact-us/contact-us.html";
         public dependants: string = ROOT_PATH + "app/components/dependants/dependants.html";
@@ -92,15 +93,15 @@ public bookTile: string = ROOT_PATH + "app/pages/library/book/bookTile.html";
         public insurance: string = ROOT_PATH + "app/components/insurance/insurance.html";
         public liabilities: string = ROOT_PATH + "app/components/liabilities/liabilities.html";
         public librarySearch: string = ROOT_PATH + "app/components/library-search/library-search.html";
-        public needs: string = ROOT_PATH +"app/components/needs/needs.html";
+        public needs: string = ROOT_PATH + "app/components/needs/needs.html";
         public objectives: string = ROOT_PATH + "app/components/objectives/objectives.html";
-        public pension: string = ROOT_PATH +"app/components/pension/pension.html";
+        public pension: string = ROOT_PATH + "app/components/pension/pension.html";
         public primaryContact: string = ROOT_PATH + "app/components/primaryContact/primaryContact.html";
         public rateAssumptions: string = ROOT_PATH + "app/components/rateAssumptions/rateAssumptions.html";
-        public receipts: string = ROOT_PATH +"app/components/receipts/receipts.html";
+        public receipts: string = ROOT_PATH + "app/components/receipts/receipts.html";
         public savings: string = ROOT_PATH + "app/components/savings/savings.html";
-        public socialSecurityOverride: string = ROOT_PATH +"app/components/socialSecurityOverride/socialSecurityOverride.html";
-        public spousalContact: string = ROOT_PATH +"app/components/spousalContact/spousalContact.html";
+        public socialSecurityOverride: string = ROOT_PATH + "app/components/socialSecurityOverride/socialSecurityOverride.html";
+        public spousalContact: string = ROOT_PATH + "app/components/spousalContact/spousalContact.html";
         public survivorNeeds: string = ROOT_PATH + "app/components/survivorNeeds/survivorNeeds.html";
         public mailingList: string = ROOT_PATH + "app/components/mailingList/mailingList.html";
         public madlibs: string = ROOT_PATH + "app/components/madlibs/madlibs.html";
@@ -110,30 +111,30 @@ public bookTile: string = ROOT_PATH + "app/pages/library/book/bookTile.html";
         public refer: string = ROOT_PATH + "app/components/refer/refer.html";
 
 
-        
-         
+
+
         GetUrl(templateName: string) {
             let s = this;
             switch (templateName) {
                 case 'address':
                     return s.address;
-                case  'mailingList':
+                case 'mailingList':
                     return s.mailingList + "?v=" + new Date();
                 case 'requestQuote':
                     return s.requestQuote + "?v=" + new Date();
                 case 'refer':
-                    return s.refer+ "?v=" + new Date();
+                    return s.refer + "?v=" + new Date();
                 default:
                     console.log("ERROR: TEMPLATE " + templateName + " NOT FOUND");
                     return 'ERROR';
-                }
+            }
 
         }
         constructor() {
-             
+
             let v = new version()
-            
-             
+
+
             this.library += "?v=" + v.number;
             this.book += "?v=" + v.number;
 

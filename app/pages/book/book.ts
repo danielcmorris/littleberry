@@ -1,5 +1,5 @@
 ﻿/// <reference path="../../../../type-definitions/types.d.ts" />
- 
+
 
 
 app.directive('fileModel', ['$parse', function ($parse: any) {
@@ -38,12 +38,12 @@ module Application.Library.Components {
 
     interface IRouteParams extends ng.route.IRouteParamsService {
         mode: string;
-        prefix:string
+        prefix: string
     }
 
     interface IBook extends Application.Library.Types.IBook {
         Number: any;
-}
+    }
 
 
     export class book {
@@ -66,27 +66,27 @@ module Application.Library.Components {
         public history: any;
         public imageChanged: boolean = false;
         public permissions: Application.Context.NavigationPermissions;
-        public redirect:string;
-        public links:any;
-        static $inject = ['$location', '$http', '$routeParams',                         
-                         'libraryService', '$sessionStorage','ToolService' ];
+        public redirect: string;
+        public links: any;
+        static $inject = ['$location', '$http', '$routeParams',
+            'libraryService', '$sessionStorage', 'ToolService'];
 
 
         constructor(
             private $location: ng.ILocationService,
             private $http: ng.IHttpService,
-            private $routeParams: IRouteParams,            
-            private libraryService: any, 
+            private $routeParams: IRouteParams,
+            private libraryService: any,
             public $sessionStorage: any,
-            public tools:Application.Services.ToolService   ) {
+            public tools: Application.Services.ToolService) {
             this.permissions = libraryService.UpdatePermissions();
             this.redirect = $location.path();
             this.image.uploading = false;
             this.book.Url = "";
             this.imageServer = Application.Config.LibraryConfig.imageServer;
-            
 
-            
+
+
 
         }
         uploadImage() {
@@ -152,14 +152,14 @@ module Application.Library.Components {
         }
         getBook(prefix: string, booknumber: string) {
             this.loading = true;
-           
+
             this.libraryService.getBook(prefix, booknumber)
                 .then((resp: any) => {
-                    console.log("got data",resp.data)
-                  
+                    console.log("got data", resp.data)
+
                     this.book = <IBook>resp.data;
-                  
-                  
+
+
                     this.book.CallNumber = this.book.Prefix + this.book.BookNumber;
 
                     console.log(resp.data, this.book)
@@ -182,9 +182,9 @@ module Application.Library.Components {
 
 
         }
-        clearBookImage(){
-            this.bookImage='';
-            this.book.Url='';
+        clearBookImage() {
+            this.bookImage = '';
+            this.book.Url = '';
         }
         UpdateStatus() {
 
@@ -192,6 +192,15 @@ module Application.Library.Components {
         checkFile() {
 
 
+        }
+        delete(book: any) {
+            let c = confirm("Are you sure?");
+            if (c) {
+
+                book.Status = 'Deleted';
+                this.saveBook(1);
+
+            }
         }
         saveBook(option: number) {
             this.loading = true;
@@ -236,12 +245,20 @@ module Application.Library.Components {
                 .then((resp: any) => {
                     let b = this.book;
 
-
+                    if (this.book.Status === 'Deleted') {
+                        this.$location.url('/library/recent')
+                        this.loading = false;
+                        return;
+                    }
                     if (option == 1) {
-                        this.$location.url('/library/catalog');
+                        this.$location.url('/library/recent');
+                        this.loading = false;
+                        return;
                     }
                     if (option == 2) {
                         this.$location.url('/library/catalog/add');
+                        this.loading = false;
+                        return;
                     }
                     this.loading = false;
                 });
@@ -258,25 +275,25 @@ module Application.Library.Components {
         }
 
         $onInit() {
-            console.log("WTF?" )
+
             this.LoadSubjects()
             let viewmode = this.$routeParams.mode
             this.prefix = this.$routeParams.prefix
-           
-            if(!viewmode){
-                viewmode='add';
+
+            if (!viewmode) {
+                viewmode = 'add';
             }
             this.booknumber = this.$routeParams.booknumber
             this.callnumber = this.prefix + this.booknumber;
             console.log(this.mode + ':' + this.callnumber);
-            this.links=[
-                            {"url":"/#/library","text":"home"},
-                            {"url":"/#/library/catalog","text":"catalog"}];
-                           
-            if (this.callnumber && viewmode!='add') {
+            this.links = [
+                { "url": "/#/library", "text": "home" },
+                { "url": "/#/library/catalog", "text": "catalog" }];
+
+            if (this.callnumber && viewmode != 'add') {
                 this.editing = false;
                 this.mode = "update";
-                
+
                 this.getBook(this.prefix, this.booknumber);
 
             } else {
@@ -284,6 +301,7 @@ module Application.Library.Components {
                 this.editing = true;
                 this.book.Subject = 'Azores';
                 this.book.Status = 'Active'
+                this.callnumber = "";
 
             }
             if (viewmode == 'edit') {
@@ -291,8 +309,8 @@ module Application.Library.Components {
                 this.mode = "update";
             }
 
-            console.log("viewmode",viewmode);
-            this.links.push({"url":"","text":this.callnumber})
+            console.log("viewmode", viewmode);
+            this.links.push({ "url": "", "text": this.callnumber })
 
         }
 

@@ -95,9 +95,9 @@
                 </div>
                 <div flex="20" style="padding-top:10px;">
                     <div style="float:right;" ng-if="vm.book.Status!='Checked Out' && vm.book.Status!='On Request'">
-                        <button type="button" class="btn btn-sm btn-danger" ng-click="vm.book.Status='Deleted'">Set as Deleted</button>
-                        <button type="button" class="btn btn-sm btn-info" ng-click="vm.book.Status='Inactive'">Set as Inactive</button>
-                        <button ng-if="vm.book.Status!='Active'" type="button" class="btn btn-sm btn-primary" ng-click="vm.book.Status='Active'">Set as Active</button>
+                        <button type="button" class="btn btn-sm btn-danger" ng-click="vm.delete(vm.book);"> Delete!</button>
+                        <button ng-if="vm.book.Status=='Active'"   type="button" class="btn btn-sm btn-info"    ng-click="vm.book.Status='Inactive'">Set as Inactive</button>
+                        <button ng-if="vm.book.Status=='Inactive'" type="button" class="btn btn-sm btn-primary" ng-click="vm.book.Status='Active'">Set as Active</button>
                     </div>
                     <div style="display:inline" ng-if="vm.book.Status=='Checked Out'">
                         <button type="button" class="btn btn-sm btn-primary" ng-click="vm.go('requests')">Check In</button>

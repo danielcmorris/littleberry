@@ -32,7 +32,7 @@ var Application;
                 this.number = "1.8";
                 var path = window.location.host;
                 if (path.substring(0, 5) === "local") {
-                    this.apiServer = "https://pfsaapi.azurewebsites.net";
+                    this.apiServer = "http://localhost:53035";
                 }
                 else {
                     this.apiServer = "https://pfsaapi.azurewebsites.net";
@@ -403,18 +403,14 @@ var Application;
                 var _this = this;
                 var deferred;
                 deferred = this.$q.defer();
-                if (this.$sessionStorage.subjects) {
-                    var s = this.$sessionStorage.subjects;
-                    deferred.resolve(s);
-                }
-                else {
-                    var url = this.server + "/api/subject";
-                    return this.$http.get(url)
-                        .then(function (resp) {
-                        _this.$sessionStorage.subjects = resp.data;
-                        deferred.resolve(resp.data);
-                    });
-                }
+                console.log("GETTING SUBJECTS");
+                var url = this.server + "/api/subject";
+                this.$http.get(url)
+                    .then(function (resp) {
+                    _this.$sessionStorage.subjects = resp.data;
+                    deferred.resolve(resp.data);
+                    console.log();
+                });
                 return deferred.promise;
             };
             libraryService.prototype.saveSubject = function (subject) {
@@ -1837,6 +1833,13 @@ var Application;
                 };
                 book.prototype.checkFile = function () {
                 };
+                book.prototype.delete = function (book) {
+                    var c = confirm("Are you sure?");
+                    if (c) {
+                        book.Status = 'Deleted';
+                        this.saveBook(1);
+                    }
+                };
                 book.prototype.saveBook = function (option) {
                     var _this = this;
                     this.loading = true;
@@ -1859,11 +1862,20 @@ var Application;
                     this.libraryService.saveBook(this.book)
                         .then(function (resp) {
                         var b = _this.book;
+                        if (_this.book.Status === 'Deleted') {
+                            _this.$location.url('/library/recent');
+                            _this.loading = false;
+                            return;
+                        }
                         if (option == 1) {
-                            _this.$location.url('/library/catalog');
+                            _this.$location.url('/library/recent');
+                            _this.loading = false;
+                            return;
                         }
                         if (option == 2) {
                             _this.$location.url('/library/catalog/add');
+                            _this.loading = false;
+                            return;
                         }
                         _this.loading = false;
                     });
@@ -1872,7 +1884,6 @@ var Application;
                     this.$location.url('/library/' + url);
                 };
                 book.prototype.$onInit = function () {
-                    console.log("WTF?");
                     this.LoadSubjects();
                     var viewmode = this.$routeParams.mode;
                     this.prefix = this.$routeParams.prefix;
@@ -1896,6 +1907,7 @@ var Application;
                         this.editing = true;
                         this.book.Subject = 'Azores';
                         this.book.Status = 'Active';
+                        this.callnumber = "";
                     }
                     if (viewmode == 'edit') {
                         this.editing = true;

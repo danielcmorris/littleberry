@@ -110,17 +110,14 @@ module Application.Services {
         getSubjects(): ng.IHttpPromise<any> {
             var deferred: any;
             deferred = this.$q.defer();
-            if (this.$sessionStorage.subjects) {
-                let s = this.$sessionStorage.subjects;
-                deferred.resolve(s);
-            } else {
-                let url: string = this.server + "/api/subject"
-                return this.$http.get(url)
+            console.log("GETTING SUBJECTS")
+            let url: string = this.server + "/api/subject"
+            this.$http.get(url)
                     .then((resp: any) => {
                         this.$sessionStorage.subjects = resp.data;
                         deferred.resolve(resp.data);
+                        console.log()
                     });
-            }
             return deferred.promise;
         }
         saveSubject(subject: any) {
