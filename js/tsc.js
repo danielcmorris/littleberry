@@ -331,7 +331,6 @@ var Application;
                 this.$sessionStorage = $sessionStorage;
                 this.$location = $location;
                 this.$q = $q;
-                this.sid = {};
                 this.$inject = ["$http", "$sessionStorage", "$location", "$q"];
                 var v = new Application.Config.version();
                 this.server = v.apiServer;
@@ -340,9 +339,9 @@ var Application;
                     this.sid = this.$sessionStorage.myaccount.SessionId;
                 }
                 else {
-                    this.sid = 0;
+                    this.sid = 'not found';
                 }
-                if (this.sid == 0) {
+                if (this.sid == 'not found') {
                     try {
                         JSON.parse(localStorage.getItem("account")).SessionId;
                     }
@@ -351,6 +350,16 @@ var Application;
                     }
                 }
             }
+            Object.defineProperty(libraryService.prototype, "sid", {
+                get: function () {
+                    return this.getSessionId();
+                },
+                set: function (id) {
+                    this._sid = id;
+                },
+                enumerable: true,
+                configurable: true
+            });
             libraryService.prototype.getSessionId = function () {
                 try {
                     return JSON.parse(localStorage.getItem("account")).SessionId;

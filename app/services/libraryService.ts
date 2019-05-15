@@ -15,7 +15,14 @@ module Application.Services {
         code: string;
     }
     export class libraryService {
-        public sid: any = {};
+        private _sid:any;
+        get  sid():string {
+           return this.getSessionId(); 
+        }
+        set sid(id:string) {
+            this._sid = id;
+        }
+       // public sid: any  {};
         public server: string;
         public imageServer: string;
         $inject = ["$http", "$sessionStorage", "$location", "$q"]
@@ -29,15 +36,16 @@ module Application.Services {
             if (this.$sessionStorage.myaccount) {
                 this.sid = this.$sessionStorage.myaccount.SessionId;
             } else {
-                this.sid = 0;
+                this.sid = 'not found';
             }
-            if (this.sid == 0) {
+            if (this.sid == 'not found') {
                 try {
                     JSON.parse(localStorage.getItem("account")).SessionId
                 } catch{
                     console.log("ERROR: No SessionID in sessionStorage OR localStorage!")
                 }
             }
+            
         }
         getSessionId() {
             try {
