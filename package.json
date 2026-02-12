@@ -11,9 +11,16 @@
   "author": "Morris Development",
   "license": "ISC",
   "devDependencies": {
+    "@types/angular": "^1.8.9",
+    "@types/angular-animate": "^1.5.14",
+    "@types/angular-cookies": "^1.8.4",
+    "@types/angular-material": "^1.1.78",
+    "@types/angular-route": "^1.7.6",
+    "@types/angular-sanitize": "^1.8.4",
+    "@types/jquery": "^3.5.33",
     "concurrently": "^1.0.0",
-    "lite-server": "^1.3.4",
-    "typescript": "^1.7.3"
+    "lite-server": "^2.6.1",
+    "typescript": "~4.9"
   },
   "dependencies": {
     "@uirouter/angularjs": "^1.0.20",

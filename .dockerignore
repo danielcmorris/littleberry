@@ -1,0 +1,8 @@
+.git
+.vscode
+*.md
+.gitignore
+tsconfig.json
+package.json
+package-lock.json
+bs-config.json

@@ -1,121 +1,74 @@
-﻿<crumbs links="vm.links"></crumbs>
+<div class="page-container">
 
-<div class="row" style="margin-top:0px">
-    <div class="col-md-12">
-        <div style="padding-left:20px;font-family:Arial, Helvetica, sans-serif;font-size:20pt;font-weight:bold" ng-bind="vm.pageTitle">Full Catalog</div>
+    <crumbs links="vm.links"></crumbs>
 
-    </div>
-</div>
-
-
-<!--<div class="row">
-    <div class="col-md-6">
-        <form class="form-inline">
-            <div class="form-group">
-                <input type="text"  ng-model="vm.callnumber" ng-keypress="vm.OpenByCallNumberKey($event);" class="form-control" placeholder="Call Number" />
-            </div>
-            <button type="button" class="btn btn-default" ng-click="vm.OpenByCallNumber();">Open</button>
-        </form>
+    <div class="mb-md">
+        <h2 class="page-title" ng-bind="vm.pageTitle">Full Catalog</h2>
     </div>
 
-</div>-->
-
-<div class="row">
-    <div class="col-md-6">
-        <div style="padding-left:20px;">
+    <div class="mb-lg">
+        <div class="px-sm">
             <form class="form-inline">
-                <div class="form-group">
-
-                    <input type="text" name="search" style="width:350px" ng-model="vm.searchText" ng-keypress="vm.SearchKey($event);" class="form-control"
-                        placeholder="search text..." />
-
+                <div class="flex-1 min-w-250">
+                    <input type="text" name="search" class="form-control w-full" ng-model="vm.searchText"
+                        ng-keypress="vm.SearchKey($event);"
+                        placeholder="Search by title, author, or keyword..." />
                 </div>
-                <button type="button" class="btn btn-default" ng-click="vm.Search(vm.searchText);">Search</button>
+                <button type="button" class="btn btn-primary" ng-click="vm.Search(vm.searchText);">
+                    <i class="fa fa-search icon-mr"></i> Search
+                </button>
                 <button type="button" class="btn btn-default" ng-if="vm.searchText" ng-click="vm.ClearSearch();">Clear</button>
-                <button type="button" class="btn btn-default" ng-click="vm.Recent();">Recent</button>
-
+                <button type="button" class="btn btn-default" ng-click="vm.Recent();">
+                    <i class="fa fa-clock-o icon-mr"></i> Recent
+                </button>
             </form>
         </div>
     </div>
 
-</div>
-
-<div class="row" ng-hide="vm.searchResults">
-    <div class="col-md-offset-2 col-md-5">
-        <md-progress-circular ng-disabled="vm.searchResults" md-diameter="96"></md-progress-circular>
+    <div ng-if="!vm.searchResults" class="loading-container">
+        <div class="spinner spinner-lg"></div>
+        <p class="loading-text">Searching the catalog...</p>
     </div>
-</div>
-<div class="row" ng-show="vm.searchResults">
-    <div class="col-md-12">
-        <table class="table table-striped table-hover;" style="cursor:pointer">
 
+    <div ng-if="vm.searchResults" class="px-sm">
+        <table class="table cursor-pointer">
             <tr>
-                <th>Bar Code</th>
+                <th>Cover</th>
                 <th>Title</th>
                 <th>Author</th>
                 <th>Subject</th>
                 <th>Status</th>
-
             </tr>
-
             <tr ng-repeat="book in vm.books track by $index">
                 <td>
-                    <img  ng-click="vm.getBook(book)" style="display:block" ng-if="book.Url!=''" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}" width="100" />
-                    <div style="padding-left:20px"><a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.CallNumber}}</a></div>
+                    <img ng-click="vm.getBook(book)" class="cursor-pointer block" ng-if="book.Url!=''"
+                        ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}" width="80" />
+                    <div class="mt-xs">
+                        <a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}"
+                           class="text-sm text-muted">{{book.CallNumber}}</a>
+                    </div>
                 </td>
-                <td><a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.Title}}</a></td>
-                <td><a ng-href="#library/author/{{book.Author}}">{{book.Author}}</a></td>
-                <td><a ng-href="#library/subject/{{book.Prefix}}">{{book.Subject}}</a></td>
-                <td class="capitalize">{{book.Status.toLowerCase()}}</td>
-
-
-
-
+                <td class="fw-500">
+                    <a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.Title}}</a>
+                </td>
+                <td><a ng-href="#library/author/{{book.Author}}" class="text-secondary">{{book.Author}}</a></td>
+                <td><a ng-href="#library/subject/{{book.Prefix}}" class="text-secondary">{{book.Subject}}</a></td>
+                <td>
+                    <span class="badge"
+                          ng-class="{'badge-active': book.Status=='Active',
+                                     'badge-inactive': book.Status=='Inactive',
+                                     'badge-checked-out': book.Status=='Checked Out',
+                                     'badge-on-request': book.Status=='On Request',
+                                     'badge-default': book.Status!='Active' && book.Status!='Inactive' && book.Status!='Checked Out' && book.Status!='On Request'}">
+                        {{book.Status.toLowerCase()}}
+                    </span>
+                </td>
             </tr>
-
         </table>
-
     </div>
-</div>
 
+    <div ng-repeat="b in vm.recent track by $index">
+        <book-tile book="b"></book-tile>
+    </div>
 
-<style>
-    .bookRow {
-        font-family: 'Open Sans', sans-serif;
-        padding: 20px;
-        margin-bottom: 10px;
-        border: solid 1px #CCCCCC;
-        background-color: #FFFFFF;
-        margin-bottom: 10px;
-        border: solid 1px #CCCCCC;
-        background-color: #FFFFFF;
-    }
-    
-    .bookBox {
-        padding: 10px;
-        width: 180px;
-        height: 180px;
-        border: black 1px solid;
-    }
-    
-    .bookBoxCenter {
-        margin-left: auto;
-        margin-right: auto;
-        width: 160px;
-        height: 160px;
-        overflow: hidden
-    }
-    
-    .bookBoxCenter img {
-        max-width: 160px;
-        max-height: 160px;
-        display: block;
-        margin: 0 auto;
-    }
-</style>
-
-
-
-<div ng-repeat="b in vm.recent track by $index">
-    <book-tile book="b"></book-tile>
 </div>

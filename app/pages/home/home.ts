@@ -1,31 +1,32 @@
-﻿
 
 module Application.Components {
     export class Home {
-        $inject = ['$location', '$sessionStorage', 'libraryService'];
+        static $inject = ['$location', '$sessionStorage', 'libraryService'];
+        constructor(
+            public $location: ng.ILocationService,
+            public $sessionStorage: any,
+            public libraryService: any
+        ) { }
+
         public books: any;
-        constructor(public $location: ng.ILocationService, public $sessionStorage: any, public libraryService: any) { }
-        public someVariable: any
-        $onInit() {
+
+        $onInit(): void {
             console.log('Home Page');
-            this.webSearch('recent additions');
+            this.loadRecentAdditions();
         }
-        webSearch(terms: string) {
-           
-                this.libraryService.Recent()
-                    .then((resp: any) => {
-                        this.books = resp.data;
-                        this.$sessionStorage.searchResults = this.books;
-                         
-                        
-                    });
 
+        $onDestroy(): void { }
 
-
+        private loadRecentAdditions(): void {
+            this.libraryService.Recent()
+                .then((resp: any) => {
+                    this.books = resp.data;
+                    this.$sessionStorage.searchResults = this.books;
+                });
         }
-        GetBook(book:any){
-          
-            let url="/library/catalog/view/"+book.Prefix+"/"+book.BookNumber;
+
+        GetBook(book: any): void {
+            let url = "/library/catalog/view/" + book.Prefix + "/" + book.BookNumber;
             this.$location.url(url);
         }
     }
@@ -35,6 +36,5 @@ module Application.Components {
         bindings: { someVariable: '<' },
         controllerAs: "vm",
         templateUrl: function (templates: any) { return templates.home }
-
     })
 }

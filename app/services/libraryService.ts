@@ -1,11 +1,8 @@
 
 module Application.Config {
     export class LibraryConfig {
-
-        static get imageServer(): any { return 'https://d2rg9t5epa49og.cloudfront.net' }
-        static get defaultBookImage(): any { return 'assets/book.png' }
-
-
+        static get imageServer(): string { return 'https://d2rg9t5epa49og.cloudfront.net' }
+        static get defaultBookImage(): string { return 'assets/book.png' }
     }
 }
 
@@ -14,22 +11,28 @@ module Application.Services {
         subject: string;
         code: string;
     }
+
     export class libraryService {
-        private _sid:any;
-        get  sid():string {
-           return this.getSessionId(); 
+        private _sid: any;
+
+        get sid(): string {
+            return this.getSessionId();
         }
-        set sid(id:string) {
+        set sid(id: string) {
             this._sid = id;
         }
-       // public sid: any  {};
+
         public server: string;
         public imageServer: string;
-        $inject = ["$http", "$sessionStorage", "$location", "$q"]
-        constructor(private $http: any, private $sessionStorage: any, private $location: any, private $q: any) {
 
-            let v = new Application.Config.version()
-
+        static $inject = ["$http", "$sessionStorage", "$location", "$q"];
+        constructor(
+            private $http: any,
+            private $sessionStorage: any,
+            private $location: any,
+            private $q: any
+        ) {
+            let v = new Application.Config.version();
             this.server = v.apiServer;
 
             this.$sessionStorage.myaccount = JSON.parse(localStorage.getItem("account"));
@@ -40,52 +43,36 @@ module Application.Services {
             }
             if (this.sid == 'not found') {
                 try {
-                    JSON.parse(localStorage.getItem("account")).SessionId
-                } catch{
-                    console.log("ERROR: No SessionID in sessionStorage OR localStorage!")
+                    JSON.parse(localStorage.getItem("account")).SessionId;
+                } catch {
+                    console.log("ERROR: No SessionID in sessionStorage OR localStorage!");
                 }
             }
-            
         }
-        getSessionId() {
+
+        getSessionId(): string {
             try {
-
                 return JSON.parse(localStorage.getItem("account")).SessionId;
-
-            } catch{
+            } catch {
                 return null;
             }
-
-
         }
-        checkLogin() {
 
-            // if (this.$sessionStorage.myaccount) {
-            //     this.sid = this.$sessionStorage.myaccount.SessionId;
-            // }
-            // else {
-            //     if (this.$location.path != '/') {
-            //         // this.$location.url('/')
-            //         alert('redircting!')
-            //     };
-
-            // }
-
+        checkLogin(): void {
+            // Reserved for future login validation
         }
 
         getAccounts(): ng.IHttpPromise<any> {
-            // this.checkLogin();
             let deferred: any = this.$q.defer();
             let url: string = this.server + "/library/account?sid=" + this.getSessionId();
             this.$http.get(url)
                 .then((resp: any) => {
                     deferred.resolve(resp.data);
                 });
-
             return deferred.promise;
         }
-        getAuthorsByBookCount(bookCount: number): ng.IHttpPromise<any> {
 
+        getAuthorsByBookCount(bookCount: number): ng.IHttpPromise<any> {
             let deferred: any = this.$q.defer();
             let resolved: boolean = false;
 
@@ -100,7 +87,6 @@ module Application.Services {
                 resolved = true;
             }
             if (!resolved) {
-
                 let url: string = this.server + "/api/author?bookCount=" + bookCount;
                 this.$http.get(url)
                     .then((resp: any) => {
@@ -115,134 +101,120 @@ module Application.Services {
             }
             return deferred.promise;
         }
+
         getSubjects(): ng.IHttpPromise<any> {
             var deferred: any;
             deferred = this.$q.defer();
-            console.log("GETTING SUBJECTS")
-            let url: string = this.server + "/api/subject"
+            console.log("GETTING SUBJECTS");
+            let url: string = this.server + "/api/subject";
             this.$http.get(url)
-                    .then((resp: any) => {
-                        this.$sessionStorage.subjects = resp.data;
-                        deferred.resolve(resp.data);
-                        console.log()
-                    });
+                .then((resp: any) => {
+                    this.$sessionStorage.subjects = resp.data;
+                    deferred.resolve(resp.data);
+                });
             return deferred.promise;
         }
-        saveSubject(subject: any) {
 
-
-            this.checkLogin()
+        saveSubject(subject: any): ng.IHttpPromise<any> {
+            this.checkLogin();
             let url = this.server + "/api/subject?" + this.sid;
             if (subject.SubjectId > 0) {
-                console.log("PUT")
                 return this.$http.put(url, subject);
             } else {
-                console.log("POSTED")
                 return this.$http.post(url, subject);
             }
-
         }
-        Login(email: string, password: string) {
+
+        Login(email: string, password: string): ng.IHttpPromise<any> {
             let creds = { "email": email, "password": password };
-
             let url = this.server + "/api/Account/";
-            return this.$http.post(url, creds)
+            return this.$http.post(url, creds);
         }
-        autoLogin(account: Application.Library.Models.Account) {
 
+        autoLogin(account: Application.Library.Models.Account): ng.IHttpPromise<any> {
             let url: string = this.server + "/api/autologin";
-
-            return this.$http.post(url, account)
-
-
+            return this.$http.post(url, account);
         }
 
-
-        uploadImage(fd: any) {
-            this.checkLogin()
+        uploadImage(fd: any): ng.IHttpPromise<any> {
+            this.checkLogin();
             let url = this.server + "/api/image/";
             return this.$http.post(url, fd, {
                 transformRequest: angular.identity,
                 headers: { 'Content-Type': undefined }
-            })
-
+            });
         }
-        getBook(Prefix: string, BookNumber: number) {
+
+        getBook(Prefix: string, BookNumber: number): ng.IHttpPromise<any> {
             let url = this.server + "/api/library/catalog/" + Prefix + "/" + BookNumber;
             return this.$http.get(url);
-
         }
-        getBookHistory(Prefix: string, BookNumber: number) {
+
+        getBookHistory(Prefix: string, BookNumber: number): ng.IHttpPromise<any> {
             let url = this.server + "/library/catalog/" + Prefix + "/" + BookNumber + "/history";
-            console.log("Getting book history")
             return this.$http.get(url);
-
         }
-        getAccount(id: number) {
-            this.checkLogin()
+
+        getAccount(id: number): ng.IHttpPromise<any> {
+            this.checkLogin();
             let url = this.server + "/library/account/" + id + "?sid=" + this.sid;
             return this.$http.get(url);
-
         }
-        AddRequest(callnumber: string, email: string): Application.Library.Types.IBook {
+
+        AddRequest(callnumber: string, email: string): any {
             let obj: any = { "CallNumber": callnumber, "RequestByEmail": email };
             let url = this.server + "/library/request?sid=" + this.sid;
             return this.$http.post(url, obj);
         }
-        getOpenRequests() {
-            this.checkLogin()
 
+        getOpenRequests(): ng.IHttpPromise<any> {
+            this.checkLogin();
             let url = this.server + "/library/request?sid=" + this.sid;
             return this.$http.get(url);
         }
-        getRequest(id: number) {
+
+        getRequest(id: number): ng.IHttpPromise<any> {
             let url = this.server + "/library/request/" + id + "?sid=" + this.sid;
             return this.$http.get(url);
         }
-        UpdateRequest(obj: any) {
 
-            this.checkLogin()
-
+        UpdateRequest(obj: any): ng.IHttpPromise<any> {
+            this.checkLogin();
             let url = this.server + "/library/request?sid=" + this.sid;
             return this.$http.put(url, obj);
-
         }
-        saveBook(book: Application.Library.Types.IBook) {
 
-            this.checkLogin()
+        saveBook(book: Application.Library.Types.IBook): ng.IHttpPromise<any> {
+            this.checkLogin();
             let url = this.server + "/api/catalog?sid=" + this.sid;
             if (book.BookId > 0) {
                 return this.$http.put(url, book);
             } else {
                 return this.$http.post(url, book);
             }
-
         }
-        Search(subject: string, author: string, title: string) {
 
+        Search(subject: string, author: string, title: string): ng.IHttpPromise<any> {
             let url = this.server + "/api/library/search?prefix=" + subject + "&author=" + author + "&title=" + title;
             return this.$http.get(url);
-
         }
-        LookupAccount(searchType: string, q: string) {
+
+        LookupAccount(searchType: string, q: string): ng.IHttpPromise<any> {
             var deferred: any;
             if (this.sid) {
-
                 deferred = this.$q.defer();
-
                 let url: string = this.server + "/library/accounts/search/email?q=" + q + "&sid=" + this.sid;
                 this.$http.get(url)
                     .then((resp: any) => {
-
                         deferred.resolve(resp);
                     });
             }
             return deferred.promise;
         }
-        SaveAccount(account: any) {
+
+        SaveAccount(account: any): ng.IHttpPromise<any> {
             var deferred: any;
             deferred = this.$q.defer();
-
             let url: string = this.server + "/library/account?sid=" + this.sid;
             if (account.AccountId > 0) {
                 this.$http.put(url, account)
@@ -257,45 +229,35 @@ module Application.Services {
             }
             return deferred.promise;
         }
-        UpdateAccountPassword(id: number, password: string) {
+
+        UpdateAccountPassword(id: number, password: string): ng.IHttpPromise<any> {
             var deferred: any;
             deferred = this.$q.defer();
             let obj: any = {};
             obj.AccountId = id;
             obj.NewPassword = password;
-
             let url: string = this.server + "/library/account?sid=" + this.sid;
-
             this.$http.put(url, obj)
                 .then((resp: any) => {
                     deferred.resolve(resp);
                 });
-
             return deferred.promise;
         }
-        Recent() {
 
+        Recent(): ng.IHttpPromise<any> {
             let url = this.server + "/api/library/search";
             return this.$http.get(url);
-
         }
+
         UpdatePermissions(): Application.Context.NavigationPermissions {
             if (localStorage.getItem("account")) {
-                let a = JSON.parse(localStorage.getItem("account"))
-
+                let a = JSON.parse(localStorage.getItem("account"));
                 return new Application.Context.NavigationPermissions(a.AccountType);
-
             } else {
                 return new Application.Context.NavigationPermissions('Member');
             }
         }
     }
 
-
-
-
-
-
     app.service('libraryService', libraryService);
 }
-

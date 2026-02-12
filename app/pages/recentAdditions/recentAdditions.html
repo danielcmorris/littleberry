@@ -1,27 +1,6 @@
-﻿ 
-
-<style>
-    .bookRow {
-        font-family: 'Open Sans', sans-serif;
-        padding: 20px;
-        margin-bottom: 10px;
-        border: solid 1px #CCCCCC;
-        background-color: #FFFFFF;
-        margin-bottom: 10px;
-        border: solid 1px #CCCCCC;
-        background-color: #FFFFFF;
-    }
-    .bookBox {padding:10px;width:180px;height:220px;border:#808080 1px solid;
-    }
-    .bookBoxCenter{margin-left:auto;margin-right:auto;
-                width:160px;height:200px;overflow:hidden}
-    .bookBoxCenter img{max-width:160px;max-height:200px;   display: block;margin: 0 auto;}
-</style>
-
-
-
-<div   ng-repeat="b in vm.recent track by $index">
-    <book-tile book="b"></book-tile>
+<div class="page-container-md">
+    <h2 class="font-display fw-600 m-0 mb-lg">Recent Additions</h2>
+    <div ng-repeat="b in vm.recent track by $index">
+        <book-tile book="b"></book-tile>
+    </div>
 </div>
-
-  

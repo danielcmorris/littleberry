@@ -1,29 +1,18 @@
 
- 
 module Application.Components {
 
-
-
     class CallbackPage {
+        $onInit(): void { }
+        $onDestroy(): void { }
     }
-  app.component("callbackPage", {
+
+    app.component("callbackPage", {
         controller: CallbackPage,
         controllerAs: "vm",
-        template:`
-        <style>
-    
-</style>
-<div class="container">
-
-    <div class="row">
-        <div class="col-md-12 login-cta">
-        <h2>Callback</h2>
-        <callback></callback>
-        
-        </div>
-    </div>
-
+        template: `
+<div class="page-container-sm">
+    <callback></callback>
 </div>
         `
     })
-    }
+}

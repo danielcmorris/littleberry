@@ -1,23 +1,25 @@
-﻿<div class="row bookRow">
-    <div class="col-sm-3">
-        <div class="bookBox">
-            <div class="bookBoxCenter">
-                <img ng-src="{{vm.book.thumbUrl}}" />
+<div class="bookRow flex flex-wrap gap-lg items-start">
+    <div class="flex-auto">
+        <div class="bookBox" style="width:160px;height:200px">
+            <div class="bookBoxCenter" style="width:160px;height:200px">
+                <img ng-src="{{vm.book.thumbUrl}}" style="max-width:160px;max-height:200px" />
             </div>
         </div>
     </div>
-    <div class="col-sm-9">
-        <div>
-            <h3> <span class="bookTitle" ng-bind="vm.book.title"></span></h3>
+    <div class="flex-1 min-w-240">
+        <h3 class="mt-0 mb-xs">
+            <span class="bookTitle" ng-bind="vm.book.title"></span>
+        </h3>
+        <p class="text-secondary text-italic m-0 mb-md text-base" ng-if="vm.book.author">
+            by <span ng-bind="vm.book.author" class="fw-500"></span>
+        </p>
+        <div ng-if="vm.book.description" class="text-secondary mb-md text-base" style="line-height:1.6">
+            <span ng-bind="vm.book.description"></span>
         </div>
-        <div style="padding:10px;">
-            <span class="bookDescription" ng-bind="vm.book.description"></span>
+        <div class="book-tile-meta">
+            <span ng-if="vm.book.subject"><i class="fa fa-tag icon-mr"></i> {{vm.book.subject}}</span>
+            <span ng-if="vm.book.barcode"><i class="fa fa-barcode icon-mr"></i> {{vm.book.barcode}}</span>
+            <span class="text-primary fw-500"><i class="fa fa-check-circle icon-mr"></i> Available</span>
         </div>
-        <ul>
-            <li>By <span class="author" ng-bind="vm.book.author"> Álamo de Oliveira</span></li>
-            <li>Subject:<span class="bookSubject" ng-bind="vm.book.subject"> Literature</span></li>
-            <li>Barcode: <span class="bookBarcode" ng-bind="vm.book.barcode"></span></li>
-            <li>Availability: <i>Can be requested</i> </li>
-        </ul>
     </div>
 </div>

@@ -1,199 +1,125 @@
-﻿<crumbs links="vm.links"></crumbs>
-<p></p>
+<div class="page-container-md">
 
-<div ng-show="vm.editing">
+    <crumbs links="vm.links"></crumbs>
 
-    <div ng-show="vm.permissions.EditTitle">
+    <div ng-show="vm.editing">
+        <div ng-show="vm.permissions.EditTitle">
 
+            <div class="card mb-lg">
+                <div class="card-header flex items-center justify-between flex-wrap" ng-hide="vm.loading">
+                    <div class="flex-1">
+                        <span class="card-headline" ng-bind="vm.book.CallNumber"></span>
+                        <span class="card-headline" ng-bind="vm.book.Title">New Book</span>
+                    </div>
+                    <span ng-if="vm.book.Status" class="badge badge-lg badge-active">
+                        {{vm.book.Status}}
+                    </span>
+                </div>
 
+                <div class="card-content" ng-show="vm.editing">
+                    <md-input-container class="md-block">
+                        <label>Title</label>
+                        <input ng-model="vm.book.Title">
+                    </md-input-container>
 
-        <div layout="row" layout-xs="column" layout-align="center" style="background-color: white">
-            <div flex="10" hide-sm>&nbsp;</div>
-            <div flex>
-                <md-card>
-                    <md-card-header ng-hide="vm.loading">
-                       
-                            <div style="width:90%" >
-                                <span class="md-headline" ng-bind="vm.book.CallNumber"></span> <span class="md-headline"
-                                    ng-bind="vm.book.Title">New Book</span>
+                    <md-input-container class="md-block">
+                        <label>Author (if more than one, separate with &amp;)</label>
+                        <input ng-model="vm.book.Author" placeholder="Last name, First name">
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Subject</label>
+                        <md-select ng-model="vm.book.SubjectId">
+                            <md-option ng-repeat="subject in vm.subjects" value="{{subject.SubjectId}}">
+                                {{subject.Name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+
+                    <button class="btn btn-primary" ng-if="!vm.book.CallNumber && vm.book.SubjectId"
+                        ng-click="vm.ApplySubject()">
+                        <i class="fa fa-magic icon-mr"></i> Generate Call Number
+                    </button>
+
+                    <div class="flex flex-wrap mt-md" ng-if="vm.book.CallNumber">
+                        <div class="flex-1 min-w-250" ng-if="vm.bookImage!=''">
+                            <label class="block mb-sm">Cover Image</label>
+                            <div class="image-preview">
+                                <img ng-src="{{vm.bookImage}}" class="w-full" />
                             </div>
-                            <div  style="width:100px;float:right;text-align: center;  color:blue;border:solid 1px gray;padding:10px;">
-                                <b>{{vm.book.Status}}</b></div>
-
-
-                        
-                    </md-card-header>
-                    <md-content layout-padding ng-show="vm.editing">
-
-                        <md-input-container class="md-block">
-                            <label>Title</label>
-                            <input ng-model="vm.book.Title">
-                        </md-input-container>
-
-                        <md-input-container class="md-block">
-                            <label>Author (if more than one author, separate with an &)</label>
-                            <input ng-model="vm.book.Author" placeholder="last name, first name">
-                        </md-input-container>
-
-
-                        <!-- SUBJECT START -->
-                        <md-input-container class="md-block">
-                            <label>Subject</label>
-                            <md-select ng-model="vm.book.SubjectId">
-                                <md-option ng-repeat="subject in vm.subjects" value="{{subject.SubjectId}}">
-                                    {{subject.Name}}
-                                </md-option>
-                            </md-select>
-                        </md-input-container>
-                        <!-- SUBJECT END -->
-
-                        <md-button class="md-raised" ng-if="!vm.book.CallNumber && vm.book.SubjectId"
-                            ng-click="vm.ApplySubject()">Generate CallNumber</md-button>
-
-
-                        <!--## START  IMAGE AND DESCRIPTION -->
-                        <div layout="row" layout-md="column" ng-if="vm.book.CallNumber">
-                            <div class="md-block" flex="50" ng-if="vm.bookImage!=''">
-                                <label>Image </label><br />
-                                <div
-                                    style="width:300px;padding:10px;">
-                                    <img ng-src="{{vm.bookImage}}" width="100%" />
-                                </div>
-                                <md-button class="md-raised" ng-click="vm.clearBookImage()">Remove Image</md-button>
-                            </div>
-                            <div class="md-block" flex="50" ng-if="vm.bookImage==''">
-                                <div ng-if="!vm.image.uploading" style="text-align: center">
-
-                                    <form name="myForm">
-
-                                        <label for="txtFile" ng-if="!vm.file"
-                                            class="md-button md-raised md-primary">Choose
-                                            Image</label>
-                                        <md-button class="md-raised  md-primary" ng-if="vm.file"
-                                            ng-click="vm.uploadImage()">Upload Selection</md-button>
-                                        <md-button class="md-raised" ng-if="vm.file" ng-click="vm.file=null">Clear
-                                            Selection
-                                        </md-button>
-
-
-                                        <input id="txtFile" name="file" type="file" file-model="vm.file" class="ng-hide"
-                                            output="bookimage">
-                                    </form>
-                                </div>
-                            </div>
-
-                            <md-input-container class="md-block" flex="50">
-                                <label>Description</label>
-                                <textarea ng-model="vm.book.Notes" md-maxlength="1500" rows="5"
-                                    md-select-on-focus></textarea>
-                            </md-input-container>
+                            <button class="btn btn-default mt-md" ng-click="vm.clearBookImage()">Remove Image</button>
                         </div>
-                        <!--## END IMAGE AND DESCRIPTION -->
-
-                    </md-content>
-                    <md-card-actions>
-
-                        <div layout="row" layout-xs="column" layout-align="center" style="background-color: white"
-                            ng-if="vm.book.CallNumber">
-                            <div flex="10" hide-sm>&nbsp;</div>
-                            <div flex>
-                                <!--## START COMMAND LINE -->
-                                <div layout="row" layout-md="column">
-                                    <div flex="80">
-                                        <md-button ng-click="vm.go('catalog')" class="md-raised">Close</md-button>
-                                        <md-button ng-click="vm.saveBook(1)" class="md-raised md-primary">Save &amp;
-                                            Close</md-button>
-                                        <md-button ng-click="vm.saveBook(2)" class="md-raised md-primary">Save &amp; New
-                                        </md-button>
-                                    </div>
-                                    <div flex="20" style="padding-top:10px;">
-                                        <div style="float:right;"
-                                            ng-if="vm.book.Status!='Checked Out' && vm.book.Status!='On Request'">
-                                            <button type="button" class="btn btn-sm btn-danger"
-                                                ng-click="vm.delete(vm.book);">
-                                                Delete!</button>
-                                            <button ng-if="vm.book.Status=='Active'" type="button"
-                                                class="btn btn-sm btn-info" ng-click="vm.book.Status='Inactive'">Set as
-                                                Inactive</button>
-                                            <button ng-if="vm.book.Status=='Inactive'" type="button"
-                                                class="btn btn-sm btn-primary" ng-click="vm.book.Status='Active'">Set as
-                                                Active</button>
-                                        </div>
-                                        <div style="display:inline" ng-if="vm.book.Status=='Checked Out'">
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                ng-click="vm.go('requests')">Check
-                                                In</button>
-                                        </div>
-                                        <div style="display:inline" ng-if="vm.book.Status=='On Request'">
-                                            <button type="button" class="btn btn-sm btn-primary"
-                                                ng-click="vm.go('requests')">Update
-                                                Request</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--## END COMMAND LINE -->
+                        <div class="flex-1 min-w-250" ng-if="vm.bookImage==''">
+                            <div ng-if="!vm.image.uploading" class="upload-area">
+                                <form name="myForm">
+                                    <i class="fa fa-cloud-upload upload-icon"></i>
+                                    <label for="txtFile" ng-if="!vm.file" class="btn btn-primary">Choose Image</label>
+                                    <button class="btn btn-primary" ng-if="vm.file" ng-click="vm.uploadImage()">Upload Selection</button>
+                                    <button class="btn btn-default" ng-if="vm.file" ng-click="vm.file=null">Clear</button>
+                                    <input id="txtFile" name="file" type="file" file-model="vm.file" class="hidden" output="bookimage">
+                                </form>
                             </div>
-                            <div flex="10" hide-sm>&nbsp;</div>
                         </div>
 
-                    </md-card-actions>
-                </md-card>
+                        <md-input-container class="md-block flex-1 min-w-250">
+                            <label>Description</label>
+                            <textarea ng-model="vm.book.Notes" md-maxlength="1500" rows="5" md-select-on-focus></textarea>
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="card-actions" ng-if="vm.book.CallNumber">
+                    <div class="flex justify-between items-center flex-wrap gap-sm">
+                        <div class="flex gap-sm flex-wrap">
+                            <button ng-click="vm.go('catalog')" class="btn btn-default">Close</button>
+                            <button ng-click="vm.saveBook(1)" class="btn btn-primary">
+                                <i class="fa fa-check icon-mr"></i> Save &amp; Close
+                            </button>
+                            <button ng-click="vm.saveBook(2)" class="btn btn-primary">Save &amp; New</button>
+                        </div>
+                        <div class="flex gap-sm flex-wrap">
+                            <button ng-if="vm.book.Status=='Active'" type="button" class="btn btn-default btn-sm"
+                                ng-click="vm.book.Status='Inactive'">Set Inactive</button>
+                            <button ng-if="vm.book.Status=='Inactive'" type="button" class="btn btn-primary btn-sm"
+                                ng-click="vm.book.Status='Active'">Set Active</button>
+                            <button ng-if="vm.book.Status=='Checked Out'" type="button" class="btn btn-info btn-sm"
+                                ng-click="vm.go('requests')">Check In</button>
+                            <button ng-if="vm.book.Status=='On Request'" type="button" class="btn btn-info btn-sm"
+                                ng-click="vm.go('requests')">Update Request</button>
+                            <button ng-if="vm.book.Status!='Checked Out' && vm.book.Status!='On Request'"
+                                type="button" class="btn btn-danger btn-sm" ng-click="vm.delete(vm.book);">
+                                <i class="fa fa-trash-o icon-mr"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div flex="10" hide-sm>&nbsp;</div>
-        </div>
 
-
-
-
-        <div layout="row" layout-xs="column" layout-align="center" style="background-color: white">
-            <div flex="10" hide-sm>&nbsp;</div>
-            <div flex>
-                <md-card>
-                    <md-card-header>
-                        <md-card-header-text>
-                            <span class="md-title">History</span>
-
-                            </md-title-text>
-                    </md-card-header>
-                    <md-card-content>
-
-                        <table class="table table-striped">
-                            <tr>
-                                <td>Date</td>
-                                <td>User</td>
-                                <td>Status</td>
-
-                            </tr>
-                            <tr ng-repeat="h in vm.history track by $index">
-                                <td>{{h.CreateDate | date: 'medium'}}</td>
-                                <td>{{h.CreateBy}}</td>
-                                <td>{{h.Status}}</td>
-
-                            </tr>
-
-                        </table>
-
-                    </md-card-content>
-                </md-card>
-
+            <div class="card" ng-if="vm.history.length > 0">
+                <div class="card-header">
+                    <span class="card-title">History</span>
+                </div>
+                <div class="card-content">
+                    <table class="table text-sm">
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr ng-repeat="h in vm.history track by $index">
+                            <td>{{h.CreateDate | date: 'medium'}}</td>
+                            <td>{{h.CreateBy}}</td>
+                            <td>{{h.Status}}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <div flex="10" hide-sm>&nbsp;</div>
-
-        </div>
-
-
-    </div>
-
-</div>
-
-<div ng-hide="vm.editing">
-
-    <div layout="row" layout-xs="column" layout-align="center" style="background-color: white">
-        <div flex="10" hide-sm>&nbsp;</div>
-        <div flex>
-            <book-view book="vm.book" history="vm.history"></book-view>
-            <div flex="10" hide-sm></div>
 
         </div>
     </div>
+
+    <div ng-hide="vm.editing">
+        <book-view book="vm.book" history="vm.history"></book-view>
+    </div>
+
 </div>

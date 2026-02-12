@@ -1,16 +1,12 @@
-﻿
+
 
 module Application.Components {
 
-
-
-
     interface IBook extends Application.Library.Types.IBook { }
-
 
     class Book {
         private _tempThumbNail: string = 'http://pfsa.morrisdev.com/tools/app/pages/library/book/placeholder.jpg';
-        private _thumbUrl: string
+        private _thumbUrl: string;
         barcode: string;
         title: string;
         callNumber: string;
@@ -24,34 +20,33 @@ module Application.Components {
         publisher: string;
         publocation: string;
         subject: string;
+        type: string;
 
         constructor() {
             this._thumbUrl = this._tempThumbNail;
-
         }
+
         get thumbUrl(): string {
             let u = this._thumbUrl;
             let ext: string = this.getExt(u);
             if (ext != '') {
-
                 return this._thumbUrl;
             } else {
-
-                return this._tempThumbNail
+                return this._tempThumbNail;
             }
+        }
 
-        }
         set thumbUrl(val) {
-            this._thumbUrl = val
+            this._thumbUrl = val;
         }
-        type: string;
-        getExt(filename: string) {
+
+        getExt(filename: string): string {
             var ext = filename.split('.').pop();
             if (ext == filename) return "";
             return ext;
         }
-
     }
+
     export class library {
         public mode: string;
         public mydocs: any = [];
@@ -67,62 +62,106 @@ module Application.Components {
         public prefix: string = '';
         public pageTitle: string = 'Catalog';
 
-        $inject = ['$location', '$http', '$cookies', '$sessionStorage', '$routeParams'];
-        constructor(private $location: ng.ILocationService, private $http: any,
-            public libraryService: any, public $cookies: any, private $sessionStorage: any, private $routeParams: any) {
+        static $inject = ['$location', '$http', 'libraryService', '$cookies', '$sessionStorage', '$routeParams'];
+        constructor(
+            private $location: ng.ILocationService,
+            private $http: any,
+            public libraryService: any,
+            public $cookies: any,
+            private $sessionStorage: any,
+            private $routeParams: any
+        ) { }
 
-            this.links = [{ "url": "/#/library", "text": "home" }, { "url": "", "text": "catalog" }]
-            let library: IBook[] = []
-            this.sessionStorage = $sessionStorage;
-
+        $onInit(): void {
+            this.links = [{ "url": "/#/library", "text": "home" }, { "url": "", "text": "catalog" }];
+            this.sessionStorage = this.$sessionStorage;
             this.version = new Application.Config.version();
             this.SubjectList();
 
+            var lastSearch: any;
+            if (this.mode === 'recent') {
+                this.sessionStorage.searchText = '';
+            }
+            this.searchText = this.sessionStorage.searchText;
+            let searchMode = "";
+            this.prefix = this.$routeParams.prefix;
+
+            if (this.sessionStorage) {
+                this.searchText = this.sessionStorage.searchText;
+                searchMode = this.sessionStorage.searchMode;
+                if (searchMode = this.mode) {
+                    lastSearch = this.sessionStorage.searchResults;
+                }
+            }
+
+            if (this.mode === 'recent') {
+                this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": 'recent additions' }];
+                this.webSearch('recent additions', '', '');
+            } else {
+                if (this.mode === 'subject') {
+                    this.webSearch('', this.$routeParams.prefix, '');
+                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": this.$routeParams.prefix }];
+                    this.searchResults = true;
+                }
+                if (this.mode == 'author') {
+                    this.webSearch('', '', this.$routeParams.author);
+                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/author", "text": "authors" },
+                    { "url": "", "text": this.$routeParams.author }];
+                    this.books = lastSearch;
+                    this.searchResults = true;
+                }
+                if (this.mode == 'full' && !(this.searchText === 'recent additions' || this.searchText === '')) {
+                    this.books = lastSearch;
+                    this.searchResults = true;
+                }
+                if (this.mode == 'full' && this.searchText === 'recent additions') {
+                    this.searchResults = true;
+                }
+                this.searchResults = true;
+            }
         }
 
-        OpenByCallNumberKey(keyEvent: any) {
+        $onDestroy(): void { }
+
+        OpenByCallNumberKey(keyEvent: any): void {
             if (keyEvent.which === 13) {
                 this.OpenByCallNumber();
             }
         }
-        OpenByCallNumber() {
+
+        OpenByCallNumber(): void {
             let cn = this.callnumber;
             let booknumber = cn.replace(/\D/g, '');
             let prefix = cn.replace(/[0-9]/g, '');
             let url = "/library/edit/" + prefix + "/" + booknumber;
             this.go(url);
+        }
 
-        }
-        SubjectList() {
+        SubjectList(): void {
             let s = this.version.apiServer;
-            //let url = s + "library/subjects"
-            //this.$http.get(url)
-            //    .then((resp: any) => {
-            //        console.log(resp.data);
-            //    });
         }
-        SearchKey(keyEvent: any) {
+
+        SearchKey(keyEvent: any): void {
             if (keyEvent.which === 13) {
                 this.Search();
             }
         }
-        Search(searchText?: string) {
-            // if (this.searchText) 
+
+        Search(searchText?: string): void {
             this.webSearch(this.searchText, this.prefix, '');
             this.setCookie("titleSearch", this.searchText);
-
-
-
         }
-        ClearSearch() {
+
+        ClearSearch(): void {
             this.searchText = '';
         }
-        NewBook() {
+
+        NewBook(): void {
             this.$location.url('library/add');
         }
-        SubjectSearch(prefix: string) {
-            this.sessionStorage.prefix = prefix
 
+        SubjectSearch(prefix: string): void {
+            this.sessionStorage.prefix = prefix;
             this.libraryService.Search(prefix, '', '')
                 .then((resp: any) => {
                     this.books = resp.data;
@@ -130,14 +169,15 @@ module Application.Components {
                     this.searchResults = true;
                 });
         }
-        webSearch(terms: string, prefix: string, author: string) {
+
+        private webSearch(terms: string, prefix: string, author: string): void {
             this.searchResults = false;
             if (terms != 'recent additions') {
                 if (!prefix)
                     prefix = '';
                 if (this.$routeParams.author)
                     author = this.$routeParams.author;
-                this.sessionStorage.searchText = terms
+                this.sessionStorage.searchText = terms;
                 this.libraryService.Search(prefix, author, terms)
                     .then((resp: any) => {
                         this.books = resp.data;
@@ -145,7 +185,7 @@ module Application.Components {
                         this.searchResults = true;
                         let count = this.books.length;
                         let countText = count.toString();
-                        if (count === 1000) { 'More than ' + countText }
+                        if (count === 1000) { 'More than ' + countText; }
                         if (count > 0) {
                             if (this.mode === 'author') {
                                 this.pageTitle = countText + " Titles by " + this.$routeParams.author;
@@ -160,117 +200,53 @@ module Application.Components {
                         } else {
                             this.pageTitle = 'No Titles Found for search text ("' + terms + '")';
                         }
-
                     });
-
             } else {
                 if (this.mode === 'recent') {
-                    this.pageTitle = 'Recent Additions'
+                    this.pageTitle = 'Recent Additions';
                     this.libraryService.Recent()
                         .then((resp: any) => {
                             this.books = resp.data;
                             this.sessionStorage.searchResults = this.books;
-
                             this.searchResults = true;
                         });
                 }
             }
-
         }
 
-        getBook(b: IBook) {
+        getBook(b: IBook): void {
             let url = "/library/catalog/view/" + b.Prefix + "/" + b.BookNumber;
             this.go(url);
         }
 
-        go(url: string) {
-
+        go(url: string): void {
             this.$location.url(url);
         }
-        Recent() {
-            //this.pageTitle = "Recent Additions"
-            //this.webSearch('recent additions', '', '');
+
+        Recent(): void {
             this.$location.url('library/recent');
-
-
-        }
-        $onInit() {
-            var lastSearch: any
-            if (this.mode === 'recent') {
-                this.sessionStorage.searchText = '';
-
-            }
-            this.searchText = this.sessionStorage.searchText
-            let searchMode = ""
-            console.log(this.mode)
-            this.prefix = this.$routeParams.prefix;
-
-            if (this.sessionStorage) {
-
-                this.searchText = this.sessionStorage.searchText
-                searchMode = this.sessionStorage.searchMode;
-                if (searchMode = this.mode) {
-                    lastSearch = this.sessionStorage.searchResults
-                }
-            }
-
-            if (this.mode === 'recent') {
-                this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": 'recent additions' }]
-                this.webSearch('recent additions', '', '');
-            } else {
-
-                if (this.mode === 'subject') {
-                    this.webSearch('', this.$routeParams.prefix, '');
-                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/catalog", "text": "catalog" }, { "url": "", "text": this.$routeParams.prefix }]
-                    this.searchResults = true;
-                }
-                if (this.mode == 'author') {
-                    this.webSearch('', '', this.$routeParams.author);
-                    this.links = [{ "url": "/#/library", "text": "home" }, { "url": "/#/library/author", "text": "authors" },
-                    { "url": "", "text": this.$routeParams.author }]
-                    this.books = lastSearch;
-                    this.searchResults = true;
-                }
-                if (this.mode == 'full' && !( this.searchText=== 'recent additions' || this.searchText==='')) {
-
-                    this.books = lastSearch;
-                    this.searchResults = true;
-                }
-                if (this.mode == 'full' && this.searchText === 'recent additions') {
-
-                    //this.books = lastSearch;
-                    this.searchResults = true;
-                }
-                this.searchResults = true;
-            }
-
-
-        }
-        submitForm() {
-
         }
 
-        cleanForm() {
+        submitForm(): void { }
+
+        cleanForm(): void {
             this.searchText = '';
         }
 
-        setCookie(cookieName: any, obj: any) {
-            let expireDate = new Date()
+        setCookie(cookieName: any, obj: any): void {
+            let expireDate = new Date();
             expireDate.setDate(expireDate.getDate() + 100);
             this.$cookies.putObject(cookieName, obj, { expires: expireDate });
         }
+
         getCookie(cookieName: any): any {
-            let obj: any = this.$cookies.getObject(cookieName)
+            let obj: any = this.$cookies.getObject(cookieName);
             if (!obj) {
                 obj = {};
             }
             return obj;
         }
-
-
-
     }
-
 
     app.component("library", {
         controller: library,
@@ -278,5 +254,4 @@ module Application.Components {
         bindings: { mode: '=' },
         templateUrl: function (templates: any) { return templates.library },
     })
-
 }

@@ -1,18 +1,16 @@
-﻿
-
 
 module Application.Components {
     export class SubjectsPage {
-        public book: any
-        $onInit() {
-            console.log(this.book)
-        }
+        public book: any;
+
+        $onInit(): void { }
+        $onDestroy(): void { }
     }
 
     app.component("subjectsPage", {
         controller: SubjectsPage,
         bindings: { book: '<' },
         controllerAs: "vm",
-        template:'<navbar></navbar><subjects></subjects>'
+        template: '<subjects></subjects>'
     })
 }

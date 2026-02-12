@@ -1,54 +1,71 @@
-﻿
-<div class="row bookRow">
-            <div class="col-sm-3">
-                <div class="bookBox">
-                    <div class="bookBoxCenter"   >
-                        <img ng-if="vm.book.BookId>0" ng-src="{{vm.BookImage(vm.book)}}" width="200" /><br />
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-9">
-                <div>
-                    <h3> <span class="bookTitle" ng-bind="vm.book.Title"></span></h3>
-                </div>
-                <div style="padding:10px;">
-                    <span class="bookDescription" ng-bind="vm.book.Notes"></span>
-                </div>
-                <ul>
-                    <li>By <span class="author" ng-bind="vm.book.Author"> Álamo de Oliveira</span></li>
-                    <li>Subject: <span class="bookSubject" ng-bind="vm.book.Subject"> Literature</span></li>
-                    <li>Call Number: <span class="bookBarcode" ng-bind="vm.book.CallNumber"></span></li>
-                    <li>Availability: {{vm.book.Status}} </li>
-                </ul>
-                <div class="form-group row">
-                    <div class="col-sm-8" style="padding-left:30px">
-                        <button ng-click="vm.go('library/catalog')" class="btn btn-default" type="button">Close</button>
-                        <button ng-click="vm.Edit(vm.book)" class="btn btn-primary" type="button" 
-                        ng-show="vm.permission.EditTitle">Edit</button>
-                        <button ng-click="vm.Request(vm.book)" class="btn btn-primary" type="button">Request</button>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-8" style="padding-left:30px">
-                      
-                        <h4>History</h4>
-                        <table class="table table-striped">
-                            <tr>
-                                <td>Date</td>
-                                <td>User</td>
-                                <td>Status</td>
-                               
-                            </tr>
-                            <tr ng-repeat="h in vm.history track by $index">
-                                <td>{{h.CreateDate | date: 'medium'}}</td>
-                                <td>{{h.CreateBy}}</td>
-                                <td>{{h.Status}}</td>
-                                
-                            </tr>
-                             
-                        </table>
-                    </div>
+<div class="page-container-sm">
+    <div class="bookRow flex flex-wrap gap-xl">
+        <div class="flex-auto">
+            <div class="bookBox bookBox-lg">
+                <div class="bookBoxCenter bookBoxCenter-lg">
+                    <img ng-if="vm.book.BookId>0" ng-src="{{vm.BookImage(vm.book)}}" />
                 </div>
             </div>
         </div>
+
+        <div class="flex-1 min-w-280">
+            <h3 class="mt-0 mb-xs">
+                <span ng-bind="vm.book.Title"></span>
+            </h3>
+
+            <p class="text-secondary text-italic m-0 mb-lg text-lg">
+                by <span ng-bind="vm.book.Author" class="fw-500"></span>
+            </p>
+
+            <div ng-if="vm.book.Notes" class="text-secondary mb-lg text-base" style="line-height:1.7">
+                <span ng-bind="vm.book.Notes"></span>
+            </div>
+
+            <div class="detail-grid mb-lg">
+                <span class="detail-label">Subject</span>
+                <span class="fw-500" ng-bind="vm.book.Subject"></span>
+
+                <span class="detail-label">Call No.</span>
+                <span class="fw-500 font-mono" ng-bind="vm.book.CallNumber"></span>
+
+                <span class="detail-label">Status</span>
+                <span>
+                    <span class="badge badge-active">
+                        {{vm.book.Status}}
+                    </span>
+                </span>
+            </div>
+
+            <div class="flex gap-sm flex-wrap">
+                <button ng-click="vm.go('library/catalog')" class="btn btn-default" type="button">
+                    <i class="fa fa-arrow-left icon-mr"></i> Back
+                </button>
+                <button ng-click="vm.Edit(vm.book)" class="btn btn-primary" type="button"
+                    ng-if="vm.permission.EditTitle">
+                    <i class="fa fa-pencil icon-mr"></i> Edit
+                </button>
+                <button ng-click="vm.Request(vm.book)" class="btn btn-primary" type="button">
+                    <i class="fa fa-bookmark-o icon-mr"></i> Request
+                </button>
+            </div>
+
+            <div ng-if="vm.history.length > 0" class="mt-xl">
+                <h4 class="font-display fw-600 text-xl mb-md">
+                    History
+                </h4>
+                <table class="table text-sm">
+                    <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Status</th>
+                    </tr>
+                    <tr ng-repeat="h in vm.history track by $index">
+                        <td>{{h.CreateDate | date: 'medium'}}</td>
+                        <td>{{h.CreateBy}}</td>
+                        <td>{{h.Status}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,114 +1,45 @@
-<style>
-.homepage{
-    font-family:Helvetica;
-    font-size:14pt;
-}
-</style>
+<div class="page-container py-xl">
 
-<div style="margin-left:auto;margin-right:auto;width:90%">
-    <div class="row">
-        <div class="col-md-12">
-
+    <div class="flex flex-wrap items-center gap-lg">
+        <div class="flex-1 min-w-280 px-lg">
+            <div class="card accent-border">
+                <div class="card-header">
+                    <span class="card-title text-2xl">Welcome to the PFSA Library</span>
+                </div>
+                <div class="card-content homepage">
+                    The library collection consists of over 12,000 works dealing with the Portuguese throughout
+                    the world. It holds a vast number of books on the Azores and a fairly complete sample of
+                    periodicals published by the Portuguese in California, some dating to the late 1880's.
+                    The library contains many historical materials on Portuguese from all over the world.
+                    We provide our community with various magazines, periodicals, albums, videos, micro films,
+                    etc. Most of the collection circulates for periods of two weeks each and books can be
+                    requested from anywhere in California through interlibrary loan services provided by a
+                    network of public and academic libraries throughout California.
+                </div>
+            </div>
         </div>
-
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <md-card>
-                <md-card-header>
-                        
-                    <md-card-header-text>
-                            <span class="md-title">Welcome to the PFSA Library</span>
-                          </md-card-header-text>
-                </md-card-header>
-                <md-card-content class="homepage">                            <!-- <span class="md-subhead">Sub header</span> -->
-
-                         The library collection consists of over 12,000 works dealing with the Portuguese throughout the
-                        world.
-                        It holds a vast number
-                        of books on the Azores and a fairly complete sample of periodicals published by the Portuguese
-                        in
-                        California,
-                        some dating to the late 1880's. The library contains many historical materials on Portuguese
-                        from all
-                        over
-                        the world. We provide our community with various magazines, periodicals, albums, videos, micro
-                        films,
-                        etc.
-                        Most of the collection circulates for periods of two weeks each and books can be requested from
-                        anywhere
-                        in California through interlibrary loan services provided by a network of public and academic
-                        libraries
-                        throughout
-                        California.
-                    
-                </md-card-content>
-            </md-card>
-        </div>
-        <div class="col-md-6">
-            <img src="/images/library.jpg" style="float:right;margin:10px;width:90%;">
-
-        </div>
-    </div>
-    <div class="row">
-
-        <div class="col-md-12">
-            <h4>Here are our most recent additions</h4>
+        <div class="flex-1 min-w-280 px-lg">
+            <img src="/images/library.jpg" class="hero-image" />
         </div>
     </div>
 
-    <style>
-        /*On the flex container*/
-        .flex-container {
-            display: -webkit-flex;
-            display: flex;
-            -webkit-flex-direction: row;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            align-content: space-between;
-            flex-wrap: wrap;
+    <div class="mt-2xl mb-md px-lg">
+        <h3 class="section-heading">Recent Additions</h3>
+        <p class="section-subtext">The latest titles added to our collection</p>
+    </div>
 
-        }
-
-        .bookItem {
-            width: 250px;
-            height: 500px;
-        }
-
-        .md-card .md-card-title {
-            padding: 0px
-        }
-    </style>
-
-    <div class="row" style="background:white">
-        <div class="col-md-12" style="padding:10px">
-            <div class="flex-container">
-                <div ng-repeat="book in vm.books track by $index " ng-if="book.Url!=''">
-                    <md-card class="bookItem" ng-click="vm.GetBook(book)">
-                        <md-card-header>
-                            <b> {{book.Title}} </b>
-                        </md-card-header>
-                        <img class="md-card-image" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}" />
-                        <md-card-footer>
-                            By {{book.Author}}
-                        </md-card-footer>
-                    </md-card>
-
-                    <!-- <div ng-click="vm.GetBook(book)">
-                        <div class="bookTitle">
-                            <a ng-href="#/library/catalog/view/{{book.Prefix}}/{{book.BookNumber}}">{{book.Title}}</a>
-                        </div>
-                        <div class="bookImageBox">
-                            <img class="bookImage" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}"
-                                width="100" />
-                        </div>
-                        <div class="bookAuthor">
-                            By {{book.Author}}
-                        </div>
-                    </div> -->
-
+    <div class="flex-container px-sm">
+        <div ng-repeat="book in vm.books track by $index" ng-if="book.Url!=''">
+            <div class="card bookItem" ng-click="vm.GetBook(book)">
+                <img class="card-image" ng-src="https://d2rg9t5epa49og.cloudfront.net/{{book.Url}}" />
+                <div class="card-header">
+                    <b>{{book.Title}}</b>
+                </div>
+                <div class="card-footer">
+                    {{book.Author}}
                 </div>
             </div>
         </div>
     </div>
+
+</div>

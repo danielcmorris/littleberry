@@ -1,10 +1,13 @@
-﻿
+
 module Application.Components {
     export class BookPage {
-        public book: any
-        $onInit() {
-            console.log(this.book)
+        public book: any;
+
+        $onInit(): void {
+            console.log(this.book);
         }
+
+        $onDestroy(): void { }
     }
 
     app.component("bookPage", {

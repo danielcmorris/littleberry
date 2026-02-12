@@ -1,11 +1,5 @@
-﻿ 
 
 module Application.Components {
-
-
-
-
-
 
     interface IBook {
         barcode: string;
@@ -27,7 +21,7 @@ module Application.Components {
 
     class Book {
         private _tempThumbNail: string = 'http://pfsa.morrisdev.com/tools/app/pages/library/book/placeholder.jpg';
-        private _thumbUrl: string
+        private _thumbUrl: string;
         barcode: string;
         title: string;
         callNumber: string;
@@ -41,32 +35,33 @@ module Application.Components {
         publisher: string;
         publocation: string;
         subject: string;
+        type: string;
+
         constructor() {
             this._thumbUrl = this._tempThumbNail;
         }
+
         get thumbUrl(): string {
             let u = this._thumbUrl;
-            let ext:string = this.getExt(u);
-            if (ext!='') {
-
+            let ext: string = this.getExt(u);
+            if (ext != '') {
                 return this._thumbUrl;
             } else {
-
-                return this._tempThumbNail
+                return this._tempThumbNail;
             }
+        }
 
-        }
         set thumbUrl(val) {
-            this._thumbUrl = val
+            this._thumbUrl = val;
         }
-        type: string;
-        getExt(filename:string) {
+
+        getExt(filename: string): string {
             var ext = filename.split('.').pop();
             if (ext == filename) return "";
             return ext;
         }
-
     }
+
     export class RecentAdditions {
         public mydocs: any = [];
         public api: any = {};
@@ -74,40 +69,42 @@ module Application.Components {
         public books: Array<IBook>;
         public recent: Book[];
 
-        $inject = ['$location', '$http', 'md5'];
-        constructor(private $location: any, private $http: any, public md5: any) {
-            let library: IBook[] = []
+        static $inject = ['$location', '$http', 'md5'];
+        constructor(
+            private $location: any,
+            private $http: any,
+            public md5: any
+        ) { }
 
+        $onInit(): void {
+            this.getRecent(5);
         }
 
-        search() {
+        $onDestroy(): void { }
+
+        search(): void {
             if (this.searchText) {
                 this.webSearch(this.searchText);
             }
         }
-        webSearch(terms: string) {
 
+        private webSearch(terms: string): void {
             let url: string = 'http://pfsa.morrisdev.com/api/books/?cmd=search&terms=' + terms;
             this.$http.get(url)
                 .then((resp: any) => {
                     this.books = <IBook[]>resp.data;
-
-                    //this.cacheMe("searhResults", this.books);
-
                 });
-
         }
-        getRecent(count: number) {
+
+        getRecent(count: number): void {
             this.recent = [];
             let r = this.recent;
-
             let url: string = 'http://pfsa.morrisdev.com/api/books/?cmd=recent&count=' + count;
             this.$http.get(url)
                 .then((resp: any) => {
                     this.books = <IBook[]>resp.data;
                     let b = this.books;
                     angular.forEach(b, (i, k) => {
-                          console.log(i.thumburl)
                         let bk = new Book();
                         bk.title = i.title;
                         bk.barcode = i.barcode;
@@ -117,48 +114,30 @@ module Application.Components {
                         bk.description = i.description;
                         bk.type = i.type;
                         bk.subject = i.subject;
-                        console.log(i);
                         r.push(bk);
-
                     });
-                    console.log(r);
-                    //this.cacheMe("searhResults", this.books);
-
                 });
-
         }
-        getBook(b: IBook) {
 
+        getBook(b: IBook): void {
             let url = "/library/edit/" + b.barcode;
             this.go(url);
         }
-        go(url: string) {
 
+        go(url: string): void {
             this.$location.url(url);
         }
 
-        $onInit() {
+        submitForm(): void { }
 
-            this.getRecent(5);
-
-        }
-        submitForm() {
-
-        }
-
-        cleanForm() {
+        cleanForm(): void {
             this.searchText = '';
         }
-
-
-
     }
-
 
     app.component("recentAdditions", {
         controller: RecentAdditions,
         controllerAs: "vm",
         templateUrl: function (templates: any) { return templates.recentAdditions },
     })
-
 }

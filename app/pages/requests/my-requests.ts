@@ -1,22 +1,26 @@
-﻿ 
-
 
 module Application.Components {
     export class MyRequests {
-        $inject = ['$location','$sessionStorage','libraryService'];
-        constructor(public $location: ng.ILocationService, public $sessionStorage: any, public libraryService:any) { }
-        public links: any
+        static $inject = ['$location', '$sessionStorage', 'libraryService'];
+        constructor(
+            public $location: ng.ILocationService,
+            public $sessionStorage: any,
+            public libraryService: any
+        ) { }
 
-         $onInit() {
-            console.log('MyRequests');
-              this.links=[
-                {"url":"/#/library","text":"home"}, 
-                {"url":"/#/library/member","text":"my profile"}, 
-                {"url":"","text":"my requests"},
-                ];
+        public links: any;
+
+        $onInit(): void {
+            this.links = [
+                { "url": "/#/library", "text": "home" },
+                { "url": "/#/library/member", "text": "my profile" },
+                { "url": "", "text": "my requests" },
+            ];
         }
-        
-        go(url: string) {
+
+        $onDestroy(): void { }
+
+        go(url: string): void {
             this.$location.url(url);
         }
     }
@@ -25,7 +29,6 @@ module Application.Components {
         controller: MyRequests,
         bindings: { someVariable: '<' },
         controllerAs: "vm",
-         templateUrl: function (templates: any) { return templates.myRequests },
-        
+        templateUrl: function (templates: any) { return templates.myRequests },
     })
 }

@@ -1,77 +1,95 @@
+/* ═══════════════════════════════════════════
+   BOOTSTRAP OVERRIDES & BASE RESETS
+   ═══════════════════════════════════════════ */
 
-          /* THIS CLEARS OUT SOME OF THE BOOTSTRAP PADDING THAT KENDO TENDS TO MESS WITH */
-        html, body {
-            height: 100%;
-            margin: 0px;
-            padding: 0px;
-        }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: var(--clr-cream, #FBF7F0);
+}
 
-        #navbar {
-            margin-bottom: 0;
-        }
+#navbar {
+    margin-bottom: 0;
+}
 
-        .alert {
-            border-radius: 0;
-        }
+.alert {
+    border-radius: var(--radius-md, 8px);
+    border: none;
+    font-family: var(--font-body, 'Source Sans 3', sans-serif);
+}
 
-        .container {
-            width: 100%;
-            padding-right: 0;
-            padding-left: 0;
-            margin-right: auto;
-            margin-left: auto;
-        }
+.container {
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+}
 
-        .col-xs-1, .col-sm-1, .col-md-1, .col-sm-1,
-        .col-xs-2, .col-sm-2, .col-md-2, .col-sm-2,
-        .col-xs-3, .col-sm-3, .col-md-3, .col-sm-3,
-        .col-xs-4, .col-sm-4, .col-md-4, .col-sm-4,
-        .col-xs-5, .col-sm-5, .col-md-5, .col-sm-5,
-        .col-xs-6, .col-sm-6, .col-md-6, .col-sm-6,
-        .col-xs-7, .col-sm-7, .col-md-7, .col-sm-7,
-        .col-xs-8, .col-sm-8, .col-md-8, .col-sm-8,
-        .col-xs-9, .col-sm-9, .col-md-9, .col-sm-9,
-        .col-xs-10, .col-sm-10, .col-md-10, .col-sm-10,
-        .col-xs-11, .col-sm-11, .col-md-11, .col-sm-11,
-        .col-xs-12, .col-sm-12, .col-md-12, .col-sm-12 {
-            position: relative;
-            /*height: 100%;*/
-            min-height: 1px;
-            padding-right: 0;
-            padding-left: 0;
-        }
+.col-xs-1, .col-sm-1, .col-md-1,
+.col-xs-2, .col-sm-2, .col-md-2,
+.col-xs-3, .col-sm-3, .col-md-3,
+.col-xs-4, .col-sm-4, .col-md-4,
+.col-xs-5, .col-sm-5, .col-md-5,
+.col-xs-6, .col-sm-6, .col-md-6,
+.col-xs-7, .col-sm-7, .col-md-7,
+.col-xs-8, .col-sm-8, .col-md-8,
+.col-xs-9, .col-sm-9, .col-md-9,
+.col-xs-10, .col-sm-10, .col-md-10,
+.col-xs-11, .col-sm-11, .col-md-11,
+.col-xs-12, .col-sm-12, .col-md-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 0;
+    padding-left: 0;
+}
 
-        .row {
-            margin-right: 0;
-            margin-left: 0;
-            padding-top: 5px;
-        }
+.row {
+    margin-right: 0;
+    margin-left: 0;
+    padding-top: 5px;
+}
 
-        .footer {
-            margin-top: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            border-top: none;
-        }
+.footer {
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: none;
+}
 
-        .panel-body ul li {
-            margin: 0px;
-            padding: 0px;
-        }
+.panel-body ul li {
+    margin: 0;
+    padding: 0;
+}
 
-        .panel-body ul {
-            margin-left: 10px;
-            padding: 0px;
-            list-style-type: none;
-        }
+.panel-body ul {
+    margin-left: 10px;
+    padding: 0;
+    list-style-type: none;
+}
 
+.panel {
+    border: 1px solid var(--clr-border, #E4DDD4);
+    border-radius: var(--radius-lg, 12px);
+    box-shadow: var(--shadow-card);
+    background-color: var(--clr-paper, #fff);
+}
 
-        .fix-to-top {
-            position: fixed;
-            top: 0;
-        }
+.fix-to-top {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
 
+.pad-left {
+    padding-left: 20px;
+}
 
-        .pad-left {
-            padding-left: 20px;
-        }
+/* Well overrides */
+.well {
+    background-color: var(--clr-cream, #FBF7F0);
+    border: 1px solid var(--clr-border, #E4DDD4);
+    border-radius: var(--radius-lg, 12px);
+    box-shadow: none;
+}
