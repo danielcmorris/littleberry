@@ -27,11 +27,7 @@ Everything else is public.
 ### Webpages
 The admin pages are hidden by setting the userlevel in a sessionStorage variable, but if someone were to mess with that directly, they'd be able to see the empty templates.  They can't do anything, but some people have a problem with that and try to lock stuff down at the server.  In my experience, I really don't care if people hack around in javascript and see empty templates.
 
-## API Reference
-
-Right now, the API server is here:  http://api.littleberry.org/Help
-You can see all the APIs in the system and it will give you a good idea of what can be done. 
-
+ 
 ## Contributors
 
 Feel free to offer updates or suggestions.
@@ -45,3 +41,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
