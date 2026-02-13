@@ -1,0 +1,162 @@
+<div class="max-w-[1100px] mx-auto px-6">
+
+  @if (mode === 'edit' || mode === 'add' || mode === 'join') {
+    <h2 class="font-semibold m-0 mb-6">
+      @if (mode === 'add') { New Account }
+      @if (mode === 'edit') { Account Editor }
+      @if (mode === 'join') { Create a Library Account }
+    </h2>
+  }
+
+  <!-- Toast -->
+  @if (toast) {
+    <div class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 text-white"
+         style="background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));">
+      {{ toast }}
+    </div>
+  }
+
+  @if (mode === 'edit' || mode === 'add' || mode === 'join') {
+    <form novalidate>
+      <div class="flex flex-wrap gap-6 mb-6">
+        <!-- Primary Contact -->
+        <div class="flex-1 min-w-[320px]">
+          <div class="card">
+            <div class="p-6 pb-2">
+              <span class="font-semibold text-text-main">Primary Contact</span>
+            </div>
+            <div class="p-6">
+              <div class="mb-4">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" [(ngModel)]="account.FirstName" name="firstName" />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" [(ngModel)]="account.LastName" name="lastName" />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Phone Number</label>
+                <input type="text" class="form-control" [(ngModel)]="account.Phone" name="phone"
+                       placeholder="(###) ###-####" />
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" [(ngModel)]="account.Email" name="email"
+                       placeholder="your@email.com" />
+                <div class="text-[12px] text-text-muted mt-1">This is also your username</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="flex-1 min-w-[320px]">
+          <div class="card">
+            <div class="p-6 pb-2">
+              <span class="font-semibold text-text-main">Shipping Information</span>
+            </div>
+            <div class="p-6">
+              <div class="mb-4">
+                <label class="form-label">Address</label>
+                <input type="text" class="form-control" [(ngModel)]="account.Address1" name="address1" />
+              </div>
+              <div class="mb-4">
+                <input type="text" class="form-control" [(ngModel)]="account.Address2" name="address2" placeholder="Address 2" />
+              </div>
+              <div class="flex flex-wrap gap-4 mb-4">
+                <div class="flex-1">
+                  <label class="form-label">City</label>
+                  <input type="text" class="form-control" [(ngModel)]="account.City" name="city" />
+                </div>
+                <div class="w-24">
+                  <label class="form-label">State</label>
+                  <select class="form-control" [(ngModel)]="account.State" name="state">
+                    @for (s of states; track s) {
+                      <option [value]="s">{{ s }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="w-28">
+                  <label class="form-label">Zip</label>
+                  <input type="text" class="form-control" [(ngModel)]="account.Zip" name="zip" />
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Country</label>
+                <input type="text" class="form-control" [(ngModel)]="account.Country" name="country" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Settings (admin only, not join mode) -->
+      @if (mode !== 'join' && (mode === 'edit' || mode === 'add')) {
+        <div class="mb-6 max-w-[500px]">
+          <div class="card">
+            <div class="p-6 pb-2">
+              <span class="font-semibold text-text-main">Account Settings</span>
+            </div>
+            <div class="p-6">
+              <div class="mb-4">
+                <label class="form-label">Account Type</label>
+                <select class="form-control" [(ngModel)]="account.AccountType" name="accountType">
+                  <option value="Member">Member</option>
+                  <option value="Staff">Staff</option>
+                  <option value="Librarian">Librarian</option>
+                  <option value="Admin">System Administrator</option>
+                </select>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Status</label>
+                <select class="form-control" [(ngModel)]="account.Status" name="status">
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Action buttons -->
+      @if (mode === 'edit' || mode === 'add') {
+        <div class="flex gap-2 flex-wrap items-center mb-6">
+          <button type="button" class="btn btn-default" (click)="go('/library/accounts')">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="saveUser(0)">Save</button>
+          <button type="button" class="btn btn-primary" (click)="saveUser(1)">Save &amp; Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveUser(2)">Save &amp; New</button>
+          <div class="flex-1"></div>
+          @if (account.AccountId > 0) {
+            <button type="button" class="btn btn-danger" (click)="deleteAccount()">
+              Delete Account
+            </button>
+          }
+        </div>
+      }
+
+      @if (mode === 'join') {
+        <div class="mb-6">
+          <button type="button" class="btn btn-primary btn-lg" (click)="saveUser(4)">
+            Confirm &amp; Join the Library
+          </button>
+        </div>
+      }
+    </form>
+  }
+
+  <!-- Password Dialog -->
+  @if (showPasswordDialog) {
+    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div class="bg-paper rounded-xl border border-border shadow-lg p-6 max-w-[400px] w-full mx-4">
+        <h4 class="font-semibold m-0 mb-4">Change Password</h4>
+        <div class="flex gap-2 items-center">
+          <input type="password" class="form-control flex-1" [(ngModel)]="newPassword" placeholder="New password" />
+          <button class="btn btn-primary btn-sm" (click)="updatePassword()">Save</button>
+          <button class="btn btn-default btn-sm" (click)="showPasswordDialog = false">Cancel</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

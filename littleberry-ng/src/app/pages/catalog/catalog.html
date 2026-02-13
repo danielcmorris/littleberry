@@ -1,0 +1,87 @@
+<div class="max-w-[1200px] mx-auto px-6">
+
+  <app-breadcrumbs [links]="links"></app-breadcrumbs>
+
+  <div class="mb-4">
+    <h2 class="text-[1.6rem] font-semibold text-text-main pl-2 m-0">{{ pageTitle }}</h2>
+  </div>
+
+  <!-- Search bar (only in full mode) -->
+  @if (mode === 'full') {
+    <div class="mb-6 px-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="flex-1 min-w-[250px]">
+          <input type="text" class="form-control w-full"
+                 [(ngModel)]="searchText"
+                 (keydown)="searchKey($event)"
+                 placeholder="Search by title, author, or keyword..." />
+        </div>
+        <button type="button" class="btn btn-primary" (click)="search()">
+          Search
+        </button>
+        @if (searchText) {
+          <button type="button" class="btn btn-default" (click)="clearSearch()">Clear</button>
+        }
+        <button type="button" class="btn btn-default" (click)="goRecent()">
+          Recent
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (!searchResults) {
+    <div class="text-center py-12">
+      <div class="spinner spinner-lg"></div>
+      <p class="text-text-muted mt-4 text-sm">Searching the catalog...</p>
+    </div>
+  }
+
+  <!-- Results table -->
+  @if (searchResults) {
+    <div class="px-2">
+      <table class="data-table cursor-pointer">
+        <thead>
+          <tr>
+            <th>Cover</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Subject</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (book of books; track book.BookId) {
+            <tr>
+              <td data-label="Cover">
+                @if (book.Url) {
+                  <img (click)="getBook(book)" class="cursor-pointer block rounded-lg shadow-sm hover:scale-105 transition-transform"
+                       [src]="imageServer + '/' + book.Url" width="80" [alt]="book.Title" />
+                }
+                <div class="mt-1">
+                  <a [routerLink]="['/library/catalog/view', book.Prefix, book.BookNumber]"
+                     class="text-[13px] text-text-muted">{{ book.CallNumber }}</a>
+                </div>
+              </td>
+              <td data-label="Title" class="font-medium">
+                <a [routerLink]="['/library/catalog/view', book.Prefix, book.BookNumber]">{{ book.Title }}</a>
+              </td>
+              <td data-label="Author">
+                <a [routerLink]="['/library/author', book.Author]" class="text-text-secondary">{{ book.Author }}</a>
+              </td>
+              <td data-label="Subject">
+                <a [routerLink]="['/library/subject', book.Prefix]" class="text-text-secondary">{{ book.Subject }}</a>
+              </td>
+              <td data-label="Status">
+                <span class="badge" [class]="badgeClass(book.Status)">
+                  {{ book.Status | lowercase }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>

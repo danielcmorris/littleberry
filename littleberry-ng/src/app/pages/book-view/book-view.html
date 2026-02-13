@@ -1,0 +1,83 @@
+<div class="max-w-[900px] mx-auto px-6">
+
+  <app-breadcrumbs [links]="links"></app-breadcrumbs>
+
+  <div class="bg-paper rounded-xl border border-border p-6 md:p-10 flex flex-wrap gap-10">
+    <!-- Book Image -->
+    <div class="shrink-0">
+      <div class="book-image-box">
+        @if (book.BookId) {
+          <img [src]="bookImage" [alt]="book.Title" />
+        }
+      </div>
+    </div>
+
+    <!-- Book Details -->
+    <div class="flex-1 min-w-[280px]">
+      <h3 class="mt-0 mb-1 text-2xl font-semibold">{{ book.Title }}</h3>
+
+      <p class="text-text-secondary italic m-0 mb-6 text-[15px]">
+        by <span class="font-medium">{{ book.Author }}</span>
+      </p>
+
+      @if (book.Notes) {
+        <div class="text-text-secondary mb-6 text-sm leading-[1.7]">
+          {{ book.Notes }}
+        </div>
+      }
+
+      <div class="detail-grid mb-6">
+        <span class="detail-label">Subject</span>
+        <span class="font-medium">{{ book.Subject }}</span>
+
+        <span class="detail-label">Call No.</span>
+        <span class="font-semibold font-mono tracking-wider">{{ book.CallNumber }}</span>
+
+        <span class="detail-label">Status</span>
+        <span>
+          <span class="badge badge-active">{{ book.Status }}</span>
+        </span>
+      </div>
+
+      <div class="flex gap-2 flex-wrap">
+        <button (click)="back()" class="btn btn-default" type="button">
+          &larr; Back
+        </button>
+        @if (permission.EditTitle) {
+          <button (click)="edit()" class="btn btn-primary" type="button">
+            Edit
+          </button>
+        }
+        @if (permission.AddRequest) {
+          <button (click)="request()" class="btn btn-primary" type="button">
+            Request
+          </button>
+        }
+      </div>
+
+      @if (history.length > 0) {
+        <div class="mt-10">
+          <h4 class="font-semibold text-lg mb-4">History</h4>
+          <table class="data-table text-sm">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (h of history; track $index) {
+                <tr>
+                  <td data-label="Date">{{ h.CreateDate | date:'medium' }}</td>
+                  <td data-label="User">{{ h.CreateBy }}</td>
+                  <td data-label="Status">{{ h.Status }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="max-w-[800px] mx-auto px-6">
+
+  <app-breadcrumbs [links]="links"></app-breadcrumbs>
+
+  <h2 class="font-semibold m-0 mb-2">{{ pageTitle }}</h2>
+  <p class="text-text-muted text-sm m-0 mb-6">Browse authors or search by name</p>
+
+  <div class="mb-6">
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="flex-1 min-w-[250px] max-w-[400px]">
+        <input type="text" class="form-control w-full"
+               [(ngModel)]="searchText"
+               (keydown)="searchKey($event)"
+               placeholder="Search by author name..." />
+      </div>
+      <button type="button" class="btn btn-primary" (click)="searchAuthors()">
+        Search
+      </button>
+      @if (searchText) {
+        <button type="button" class="btn btn-default" (click)="clearSearch()">Clear</button>
+      }
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-12">
+      <div class="spinner spinner-lg"></div>
+    </div>
+  }
+
+  @if (!loading) {
+    <div class="bg-bg-alt rounded-xl p-1">
+      <table class="data-table cursor-pointer">
+        <thead>
+          <tr>
+            <th>Author</th>
+            <th class="text-right">Publications</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of displayList; track a.Author) {
+            <tr>
+              <td data-label="Author"><a [routerLink]="['/library/author', a.Author]">{{ a.Author }}</a></td>
+              <td data-label="Publications" class="text-right">
+                <span class="count-badge">{{ a.BookCount }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>

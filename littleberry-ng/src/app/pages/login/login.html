@@ -1,0 +1,49 @@
+<div class="min-h-[70vh] flex items-center justify-center px-6">
+  <div class="w-full max-w-[400px] relative">
+    <!-- Decorative glow -->
+    <div class="absolute -top-20 -left-20 w-60 h-60 rounded-full opacity-20 blur-3xl pointer-events-none"
+         style="background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));"></div>
+
+    <div class="card p-10 relative">
+      <div class="text-center mb-6">
+        <div class="site-logo !h-[50px] mb-4 !filter-none opacity-80" style="filter: none;"></div>
+        <h3 class="font-semibold text-primary m-0 mb-1">Sign In</h3>
+        <p class="text-text-muted text-sm m-0">Access your library account</p>
+      </div>
+
+      @if (errorMessage) {
+        <div class="text-center text-danger text-[13px] font-medium mb-4">
+          {{ errorMessage }}
+        </div>
+      }
+
+      @if (loading) {
+        <div class="text-center py-8">
+          <div class="spinner"></div>
+          <p class="text-text-muted mt-4 text-sm">Signing in...</p>
+        </div>
+      }
+
+      @if (!loading) {
+        <div class="mb-4">
+          <label class="form-label">Email</label>
+          <input class="form-control" [(ngModel)]="username" placeholder="your@email.com" type="text" autocomplete="email" />
+        </div>
+        <div class="mb-6">
+          <label class="form-label">Password</label>
+          <input class="form-control" [(ngModel)]="password" (keydown)="loginKey($event)"
+                 placeholder="Enter your password" type="password" autocomplete="current-password" />
+        </div>
+        <button type="button" (click)="doLogin()" class="btn btn-primary w-full text-center py-3 text-[15px]">
+          Sign In
+        </button>
+
+        <div class="text-center text-[13px] text-text-muted pt-5">
+          <a href="#" class="text-text-secondary">Forgot password?</a>
+          <span class="px-2">&middot;</span>
+          <a routerLink="/member/join" class="text-primary font-semibold">Join the library</a>
+        </div>
+      }
+    </div>
+  </div>
+</div>

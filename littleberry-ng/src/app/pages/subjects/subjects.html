@@ -1,0 +1,83 @@
+<div class="max-w-[900px] mx-auto px-6">
+
+  <h2 class="font-semibold m-0 mb-6">Subjects</h2>
+
+  <!-- Edit / Add form -->
+  @if (hideList) {
+    <div class="max-w-[500px]">
+      <div class="card p-6">
+        <h4 class="font-semibold m-0 mb-6 text-primary">
+          {{ mysubject.SubjectId > 0 ? 'Edit Subject' : 'New Subject' }}
+        </h4>
+
+        <div class="mb-4">
+          <label class="form-label">Prefix</label>
+          <input type="text" class="form-control" [(ngModel)]="mysubject.Prefix"
+                 [readOnly]="mysubject.SubjectId > 0" />
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Subject Name</label>
+          <input type="text" class="form-control" [(ngModel)]="mysubject.Name" />
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Last ID</label>
+          <input type="number" class="form-control" [(ngModel)]="mysubject.LastId" />
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Status</label>
+          <select class="form-control" [(ngModel)]="mysubject.Status">
+            <option>Active</option>
+            <option>Deleted</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2">
+          <button class="btn btn-default" (click)="cancelEdit()">Cancel</button>
+          @if (mysubject.SubjectId > 0) {
+            <button class="btn btn-primary" (click)="save(1)">Save Changes</button>
+          }
+          @if (mysubject.SubjectId === 0 && mysubject.Prefix) {
+            <button class="btn btn-primary" (click)="save(2)">Add New</button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Subject list -->
+  @if (!hideList) {
+    <table class="data-table cursor-pointer">
+      <thead>
+        <tr>
+          <th class="cursor-pointer" (click)="sort('Prefix')">Prefix</th>
+          <th class="cursor-pointer" (click)="sort('Name')">Subject</th>
+          <th class="cursor-pointer" (click)="sort('Status')">Status</th>
+          <th class="cursor-pointer" (click)="sort('LastId')">Last #</th>
+          <th class="text-right">
+            <button class="btn btn-primary btn-sm" (click)="edit()">
+              + Add New
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (subject of subjects; track subject.SubjectId) {
+          <tr>
+            <td data-label="Prefix"><span class="font-mono font-semibold text-primary">{{ subject.Prefix }}</span></td>
+            <td data-label="Subject" class="font-medium">{{ subject.Name }}</td>
+            <td data-label="Status">
+              <span class="badge" [class]="subject.Status === 'Active' ? 'badge-active' : 'badge-deleted'">
+                {{ subject.Status }}
+              </span>
+            </td>
+            <td data-label="Last #">{{ subject.LastId }}</td>
+            <td class="text-right">
+              <button class="btn btn-default btn-sm" (click)="edit(subject)">Edit</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+</div>

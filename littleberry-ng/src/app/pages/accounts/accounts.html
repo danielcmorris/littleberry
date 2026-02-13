@@ -1,0 +1,38 @@
+<div class="max-w-[1100px] mx-auto px-6">
+
+  <div class="flex justify-between items-center flex-wrap gap-4 mb-6">
+    <h2 class="font-semibold m-0">Accounts</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      <input type="text" [(ngModel)]="searchText" class="form-control !w-[250px]" placeholder="Search accounts..." />
+      <button type="button" class="btn btn-primary" (click)="addAccount()">
+        + Add Account
+      </button>
+    </div>
+  </div>
+
+  <table class="data-table cursor-pointer">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (act of filteredAccounts; track act.AccountId) {
+        <tr (click)="editAccount(act)">
+          <td data-label="ID">{{ act.AccountId }}</td>
+          <td data-label="First Name" class="font-medium">{{ act.FirstName }}</td>
+          <td data-label="Last Name" class="font-medium">{{ act.LastName }}</td>
+          <td data-label="Email">{{ act.Email }}</td>
+          <td data-label="Phone">{{ act.Phone }}</td>
+          <td data-label="Type"><span class="badge badge-neutral">{{ act.AccountType }}</span></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+</div>

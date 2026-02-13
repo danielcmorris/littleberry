@@ -1,0 +1,236 @@
+<div class="max-w-[1200px] mx-auto px-6">
+
+  <app-breadcrumbs [links]="links"></app-breadcrumbs>
+
+  <!-- Not logged in -->
+  @if (!permission.AddRequest) {
+    <div class="text-center max-w-[500px] mx-auto py-10">
+      <div class="card p-6">
+        <svg class="w-10 h-10 mx-auto text-text-muted mb-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+        </svg>
+        <p class="text-[15px] text-text-secondary mb-4">
+          Sign in to your account to request a book. New to the library?
+          <a routerLink="/member/join" class="text-primary font-semibold">Create an account</a>.
+        </p>
+      </div>
+    </div>
+  }
+
+  <!-- Add Request Mode -->
+  @if (permission.AddRequest && (mode === 'add' || mode === 'edit')) {
+    <div class="mt-4 max-w-[700px]">
+      <div class="card">
+        <div class="p-6 pb-2">
+          <span class="font-semibold text-primary text-lg">
+            Request: {{ book.Title }}
+          </span>
+        </div>
+        <div class="p-6">
+          <!-- Search for another member -->
+          @if (permission.Requests) {
+            <div class="mb-4">
+              @if (!showSearch) {
+                <div class="text-right">
+                  <button class="btn btn-default btn-sm" (click)="showSearch = true">
+                    Book for someone else
+                  </button>
+                </div>
+              }
+              @if (showSearch) {
+                <div class="bg-bg-alt p-4 rounded-lg mb-4">
+                  <label class="form-label text-sm mb-2">Search by email to book for another member:</label>
+                  <div class="flex gap-2 items-center">
+                    <input type="text" class="form-control flex-1" [(ngModel)]="email" placeholder="member@email.com" />
+                    <button class="btn btn-primary btn-sm" (click)="lookupAccount(email)">Search</button>
+                    <button class="btn btn-default btn-sm" (click)="showSearch = false">Cancel</button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Address card -->
+          @if (showAddress && !showSearch) {
+            <div class="bg-paper border border-border rounded-xl p-5">
+              <div class="flex flex-wrap gap-6">
+                <div class="flex-1 min-w-[250px]">
+                  <h4 class="font-semibold m-0 mb-4 text-primary">Contact</h4>
+                  <div class="mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.FirstName" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.LastName" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.Phone" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.Email" />
+                  </div>
+                </div>
+                <div class="flex-1 min-w-[250px]">
+                  <h4 class="font-semibold m-0 mb-4 text-primary">Address</h4>
+                  <div class="mb-3">
+                    <label class="form-label">Street 1</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.Address1" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Street 2</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.Address2" />
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.City" />
+                  </div>
+                  <div class="flex gap-4 mb-3">
+                    <div class="flex-1">
+                      <label class="form-label">State</label>
+                      <input type="text" class="form-control" [(ngModel)]="account.State" />
+                    </div>
+                    <div class="flex-1">
+                      <label class="form-label">Zip</label>
+                      <input type="text" class="form-control" [(ngModel)]="account.Zip" />
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Country</label>
+                    <input type="text" class="form-control" [(ngModel)]="account.Country" />
+                  </div>
+                </div>
+              </div>
+              <div class="flex gap-2 mt-6">
+                <button class="btn btn-primary" (click)="addRequestByAccount()">Submit Request</button>
+                <button class="btn btn-default" (click)="showAddress = false; email = ''">Cancel</button>
+              </div>
+            </div>
+          }
+
+          <!-- Confirmation -->
+          @if (showConfirm) {
+            <div class="text-center p-8 confirm-bg rounded-xl">
+              <svg class="w-12 h-12 mx-auto text-success mb-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <h4 class="font-semibold text-primary m-0 mb-2">Request Submitted</h4>
+              <p class="text-text-secondary mb-4">Your request for <strong>{{ book.Title }}</strong> has been submitted.</p>
+              <button class="btn btn-primary" (click)="goToCatalog()">Return to Catalog</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Request List -->
+  @if (showList) {
+    <div class="flex justify-between items-center flex-wrap gap-4 mb-6">
+      <h2 class="font-semibold m-0">Open Requests</h2>
+      <div class="flex flex-wrap items-center gap-2">
+        @if (permission.Requests) {
+          <input type="text" [(ngModel)]="filterEmail" class="form-control !w-[200px]" placeholder="Search by email..." />
+        }
+        <input type="text" [(ngModel)]="filterCallNumber" class="form-control !w-[130px]" placeholder="Call number..." />
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Request #</th>
+            <th>Requested By</th>
+            <th>Call No.</th>
+            <th>Requested</th>
+            <th>Packed</th>
+            <th>Shipped</th>
+            <th>Due</th>
+            <th>Received</th>
+            <th>Reshelved</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (res of filteredRequests; track res.ReservationSubId) {
+            <tr>
+              <td data-label="Request #" class="font-semibold text-primary">{{ res.ReservationSubId }}</td>
+              <td data-label="Requested By">
+                <a [routerLink]="['/library/accounts', res.AccountId]">{{ res.RequestByEmail }}</a>
+              </td>
+              <td data-label="Call No.">
+                <a [routerLink]="['/library/catalog/edit', res.Prefix, res.BookNumber]" class="font-mono">
+                  {{ res.Prefix }}{{ res.BookNumber }}
+                </a>
+              </td>
+              <td data-label="Requested">{{ res.RequestDate | date:'MM/dd/yyyy' }}</td>
+
+              <!-- Pack Date -->
+              <td data-label="Packed" class="w-[130px] text-[13px]">
+                @if (res.PackDate) {
+                  <div class="flex items-center gap-1">
+                    <span>{{ res.PackDate | date:'shortDate' }}</span>
+                    <button class="btn btn-default btn-sm !px-2 !py-0" (click)="clearDate('Pack', res)">&times;</button>
+                  </div>
+                } @else {
+                  <input type="date" class="form-control form-control-compact" (change)="setDate('Pack', res, $event)" />
+                }
+              </td>
+
+              <!-- Ship Date -->
+              <td data-label="Shipped" class="w-[130px] text-[13px]">
+                @if (res.ShipDate) {
+                  <div class="flex items-center gap-1">
+                    <span>{{ res.ShipDate | date:'shortDate' }}</span>
+                    <button class="btn btn-default btn-sm !px-2 !py-0" (click)="clearDate('Ship', res)">&times;</button>
+                  </div>
+                } @else if (res.PackDate) {
+                  <input type="date" class="form-control form-control-compact" (change)="setDate('Ship', res, $event)" />
+                }
+              </td>
+
+              <!-- Due Date -->
+              <td data-label="Due" class="w-[130px] text-[13px]">
+                @if (res.DueDate) {
+                  <div class="flex items-center gap-1">
+                    <span>{{ res.DueDate | date:'shortDate' }}</span>
+                    <button class="btn btn-default btn-sm !px-2 !py-0" (click)="clearDate('Due', res)">&times;</button>
+                  </div>
+                } @else if (res.ShipDate) {
+                  <input type="date" class="form-control form-control-compact" (change)="setDate('Due', res, $event)" />
+                }
+              </td>
+
+              <!-- Received Date -->
+              <td data-label="Received" class="w-[130px] text-[13px]">
+                @if (res.ReceivedDate) {
+                  <div class="flex items-center gap-1">
+                    <span>{{ res.ReceivedDate | date:'shortDate' }}</span>
+                    <button class="btn btn-default btn-sm !px-2 !py-0" (click)="clearDate('Receive', res)">&times;</button>
+                  </div>
+                } @else if (res.DueDate) {
+                  <input type="date" class="form-control form-control-compact" (change)="setDate('Receive', res, $event)" />
+                }
+              </td>
+
+              <!-- Reshelved Date -->
+              <td data-label="Reshelved" class="w-[130px] text-[13px]">
+                @if (res.ReshelveDate) {
+                  <div class="flex items-center gap-1">
+                    <span>{{ res.ReshelveDate | date:'shortDate' }}</span>
+                    <button class="btn btn-default btn-sm !px-2 !py-0" (click)="clearDate('Shelve', res)">&times;</button>
+                  </div>
+                } @else if (res.ReceivedDate) {
+                  <input type="date" class="form-control form-control-compact" (change)="setDate('Shelve', res, $event)" />
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>

@@ -1,6 +1,6 @@
 node_modules/
 bower_components/
-js/tsc.js
-js/tsc.js.map
-
- 
+legacy-angularjs/node_modules/
+legacy-angularjs/bower_components/
+legacy-angularjs/js/tsc.js
+legacy-angularjs/js/tsc.js.map

@@ -1,0 +1,54 @@
+<div class="max-w-[1200px] mx-auto py-10 px-6">
+
+  <!-- Hero section -->
+  <div class="flex flex-wrap items-center gap-6">
+    <div class="flex-1 min-w-[280px] px-4">
+      <div class="card border-l-4 border-l-primary">
+        <div class="p-6 pb-2">
+          <span class="font-semibold text-primary text-2xl">Welcome to the PFSA Library</span>
+        </div>
+        <div class="p-4 px-6 pb-6 text-[15px] leading-[1.75] text-text-secondary">
+          The library collection consists of over 12,000 works dealing with the Portuguese throughout
+          the world. It holds a vast number of books on the Azores and a fairly complete sample of
+          periodicals published by the Portuguese in California, some dating to the late 1880's.
+          The library contains many historical materials on Portuguese from all over the world.
+          We provide our community with various magazines, periodicals, albums, videos, micro films,
+          etc. Most of the collection circulates for periods of two weeks each and books can be
+          requested from anywhere in California through interlibrary loan services provided by a
+          network of public and academic libraries throughout California.
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 min-w-[280px] px-4">
+      <img src="/images/library.jpg" class="w-full rounded-xl shadow-lg" alt="Library" />
+    </div>
+  </div>
+
+  <!-- Recent Additions -->
+  <div class="mt-12 mb-4 px-4">
+    <h3 class="font-semibold text-text-main m-0 mb-1">Recent Additions</h3>
+    <p class="text-text-muted text-sm m-0">The latest titles added to our collection</p>
+  </div>
+
+  <div class="flex flex-wrap justify-center gap-6 px-2">
+    @for (book of books; track book.BookId) {
+      @if (book.Url) {
+        <div class="book-tile card group cursor-pointer" (click)="getBook(book)">
+          <div class="overflow-hidden relative">
+            <img class="w-full h-[240px] object-cover transition-transform duration-300 group-hover:scale-105"
+                 [src]="imageServer + '/' + book.Url"
+                 [alt]="book.Title" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
+          <div class="p-4 pb-1 min-h-[48px]">
+            <b class="text-[13.5px] font-semibold text-text-main leading-tight line-clamp-2">{{ book.Title }}</b>
+          </div>
+          <div class="px-4 pb-4 text-[12.5px] text-text-muted italic">
+            {{ book.Author }}
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+</div>

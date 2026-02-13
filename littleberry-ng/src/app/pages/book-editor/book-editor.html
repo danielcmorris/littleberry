@@ -1,0 +1,152 @@
+<div class="max-w-[1000px] mx-auto px-6">
+
+  <app-breadcrumbs [links]="links"></app-breadcrumbs>
+
+  @if (editing && permissions.EditTitle) {
+    <div class="card mb-6">
+      @if (!loading) {
+        <div class="p-6 pb-2 flex items-center justify-between flex-wrap">
+          <div class="flex-1">
+            <span class="font-semibold text-text-main">{{ book.CallNumber }}</span>
+            <span class="font-semibold text-text-main ml-2">{{ book.Title || 'New Book' }}</span>
+          </div>
+          @if (book.Status) {
+            <span class="badge badge-active text-sm px-3.5 py-1">{{ book.Status }}</span>
+          }
+        </div>
+      }
+
+      <div class="p-6">
+        <!-- Title -->
+        <div class="mb-4">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-control" [(ngModel)]="book.Title" />
+        </div>
+
+        <!-- Author -->
+        <div class="mb-4">
+          <label class="form-label">Author (if more than one, separate with &amp;)</label>
+          <input type="text" class="form-control" [(ngModel)]="book.Author" placeholder="Last name, First name" />
+        </div>
+
+        <!-- Subject -->
+        <div class="mb-4">
+          <label class="form-label">Subject</label>
+          <select class="form-control" [(ngModel)]="book.SubjectId">
+            @for (subject of subjects; track subject.SubjectId) {
+              <option [value]="subject.SubjectId">{{ subject.Name }}</option>
+            }
+          </select>
+        </div>
+
+        @if (!book.CallNumber && book.SubjectId) {
+          <button class="btn btn-primary" (click)="applySubject()">
+            Generate Call Number
+          </button>
+        }
+
+        @if (book.CallNumber) {
+          <div class="flex flex-wrap mt-4 gap-6">
+            <!-- Image section -->
+            @if (bookImage) {
+              <div class="flex-1 min-w-[250px]">
+                <label class="form-label mb-2">Cover Image</label>
+                <div class="max-w-[280px] rounded-xl overflow-hidden border border-border">
+                  <img [src]="bookImage" class="w-full" [alt]="book.Title" />
+                </div>
+                <button class="btn btn-default mt-4" (click)="clearBookImage()">Remove Image</button>
+              </div>
+            } @else {
+              <div class="flex-1 min-w-[250px]">
+                @if (!uploading) {
+                  <div class="text-center p-8 border-2 border-dashed border-border rounded-xl bg-bg-alt">
+                    <svg class="w-10 h-10 mx-auto text-text-muted mb-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                    </svg>
+                    @if (!file) {
+                      <label for="fileInput" class="btn btn-primary cursor-pointer">Choose Image</label>
+                    } @else {
+                      <button class="btn btn-primary" (click)="uploadImage()">Upload Selection</button>
+                      <button class="btn btn-default ml-2" (click)="file = null">Clear</button>
+                    }
+                    <input id="fileInput" type="file" class="hidden" (change)="onFileSelected($event)" />
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Description -->
+            <div class="flex-1 min-w-[250px]">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" [(ngModel)]="book.Notes" rows="5" maxlength="1500"></textarea>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (book.CallNumber) {
+        <div class="px-6 pb-6">
+          <div class="flex justify-between items-center flex-wrap gap-2">
+            <div class="flex gap-2 flex-wrap">
+              <button (click)="go('catalog')" class="btn btn-default">Close</button>
+              <button (click)="saveBook(1)" class="btn btn-primary">Save &amp; Close</button>
+              <button (click)="saveBook(2)" class="btn btn-primary">Save &amp; New</button>
+            </div>
+            <div class="flex gap-2 flex-wrap">
+              @if (book.Status === 'Active') {
+                <button class="btn btn-default btn-sm" (click)="book.Status = 'Inactive'">Set Inactive</button>
+              }
+              @if (book.Status === 'Inactive') {
+                <button class="btn btn-primary btn-sm" (click)="book.Status = 'Active'">Set Active</button>
+              }
+              @if (book.Status === 'Checked Out') {
+                <button class="btn btn-info btn-sm" (click)="go('requests')">Check In</button>
+              }
+              @if (book.Status === 'On Request') {
+                <button class="btn btn-info btn-sm" (click)="go('requests')">Update Request</button>
+              }
+              @if (book.Status !== 'Checked Out' && book.Status !== 'On Request') {
+                <button class="btn btn-danger btn-sm" (click)="deleteBook()">Delete</button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (history.length > 0) {
+      <div class="card">
+        <div class="p-6 pb-2">
+          <span class="font-semibold text-primary text-lg">History</span>
+        </div>
+        <div class="p-6">
+          <table class="data-table text-sm">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (h of history; track $index) {
+                <tr>
+                  <td data-label="Date">{{ h.CreateDate | date:'medium' }}</td>
+                  <td data-label="User">{{ h.CreateBy }}</td>
+                  <td data-label="Status">{{ h.Status }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+
+  @if (!editing && !permissions.EditTitle) {
+    <div class="text-center py-10">
+      <p class="text-text-muted">You do not have permission to edit this title.</p>
+      <button class="btn btn-default" (click)="go('catalog')">Back to Catalog</button>
+    </div>
+  }
+</div>
